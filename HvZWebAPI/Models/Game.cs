@@ -4,7 +4,7 @@
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public string State { get; set; }
+        public State State { get; set; }
 
         // Navigation properties
 
@@ -14,5 +14,12 @@
 
         public ICollection<Chat> Chats { get; set; }
 
+    }
+
+    public enum State
+    {
+        Start,
+        Going,
+        Finished
     }
 }
