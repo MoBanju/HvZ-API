@@ -35,10 +35,10 @@ namespace HvZWebAPI.Data
         {
             List<Game> games = new List<Game>()
             {
-                new Game(){ Id=1, Name="Jungle", State=State.Start},
-                new Game(){ Id=2, Name="Island", State=State.Going},
-                new Game(){ Id=3, Name="Ocean", State=State.Going},
-                new Game(){ Id=4, Name="Space", State=State.Finished},
+                new Game(){ Id=1, Name="Jungle", State=State.Registration},
+                new Game(){ Id=2, Name="Island", State=State.Progress},
+                new Game(){ Id=3, Name="Ocean", State=State.Progress},
+                new Game(){ Id=4, Name="Space", State=State.Complete},
             };
             return games;
         }

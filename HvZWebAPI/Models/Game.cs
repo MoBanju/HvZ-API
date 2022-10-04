@@ -18,8 +18,8 @@
 
     public enum State
     {
-        Start,
-        Going,
-        Finished
+        Registration,
+        Progress,
+        Complete
     }
 }
