@@ -35,6 +35,9 @@ namespace HvZWebAPI.Data
             modelBuilder.Entity<Player>().HasOne<Game>(p => p.Game).WithMany(g => g.Players).OnDelete(DeleteBehavior.NoAction);
             modelBuilder.Entity<Game>().HasMany<Kill>(g => g.Kills).WithOne(k => k.Game);
 
+            // Constraint
+            modelBuilder.Entity<Player>().HasIndex(player => player.BiteCode).IsUnique();
+
             // Set the Data
             modelBuilder.Entity<User>().HasData(SeedDataHelper.GetUsers());
             modelBuilder.Entity<Player>().HasData(SeedDataHelper.GetPlayers());
