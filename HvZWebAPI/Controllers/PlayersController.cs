@@ -93,16 +93,22 @@ namespace HvZWebAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePlayer(int id)
         {
-            var player = await _context.Players.FindAsync(id);
+            var player = await _repo.GetById(id);
             if (player == null)
             {
-                return NotFound();
+                return BadRequest();
             }
 
-            _context.Players.Remove(player);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            try { 
+                bool succues = await _repo.Delete(player);
+                if (succues) return NoContent();
+                else return NotFound();
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, "Oops, internal error try again later");
+            }
         }
 
         private bool PlayerExists(int id)

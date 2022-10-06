@@ -1,5 +1,7 @@
 ﻿using HvZWebAPI.Data;
 using HvZWebAPI.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
 namespace HvZWebAPI.Repositories;
@@ -29,9 +31,22 @@ public class PlayerRepository : IPlayerRepository
 
     }
 
-    public Task<Task> Delete(Player entity)
+    public async Task<bool> Delete(Player entity)
     {
-        throw new NotImplementedException();
+        int rowsChanged = 0;
+        _context.Players.Remove(entity);
+        try
+        {
+            rowsChanged = await _context.SaveChangesAsync();
+        }
+        catch(Exception e)
+        {
+            throw;
+        }
+        Console.WriteLine("rows changed in Delete " + rowsChanged);
+
+
+        return rowsChanged >0;
     }
 
     public async Task<IEnumerable<Player>> GetAll()
@@ -39,9 +54,9 @@ public class PlayerRepository : IPlayerRepository
        return await _context.Players.ToListAsync();
     }
 
-    public Task<Player> GetById(int id)
+    public async Task<Player?> GetById(int id)
     {
-        throw new NotImplementedException();
+        return await _context.Players.FindAsync(id);
     }
 
     public Task<bool> Update(Player entity)
