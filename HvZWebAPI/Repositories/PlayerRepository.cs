@@ -3,6 +3,7 @@ using HvZWebAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using System.Numerics;
 
 namespace HvZWebAPI.Repositories;
 
@@ -16,20 +17,56 @@ public class PlayerRepository : IPlayerRepository
     }
 
 
-    public async Task<bool> Add(Player entity)
+    public async Task<Player?> Add(Player player)
     {
-        _context.Players.Add(entity);
+        var savedUser = await _context.Users.FindAsync(player.User.Id);
+        var playerWithoutUser = new Player();
+        playerWithoutUser.BiteCode = player.BiteCode;
+        playerWithoutUser.GameId = player.GameId;
+        playerWithoutUser.IsHuman = player.IsHuman;
+        playerWithoutUser.IsPatientZero = player.IsPatientZero;
+
+        if (savedUser == null)
+        {
+            var user = await createUser(player.User.FirstName, player.User.LastName);
+            playerWithoutUser.UserId = user.Id;
+        }
+        else
+        {
+            playerWithoutUser.UserId = player.User.Id;
+        }
+
+        _context.Players.Add(playerWithoutUser);
+
         try
         {
             await _context.SaveChangesAsync();
         }
-        catch
+        catch(DbUpdateConcurrencyException ex)
         {
-            return false;
+            if (!PlayerExists(player.Id))
+            {
+                return null;
+            }
+            else
+            {
+                throw;
+            }
         }
-        return true;
+        return playerWithoutUser;
 
     }
+
+    private async Task<User> createUser(string firstname, string lastname)
+    {
+        var user = new User();
+        user.FirstName = firstname;
+        user.LastName = lastname;
+        _context.Users.Add(user);
+        await _context.SaveChangesAsync();
+        return user;
+    }
+
 
     public async Task<bool> Delete(Player entity)
     {
@@ -59,8 +96,30 @@ public class PlayerRepository : IPlayerRepository
         return await _context.Players.FindAsync(id);
     }
 
-    public Task<bool> Update(Player entity)
+    //PUT
+    public async Task<bool> Update(Player player)
     {
-        throw new NotImplementedException();
+        _context.Entry(player).State = EntityState.Modified;
+        try
+        {
+            await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException ex)
+        {
+            if (!PlayerExists(player.Id))
+            {
+                return false;
+            }
+            else
+            {
+                throw;
+            }
+        }
+        return true;
+    }
+
+    private bool PlayerExists(int id)
+    {
+        return _context.Players.Any(e => e.Id == id);
     }
 }

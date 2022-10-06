@@ -9,6 +9,9 @@ using HvZWebAPI.Data;
 using HvZWebAPI.Models;
 using HvZWebAPI.Repositories;
 using AutoMapper;
+using System.Xml.Linq;
+using Newtonsoft.Json;
+using HvZWebAPI.DTOs.Player;
 
 namespace HvZWebAPI.Controllers
 {
@@ -31,62 +34,102 @@ namespace HvZWebAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<PlayerReadAdminDTO>>> GetPlayers()
         {
-            return _mapper.Map<List<PlayerReadAdminDTO>>(await _repo.GetAll());
+
+            List<PlayerReadAdminDTO> playersDTO = _mapper.Map<List<PlayerReadAdminDTO>>(await _repo.GetAll());
+
+            //TODO: Keycloak, if Not ADMIN Null out the IsPatientZeroField and add JSONresult
+
+
+            return new JsonResult(playersDTO, new JsonSerializerSettings()
+            {
+                NullValueHandling = NullValueHandling.Ignore
+            });
         }
 
         // GET: api/Players/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Player>> GetPlayer(int id)
+        public async Task<ActionResult<PlayerReadAdminDTO>> GetPlayer(int id)
         {
-            var player = await _context.Players.FindAsync(id);
+            var player = await _repo.GetById(id);
             if (player == null)
             {
                 return NotFound();
             }
 
-            return player;
+
+            //TODO: Keycloak, IF Not ADMIN: playerDTO.IsPatientZero = null;
+            PlayerReadAdminDTO playerDTO = _mapper.Map<Player, PlayerReadAdminDTO>(player);
+
+
+            //Is a type of actionresult, remember this does not typecheck
+            return new JsonResult(playerDTO, new JsonSerializerSettings()
+            {
+                NullValueHandling = NullValueHandling.Ignore
+            });
         }
 
         // PUT: api/Players/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutPlayer(int id, Player player)
+        public async Task<IActionResult> PutPlayer(int id, PlayerUpdateDeleteDTO player)
         {
             if (id != player.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(player).State = EntityState.Modified;
+            bool succuess = false;
 
             try
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!PlayerExists(id))
-                {
-                    return NotFound();
-                }
+                succuess = await _repo.Update(_mapper.Map<PlayerUpdateDeleteDTO, Player>(player));
+                if (!succuess)
+                    return BadRequest();
                 else
-                {
-                    throw;
-                }
+                    return NoContent();
             }
-
-            return NoContent();
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, "Oops, internal error try again later");
+            }
         }
 
         // POST: api/Players
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<Player>> PostPlayer(Player player)
+        [HttpPost("game/{game_id}/player")]
+        public async Task<ActionResult<Player>> PostPlayer(int game_id, PlayerCreateDTO playerDTO)
         {
-            _context.Players.Add(player);
-            await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetPlayer", new { id = player.Id }, player);
+
+            Player player = _mapper.Map<PlayerCreateDTO, Player>(playerDTO);
+
+            player.GameId = game_id;
+            try
+            {
+
+                
+
+                Player? savedPlayer = await _repo.Add(player);
+
+
+
+
+                if (savedPlayer == null)
+                {
+                    return BadRequest();
+                }
+                PlayerReadAdminDTO mapped = _mapper.Map<Player, PlayerReadAdminDTO>(savedPlayer);
+                //mapped.UserDTO.FirstName = savedPlayer
+
+                return CreatedAtAction("GetPlayer", new { id = savedPlayer.Id }, mapped);
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, "Oops, internal error try again later");
+            }
         }
 
         // DELETE: api/Players/5
@@ -99,12 +142,13 @@ namespace HvZWebAPI.Controllers
                 return BadRequest();
             }
 
-            try { 
+            try
+            {
                 bool succues = await _repo.Delete(player);
                 if (succues) return NoContent();
                 else return NotFound();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, "Oops, internal error try again later");
