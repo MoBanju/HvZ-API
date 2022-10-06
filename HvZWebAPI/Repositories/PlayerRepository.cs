@@ -88,23 +88,32 @@ public class PlayerRepository : IPlayerRepository
 
     public async Task<IEnumerable<Player>> GetAll()
     {
-       return await _context.Players.ToListAsync();
+        return await _context.Players.Include(p => p.User).ToListAsync();
     }
 
     public async Task<Player?> GetById(int id)
     {
-        return await _context.Players.FindAsync(id);
+        return await _context.Players.Include(p => p.User).Where(p => p.Id == id).FirstOrDefaultAsync();
     }
 
     //PUT
     public async Task<bool> Update(Player player)
     {
-        _context.Entry(player).State = EntityState.Modified;
+        var toBeUpdated = await _context.Players.FindAsync(player.Id);
+        if (toBeUpdated == null)
+            return false;
+
+        toBeUpdated.IsHuman = player.IsHuman;
+        toBeUpdated.IsPatientZero = player.IsPatientZero;
+        toBeUpdated.BiteCode = player.BiteCode;
+
+
+        _context.Entry(toBeUpdated).State = EntityState.Modified;
         try
         {
             await _context.SaveChangesAsync();
         }
-        catch (DbUpdateConcurrencyException ex)
+        catch (Exception ex)
         {
             if (!PlayerExists(player.Id))
             {
