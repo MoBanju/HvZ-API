@@ -1,10 +1,8 @@
 using HvZWebAPI.Data;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Build.Execution;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
-using System.Reflection;
 using HvZWebAPI.Repositories;
+using Microsoft.Data.SqlClient;
+using dotenv.net;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,11 +17,13 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
 
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
-
-
+DotEnv.Load();
 //
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<HvZDbContext>(opt => opt.UseSqlServer(connectionString));
+
+
+string connectionString = Environment.GetEnvironmentVariable("SQL_CONNECTION") ?? builder.Configuration.GetConnectionString("DefaultConnection");
+
+builder.Services.AddDbContext<HvZDbContext>(opt => opt.UseSqlServer(connectionString)); 
 
 var app = builder.Build();
 
