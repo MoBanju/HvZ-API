@@ -1,9 +1,9 @@
 using HvZWebAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using HvZWebAPI.Repositories;
+using HvZWebAPI.Interfaces;
 using Microsoft.Data.SqlClient;
 using dotenv.net;
-using HvZWebAPI.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +16,8 @@ builder.Services.AddSwaggerGen();
 
 
 builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
+builder.Services.AddScoped<IGameRepository, GameRepository>();
+builder.Services.AddScoped<IChatRepository, ChatRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
