@@ -1,10 +1,9 @@
-﻿using HvZWebAPI.Models;
-
-namespace HvZWebAPI.DTOs.Player;
-public class PlayerCreateDTO
+﻿namespace HvZWebAPI.DTOs.Player
 {
-    public bool IsPatientZero { get; set; }
-    public bool IsHuman { get; set; }
-    public string BiteCode { get; set; }
-
+    public class PlayerCreateDTO
+    {
+        public bool IsPatientZero { get; set; }
+        public bool IsHuman { get; set; }
+        public string BiteCode { get; set; }
+    }
 }

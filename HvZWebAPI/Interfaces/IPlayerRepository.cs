@@ -1,6 +1,6 @@
 ﻿using HvZWebAPI.Models;
 
-namespace HvZWebAPI.Repositories;
+namespace HvZWebAPI.Interfaces;
 
 public interface IPlayerRepository : IRepository<Player>
 {

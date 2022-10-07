@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using HvZWebAPI.Repositories;
 using Microsoft.Data.SqlClient;
 using dotenv.net;
+using HvZWebAPI.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +16,7 @@ builder.Services.AddSwaggerGen();
 
 
 builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 DotEnv.Load();

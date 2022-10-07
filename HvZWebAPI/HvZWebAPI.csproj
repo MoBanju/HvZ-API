@@ -19,6 +19,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.9" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
   </ItemGroup>
 
@@ -29,7 +30,6 @@
     <Folder Include="DTOs\User\" />
     <Folder Include="DTOs\Player\" />
     <Folder Include="Profiles\" />
-    <Folder Include="Repositories\" />
   </ItemGroup>
 
 </Project>
