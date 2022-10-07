@@ -1,4 +1,4 @@
-﻿namespace HvZWebAPI.Models
+﻿namespace HvZWebAPI.DTOs.Player
 {
     public class PlayerReadAdminDTO
     {

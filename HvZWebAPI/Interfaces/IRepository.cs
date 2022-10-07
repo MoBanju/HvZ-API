@@ -1,4 +1,4 @@
-﻿namespace HvZWebAPI.Repositories;
+﻿namespace HvZWebAPI.Interfaces;
 
 public interface IRepository<T>
 {
