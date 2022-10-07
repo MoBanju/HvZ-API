@@ -1,31 +1,42 @@
-
+#Description
+This is a .Net web-API made that exposes endpoints for the Human vs Zombies game.
 
 ## Contributors
-
-## Design-choices
-Front-End:
- - Frond-end framework:  React
- - Authentication: KeyCloak docker image
- - Folder-structure: type --> feature, AKA /src/components/feature, /src/services/feature, /src/pages/feature
- - CSS: React Bootstrap
- - State-Management-System: Redux
- - Project Creation: fra forelesning, npx create react app-case
- - Website deployment: Heroku
- - IDE: Visual studio code
- - Containerization: Docker
- - Package manager: Node.js and npm
- - Interface Design: Figma
+- [Eivind Bertelsen](https://gitlab.com/eivindTB)
+- [Vebjørn Sundal](https://gitlab.com/vebsun95)
+- [Øyvind Reitan](https://gitlab.com/hindrance)
+- [Mussa Banjai](https://gitlab.com/MoBanju)
+- [Synne Sævik](https://gitlab.com/Synnems)
 
 
-Back-End:
+## Design-choices / Technologies used
  - Database: Microsoft SQL / SQL server
  - ORM: Entity Framework
- - Mapper: AutoMapper
- - Authentication: KeyCloak docker image
+ - DTO-Mapper: AutoMapper
+ - Authentication: KeyCloak  image
  - API deployment: Azure web app
- - API-Documentation: Swagger
+ - API-Documentation: Swagger/Swashbuckle
  - API-Testing: Postman
  - IDE: Visual studio community edition
+ - configuration: environmental variables(dotenv.net)
+ - JSON-parse: newtonsoft.json
+ - Containerization: docker
+
+
+## ERD Diagram
+![entityrelationshipdiagram.png](./entityrelationshipdiagram.png)
+
+
+## Packages used
+- AutoMapper.Extensions.Microsoft.DependencyInjection
+- dotenv.net
+- Microsoft.AspNetCore.Mvc.NewtonsoftJson
+- Microsoft.EntityFrameworkCore.Design
+- Microsoft.EntityFrameworkCore.SqlServer
+- Microsoft.EntityFrameworkCore.Tools
+- Newtonsoft.Json
+- Swashbuckle.AspNetCore
+
 
 ## Style-guide
 .Net https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/coding-style/coding-conventions
@@ -37,14 +48,6 @@ Back-End:
       - public members of types, such as fields, properties, events, methods, and local functions
     - camel-Case
       - private or internal fields prefix with _, use camelcasing _workerQueue
- - React : 
-     - Pascal-Case:
-       - Components
-       - 
-     - kebab-case
-       - html/xml tags inside components
-       - css
-
 ### Layout
  - .Net: 
     - Indent four-characters, tabs saved as spaces
@@ -54,6 +57,8 @@ Back-End:
 https://www.conventionalcommits.org/en/v1.0.0/
  - commit-message:
    - feat: new feature, code added
+   - refactor: code change that neither adds feature or fixes bug
    - fix: bugfix usually
-   - style: no functional changes
+   - style: changes that do not affect the meaning of the code
    - docs: documentation
+   - chore: no functionallity added, used for adding needed setup like .gitignore
