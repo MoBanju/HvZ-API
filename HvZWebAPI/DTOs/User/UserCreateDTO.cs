@@ -1,10 +1,10 @@
-﻿using HvZWebAPI.Models;
+﻿namespace HvZWebAPI.DTOs.User;
 
-namespace HvZWebAPI.DTOs.User
+public class UserCreateDTO
 {
-    public class UserCreateDTO
-    {
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-    }
+    public int Id { get; set; }
+    public string? FirstName { get; set; }
+    public string? LastName { get; set; }
+
+
 }

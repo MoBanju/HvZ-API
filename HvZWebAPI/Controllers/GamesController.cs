@@ -67,10 +67,10 @@ namespace HvZWebAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<GameReadDTO>> PostGame(GameCreateDTO gameAsDTO)
         {
-            Game game = _mapper.Map<Game>(gameAsDTO);
+            Game? game = _mapper.Map<Game>(gameAsDTO);
             game.State = State.Registration;
-            Boolean succues = await _repo.Add(game);
-            if(!succues)
+            game = await _repo.Add(game);
+            if(game == null)
                 return BadRequest();
 
 

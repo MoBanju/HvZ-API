@@ -4,6 +4,7 @@ using HvZWebAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using System.Numerics;
 
 namespace HvZWebAPI.Repositories;
 
@@ -17,20 +18,56 @@ public class PlayerRepository : IPlayerRepository
     }
 
 
-    public async Task<bool> Add(Player entity)
+    public async Task<Player?> Add(Player player)
     {
-        _context.Players.Add(entity);
+        var savedUser = await _context.Users.FindAsync(player.User.Id);
+        var playerWithoutUser = new Player();
+        playerWithoutUser.BiteCode = player.BiteCode;
+        playerWithoutUser.GameId = player.GameId;
+        playerWithoutUser.IsHuman = player.IsHuman;
+        playerWithoutUser.IsPatientZero = player.IsPatientZero;
+
+        if (savedUser == null)
+        {
+            var user = await createUser(player.User.FirstName, player.User.LastName);
+            playerWithoutUser.UserId = user.Id;
+        }
+        else
+        {
+            playerWithoutUser.UserId = player.User.Id;
+        }
+
+        _context.Players.Add(playerWithoutUser);
+
         try
         {
             await _context.SaveChangesAsync();
         }
-        catch
+        catch(DbUpdateConcurrencyException ex)
         {
-            return false;
+            if (!PlayerExists(player.Id))
+            {
+                return null;
+            }
+            else
+            {
+                throw;
+            }
         }
-        return true;
+        return playerWithoutUser;
 
     }
+
+    private async Task<User> createUser(string firstname, string lastname)
+    {
+        var user = new User();
+        user.FirstName = firstname;
+        user.LastName = lastname;
+        _context.Users.Add(user);
+        await _context.SaveChangesAsync();
+        return user;
+    }
+
 
     public async Task<bool> Delete(Player entity)
     {
@@ -52,16 +89,47 @@ public class PlayerRepository : IPlayerRepository
 
     public async Task<IEnumerable<Player>> GetAll()
     {
-       return await _context.Players.ToListAsync();
+        return await _context.Players.Include(p => p.User).ToListAsync();
     }
 
     public async Task<Player?> GetById(int id)
     {
-        return await _context.Players.FindAsync(id);
+        return await _context.Players.Include(p => p.User).Where(p => p.Id == id).FirstOrDefaultAsync();
     }
 
-    public Task<bool> Update(Player entity)
+    //PUT
+    public async Task<bool> Update(Player player)
     {
-        throw new NotImplementedException();
+        var toBeUpdated = await _context.Players.FindAsync(player.Id);
+        if (toBeUpdated == null)
+            return false;
+
+        toBeUpdated.IsHuman = player.IsHuman;
+        toBeUpdated.IsPatientZero = player.IsPatientZero;
+        toBeUpdated.BiteCode = player.BiteCode;
+
+
+        _context.Entry(toBeUpdated).State = EntityState.Modified;
+        try
+        {
+            await _context.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            if (!PlayerExists(player.Id))
+            {
+                return false;
+            }
+            else
+            {
+                throw;
+            }
+        }
+        return true;
+    }
+
+    private bool PlayerExists(int id)
+    {
+        return _context.Players.Any(e => e.Id == id);
     }
 }

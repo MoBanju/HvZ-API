@@ -1,11 +1,9 @@
-﻿namespace HvZWebAPI.DTOs.Player
+﻿namespace HvZWebAPI.DTOs.Player;
+
+public class PlayerUpdateDeleteDTO
 {
-    public class PlayerUpdateDeleteDTO
-    {
-        public int Id { get; set; }
-        public bool IsHuman { get; set; }
-        public string BiteCode { get; set; }
-
-    }
+    public int Id { get; set; }
+    public bool IsHuman { get; set; }
+    public string BiteCode { get; set; }
+    public Boolean? IsPatientZero { get; set; }
 }
-

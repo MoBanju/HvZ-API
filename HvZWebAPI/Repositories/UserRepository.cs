@@ -14,22 +14,6 @@ namespace HvZWebAPI.Repositories
             _context = context;
         }
 
-
-        public async Task<bool> Add(User entity)
-        {
-            _context.Users.Add(entity);
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch
-            {
-                return false;
-            }
-            return true;
-
-        }
-
         public async Task<bool> Delete(User entity)
         {
             int rowsChanged = 0;
@@ -61,6 +45,16 @@ namespace HvZWebAPI.Repositories
         public Task<bool> Update(User entity)
         {
             throw new NotImplementedException();
+        }
+
+        async Task<User?> IRepository<User>.Add(User entity)
+        {
+            _context.Users.Add(entity);
+            int rowsAffected = await _context.SaveChangesAsync();
+
+            if (rowsAffected == 0) return null;
+
+            return entity;
         }
     }
 }

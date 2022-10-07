@@ -15,12 +15,6 @@ public class GameRepository : IGameRepository
         _context = context;
     }
 
-    public async Task<bool> Add(Game entity)
-    {
-        _context.Games.Add(entity);
-        return await _context.SaveChangesAsync() > 0;
-    }
-
     public async Task<bool> Update(Game entity)
     {
         _context.Entry(entity).State = EntityState.Modified;
@@ -56,5 +50,15 @@ public class GameRepository : IGameRepository
         int rowsAffected = await _context.SaveChangesAsync();
 
         return rowsAffected > 0;
+    }
+
+    async Task<Game?>  IRepository<Game>.Add(Game entity)
+    {
+        _context.Games.Add(entity);
+        int rowsAffected = await _context.SaveChangesAsync();
+
+        if (rowsAffected == 0) return null;
+        
+        return entity;
     }
 }
