@@ -1,4 +1,5 @@
 ﻿using HvZWebAPI.Data;
+using HvZWebAPI.Interfaces;
 using HvZWebAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
