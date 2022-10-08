@@ -7,28 +7,36 @@ using Microsoft.EntityFrameworkCore;
 using System.Numerics;
 
 namespace HvZWebAPI.Repositories;
-
+    
 public class PlayerRepository : IPlayerRepository
 {
     public HvZDbContext _context;
+    public IUserRepository _userRepository;
 
-    public PlayerRepository(HvZDbContext context)
+    public PlayerRepository(HvZDbContext context, IUserRepository userRepository)
     {
         _context = context;
+        _userRepository = userRepository;
     }
 
 
-    public async Task<Player?> Add(Player player)
+    public async Task<Player?> Add(int game_id, Player player)
     {
+        if (!GameExists(game_id)) throw new ArgumentException("There is no game with that id");
+
+
         var savedUser = await _context.Users.FindAsync(player.User.Id);
         var playerWithoutUser = new Player();
         playerWithoutUser.BiteCode = player.BiteCode;
-        playerWithoutUser.GameId = player.GameId;
+        playerWithoutUser.GameId = game_id;
         playerWithoutUser.IsHuman = player.IsHuman;
         playerWithoutUser.IsPatientZero = player.IsPatientZero;
 
+
+
         if (savedUser == null)
         {
+            //TODO: use userRepository
             var user = await createUser(player.User.FirstName, player.User.LastName);
             playerWithoutUser.UserId = user.Id;
         }
@@ -43,7 +51,7 @@ public class PlayerRepository : IPlayerRepository
         {
             await _context.SaveChangesAsync();
         }
-        catch(DbUpdateConcurrencyException ex)
+        catch (DbUpdateConcurrencyException ex)
         {
             if (!PlayerExists(player.Id))
             {
@@ -64,72 +72,93 @@ public class PlayerRepository : IPlayerRepository
         user.FirstName = firstname;
         user.LastName = lastname;
         _context.Users.Add(user);
+
         await _context.SaveChangesAsync();
         return user;
     }
 
 
-    public async Task<bool> Delete(Player entity)
+    public async Task Delete(int game_id, int player_id)
     {
         int rowsChanged = 0;
-        _context.Players.Remove(entity);
         try
         {
+            //Validation, throws ArgumentException
+            var player = await FindPlayerInGame(game_id, player_id);
+
+            _context.Players.Remove(player);
+
             rowsChanged = await _context.SaveChangesAsync();
         }
-        catch(Exception e)
+        catch (Exception e)
         {
+            Console.WriteLine(" _This exception is thrown on missing: " + e.Message);
             throw;
         }
-        Console.WriteLine("rows changed in Delete " + rowsChanged);
-
-
-        return rowsChanged >0;
     }
 
-    public async Task<IEnumerable<Player>> GetAll()
+    public async Task<IEnumerable<Player>> GetAll(int game_id)
     {
-        return await _context.Players.Include(p => p.User).ToListAsync();
+        if (!GameExists(game_id)) throw new ArgumentException("Game by that id does not exsist");
+
+        return await _context.Players.Include(p => p.User).Where(p=>p.GameId==game_id).ToListAsync();
     }
 
-    public async Task<Player?> GetById(int id)
+    public async Task<Player> GetById(int game_id, int player_id)
     {
-        return await _context.Players.Include(p => p.User).Where(p => p.Id == id).FirstOrDefaultAsync();
+       var player = await FindPlayerInGame(game_id, player_id);
+        return player;
+
+        //return await _context.Players.Include(p => p.User).Where(p => p.Id == player_id).FirstOrDefaultAsync();
     }
 
     //PUT
-    public async Task<bool> Update(Player player)
+    public async Task Update(int game_id, Player player)
     {
-        var toBeUpdated = await _context.Players.FindAsync(player.Id);
-        if (toBeUpdated == null)
-            return false;
-
-        toBeUpdated.IsHuman = player.IsHuman;
-        toBeUpdated.IsPatientZero = player.IsPatientZero;
-        toBeUpdated.BiteCode = player.BiteCode;
-
-
-        _context.Entry(toBeUpdated).State = EntityState.Modified;
         try
         {
+            var checkPlayer = await FindPlayerInGame(game_id, player.Id);
+            checkPlayer.IsHuman = player.IsHuman;
+            checkPlayer.IsPatientZero = player.IsPatientZero;
+            checkPlayer.BiteCode = player.BiteCode;
+
+            _context.Entry(checkPlayer).State = EntityState.Modified;
             await _context.SaveChangesAsync();
         }
-        catch (Exception ex)
-        {
-            if (!PlayerExists(player.Id))
-            {
-                return false;
-            }
-            else
-            {
-                throw;
-            }
+        catch (Exception)
+        { 
+            throw; 
         }
-        return true;
     }
 
-    private bool PlayerExists(int id)
+
+
+    private async Task<Player> FindPlayerInGame(int game_id, int player_id)
     {
-        return _context.Players.Any(e => e.Id == id);
+        if (!GameExists(game_id)) throw new ArgumentException("There is no game with that id");
+
+        Player? player = await _context.Players.Include(p => p.User).SingleOrDefaultAsync(p=>p.Id == player_id);
+        if(player == null)
+        {
+          throw new ArgumentException("There is no player with that id");
+        }
+
+        if(player.GameId != game_id)
+        {
+            throw new ArgumentException("The player-id you sent in is not in the game you sent in");
+        }
+
+        return player;
     }
+
+    private bool GameExists(int game_id)
+    {
+        return _context.Games.Any(e => e.Id == game_id);
+    }
+
+    private bool PlayerExists(int player_id)
+    {
+        return _context.Players.Any(e => e.Id == player_id);
+    }
+
 }
