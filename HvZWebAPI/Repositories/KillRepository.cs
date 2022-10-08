@@ -28,8 +28,14 @@ public class KillRepository : IKillRepository
         return rowsAffected > 0;
     }
 
-    public Task<IEnumerable<Kill>> GetAll()
+    public async Task<IEnumerable<Kill>> GetAll()
     {
+        return await _context.Kills.Includes(g => g.Game).ToListAsync();
+    }
+
+    public async Task<IEnumerable<Kill>> GetAllByGameId(int gameId)
+    {
+        return await _context.Kills.Includes(k => k.Game).Where(k => k.GameId == gameId).ToListAsync();
     }
 
     public Task<Kill> GetById(int id)
