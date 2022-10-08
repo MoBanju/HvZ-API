@@ -10,7 +10,7 @@ namespace HvZWebAPI.Controllers
     [ApiController]
     public class KillController : ControllerBase
     {
-        private readonly IGameRepository _repo;
+        private readonly IKillRepository _repo;
         private readonly IMapper _mapper;
 
         public KillController(IMapper mapper, IGameRepository repo)
@@ -20,11 +20,13 @@ namespace HvZWebAPI.Controllers
         }
 
         [HttpGet("{gameId}/kill")]
-        public async Task<ActionResult<GameReadDTO[]>> GetKills(int gameId)
+        public async Task<ActionResult<KillReadDTO[]>> GetKills(int gameId)
         {
-            IEnumerable<Game> games = await _repo.GetAll();
-            GameReadDTO[] gamesAsDTOs = games.Select(game => _mapper.Map<GameReadDTO>(game)).ToArray();
-            return gamesAsDTOs;
+            
+            IEnumerable<Kill> kills = await _repo.GetAllByGameId(gameId);
+            KillReadDTO[] killsAsDTOs = kills.Select(kill => _mapper.Map<KillReadDTO>(kill)).ToArray();
+            return killsAsDTOs;
+            /**/
         }
 
         // GET: api/Games/5
