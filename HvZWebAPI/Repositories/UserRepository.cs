@@ -49,6 +49,7 @@ namespace HvZWebAPI.Repositories
 
         async Task<User?> IRepository<User>.Add(User entity)
         {
+
             _context.Users.Add(entity);
             int rowsAffected = await _context.SaveChangesAsync();
 

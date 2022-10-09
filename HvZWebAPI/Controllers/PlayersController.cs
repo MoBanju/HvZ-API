@@ -13,20 +13,27 @@ namespace HvZWebAPI.Controllers
 {
     [Route("game/")]
     [ApiController]
+    [Produces("application/json")]
+    [Consumes("application/json")]
     public class PlayersController : ControllerBase
     {
-        private readonly HvZDbContext _context;
         private readonly IPlayerRepository _repo;
         private readonly IMapper _mapper;
 
-        public PlayersController(HvZDbContext context, IPlayerRepository repo, IMapper mapper)
+        public PlayersController(IPlayerRepository repo, IMapper mapper)
         {
-            _context = context;
             _repo = repo;
             _mapper = mapper;
         }
 
-        // GET: api/Players
+        /// <summary>
+        /// Get a list of players in a given game
+        /// Each player object is only visible in it's entirety to administrators 
+        /// </summary>
+        /// <param name="game_id"></param>
+        /// <returns></returns>
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpGet("{game_id}/[controller]")]
         public async Task<ActionResult<IEnumerable<PlayerReadAdminDTO>>> GetPlayers(int game_id)
         {
@@ -47,7 +54,16 @@ namespace HvZWebAPI.Controllers
             });
         }
 
-        // GET: api/Players/5
+        /// <summary>
+        /// Gets a specific player in a given game
+        /// The entire object is only visible to administrators 
+        /// </summary>
+        /// <param name="game_id"></param>
+        /// <param name="player_id"></param>
+        /// <returns></returns>
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet("{game_id}/[controller]/{player_id}")]
         public async Task<ActionResult<PlayerReadAdminDTO>> GetPlayer(int game_id, int player_id)
         {
@@ -73,8 +89,17 @@ namespace HvZWebAPI.Controllers
             }
         }
 
-        // PUT: api/Players/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Updates the player object itself, not the associated user object.
+        /// Admin only
+        /// </summary>
+        /// <param name="game_id"></param>
+        /// <param name="player_id"></param>
+        /// <param name="player"></param>
+        /// <returns></returns>
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [HttpPut("{game_id}/[controller]/{player_id}")]
         public async Task<IActionResult> PutPlayer(int game_id, int player_id, PlayerUpdateDeleteDTO player)
         {
@@ -99,9 +124,17 @@ namespace HvZWebAPI.Controllers
             return NoContent();
         }
 
-        // POST: api/Players
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Registers a new user for the game if there is no or unused user id is provided i player object.
+        ///  Adds a player object to the user, each user only has one player in each game. 
+        /// </summary>
+        /// <param name="game_id"></param>
+        /// <param name="playerDTO"></param>
+        /// <returns></returns>
         [HttpPost("{game_id}/[controller]")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<ActionResult<Player>> PostPlayer(int game_id, PlayerCreateDTO playerDTO)
         {
             Player player = _mapper.Map<PlayerCreateDTO, Player>(playerDTO);
@@ -132,7 +165,15 @@ namespace HvZWebAPI.Controllers
             }
         }
 
-        // DELETE: api/Players/5
+        /// <summary>
+        /// Deletes a player, Admin only
+        /// </summary>
+        /// <param name="game_id"></param>
+        /// <param name="player_id"></param>
+        /// <returns></returns>
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [HttpDelete("{game_id}/[controller]/{player_id}")]
         public async Task<IActionResult> DeletePlayer(int game_id, int player_id)
         {
@@ -150,11 +191,6 @@ namespace HvZWebAPI.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Oops, internal error try again later");
             }
             return NoContent();
-        }
-
-        private bool PlayerExists(int id)
-        {
-            return _context.Players.Any(e => e.Id == id);
         }
     }
 }
