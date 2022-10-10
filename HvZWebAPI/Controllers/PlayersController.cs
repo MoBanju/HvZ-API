@@ -11,78 +11,76 @@ using HvZWebAPI.DTOs.Player;
 
 namespace HvZWebAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("game/")]
     [ApiController]
+    [Produces("application/json")]
+    [Consumes("application/json")]
     public class PlayersController : ControllerBase
     {
-        private readonly HvZDbContext _context;
         private readonly IPlayerRepository _repo;
         private readonly IMapper _mapper;
 
-        public PlayersController(HvZDbContext context, IPlayerRepository repo, IMapper mapper)
+        public PlayersController(IPlayerRepository repo, IMapper mapper)
         {
-            _context = context;
             _repo = repo;
             _mapper = mapper;
         }
 
-        // GET: api/Players
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<PlayerReadAdminDTO>>> GetPlayers()
+        /// <summary>
+        /// Get a list of players in a given game
+        /// Each player object is only visible in it's entirety to administrators 
+        /// </summary>
+        /// <param name="game_id"></param>
+        /// <returns></returns>
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [HttpGet("{game_id}/[controller]")]
+        public async Task<ActionResult<IEnumerable<PlayerReadAdminDTO>>> GetPlayers(int game_id)
         {
+            List<PlayerReadAdminDTO> playersDTO = new ();
 
-            List<PlayerReadAdminDTO> playersDTO = _mapper.Map<List<PlayerReadAdminDTO>>(await _repo.GetAll());
-
+            try
+            {
+                playersDTO = _mapper.Map<List<PlayerReadAdminDTO>>(await _repo.GetAll(game_id));
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
             //TODO: Keycloak, if Not ADMIN Null out the IsPatientZeroField and add JSONresult
-
-
             return new JsonResult(playersDTO, new JsonSerializerSettings()
             {
                 NullValueHandling = NullValueHandling.Ignore
             });
         }
 
-        // GET: api/Players/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<PlayerReadAdminDTO>> GetPlayer(int id)
+        /// <summary>
+        /// Gets a specific player in a given game
+        /// The entire object is only visible to administrators 
+        /// </summary>
+        /// <param name="game_id"></param>
+        /// <param name="player_id"></param>
+        /// <returns></returns>
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [HttpGet("{game_id}/[controller]/{player_id}")]
+        public async Task<ActionResult<PlayerReadAdminDTO>> GetPlayer(int game_id, int player_id)
         {
-            var player = await _repo.GetById(id);
-            if (player == null)
-            {
-                return NotFound();
+            try { 
+                Player player = await _repo.GetById(game_id,player_id);
+                //TODO: Keycloak, IF Not ADMIN: playerDTO.IsPatientZero = null;
+                PlayerReadAdminDTO playerDTO = _mapper.Map<Player, PlayerReadAdminDTO>(player);
+
+                //Is a type of actionresult, remember this does not typecheck
+                return new JsonResult(playerDTO, new JsonSerializerSettings()
+                {
+                    NullValueHandling = NullValueHandling.Ignore
+                });
             }
-
-
-            //TODO: Keycloak, IF Not ADMIN: playerDTO.IsPatientZero = null;
-            PlayerReadAdminDTO playerDTO = _mapper.Map<Player, PlayerReadAdminDTO>(player);
-
-
-            //Is a type of actionresult, remember this does not typecheck
-            return new JsonResult(playerDTO, new JsonSerializerSettings()
+            catch (ArgumentException ex)
             {
-                NullValueHandling = NullValueHandling.Ignore
-            });
-        }
-
-        // PUT: api/Players/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutPlayer(int id, PlayerUpdateDeleteDTO player)
-        {
-            if (id != player.Id)
-            {
-                return BadRequest();
-            }
-
-            bool succuess = false;
-
-            try
-            {
-                succuess = await _repo.Update(_mapper.Map<PlayerUpdateDeleteDTO, Player>(player));
-                if (!succuess)
-                    return BadRequest();
-                else
-                    return NoContent();
+                return BadRequest(ex.Message);
             }
             catch (Exception ex)
             {
@@ -91,25 +89,61 @@ namespace HvZWebAPI.Controllers
             }
         }
 
-        // POST: api/Players
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost("game/{game_id}/player")]
+        /// <summary>
+        /// Updates the player object itself, not the associated user object.
+        /// Admin only
+        /// </summary>
+        /// <param name="game_id"></param>
+        /// <param name="player_id"></param>
+        /// <param name="player"></param>
+        /// <returns></returns>
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [HttpPut("{game_id}/[controller]/{player_id}")]
+        public async Task<IActionResult> PutPlayer(int game_id, int player_id, PlayerUpdateDeleteDTO player)
+        {
+            if (player_id != player.Id)
+            {
+                return BadRequest("Id in body and url doesn't match");
+            }
+
+            try
+            {
+                await _repo.Update(game_id, _mapper.Map<PlayerUpdateDeleteDTO, Player>(player));
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, "Oops, internal error try again later");
+            }
+            return NoContent();
+        }
+
+        /// <summary>
+        /// Registers a new user for the game if there is no or unused user id is provided i player object.
+        ///  Adds a player object to the user, each user only has one player in each game. 
+        /// </summary>
+        /// <param name="game_id"></param>
+        /// <param name="playerDTO"></param>
+        /// <returns></returns>
+        [HttpPost("{game_id}/[controller]")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<ActionResult<Player>> PostPlayer(int game_id, PlayerCreateDTO playerDTO)
         {
-
-
             Player player = _mapper.Map<PlayerCreateDTO, Player>(playerDTO);
 
             player.GameId = game_id;
             try
             {
 
-                
-
-                Player? savedPlayer = await _repo.Add(player);
-
-
-
+                Player? savedPlayer = await _repo.Add(game_id, player);
 
                 if (savedPlayer == null)
                 {
@@ -118,8 +152,11 @@ namespace HvZWebAPI.Controllers
                 PlayerReadAdminDTO mapped = _mapper.Map<Player, PlayerReadAdminDTO>(savedPlayer);
                 //mapped.UserDTO.FirstName = savedPlayer
 
-                return CreatedAtAction("GetPlayer", new { id = savedPlayer.Id }, mapped);
+                return CreatedAtAction("GetPlayer", new { game_id = game_id, player_id = savedPlayer.Id }, mapped);
 
+            }catch(ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
             }
             catch (Exception ex)
             {
@@ -128,32 +165,32 @@ namespace HvZWebAPI.Controllers
             }
         }
 
-        // DELETE: api/Players/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeletePlayer(int id)
+        /// <summary>
+        /// Deletes a player, Admin only
+        /// </summary>
+        /// <param name="game_id"></param>
+        /// <param name="player_id"></param>
+        /// <returns></returns>
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [HttpDelete("{game_id}/[controller]/{player_id}")]
+        public async Task<IActionResult> DeletePlayer(int game_id, int player_id)
         {
-            var player = await _repo.GetById(id);
-            if (player == null)
-            {
-                return BadRequest();
-            }
-
             try
             {
-                bool succues = await _repo.Delete(player);
-                if (succues) return NoContent();
-                else return NotFound();
+               await _repo.Delete(game_id, player_id);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, "Oops, internal error try again later");
             }
-        }
-
-        private bool PlayerExists(int id)
-        {
-            return _context.Players.Any(e => e.Id == id);
+            return NoContent();
         }
     }
 }
