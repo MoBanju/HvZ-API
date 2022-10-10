@@ -4,10 +4,13 @@ using HvZWebAPI.DTOs.Chat;
 using HvZWebAPI.Models;
 using HvZWebAPI.Interfaces;
 using HvZWebAPI.DTOs.Player;
+using HvZWebAPI.Utils;
 
 namespace HvZWebAPI.Controllers
 {
     [Route("game")]
+    [Produces("application/json")]
+    [Consumes("application/json")]
     [ApiController]
     public class ChatController : ControllerBase
     {
@@ -20,24 +23,9 @@ namespace HvZWebAPI.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("{game_id}/chat")]
-        public async Task<ActionResult<ChatReadDTO[]>> GetGameChats(int game_id)
-        {
-            var chat = await _repo.GetChats(game_id);
-            var chatAsDTO = chat.Select(chat => _mapper.Map<ChatReadDTO>(chat));
-            return Ok(chatAsDTO);
-        }
-
-
-
-        [HttpGet("{game_id}/chat/{chat_id}")]
-        public async Task<ActionResult<ChatReadDTO[]>> GetGameChat(int game_id, int chat_id)
-        {
-            var chat = await _repo.GetChat(game_id, chat_id);
-            var chatAsDTO = _mapper.Map<ChatReadDTO>(chat);
-            return Ok(chatAsDTO);
-        }
-
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPost("{game_id}/chat")]
         public async Task<ActionResult<ChatReadDTO>> PostGameChat(int game_id, ChatCreateDTO chatAsDTO)
         {
@@ -48,7 +36,7 @@ namespace HvZWebAPI.Controllers
 
 
                 if (chatDTO == null)
-                    return NotFound();
+                    return BadRequest(ErrorCategory.FAILED_TO_CREATE("Chat"));
 
                 return CreatedAtAction("GetGameChat", new { game_id = game_id, chat_id = chat.Id }, chatDTO);
             }
@@ -56,6 +44,54 @@ namespace HvZWebAPI.Controllers
             {
                 return BadRequest(e.Message);
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ErrorCategory.INTERNAL);
+            }
         }
+
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [HttpGet("{game_id}/chat")]
+        public async Task<ActionResult<ChatReadDTO[]>> GetGameChats(int game_id)
+        {
+            try
+            {
+                var chat = await _repo.GetChats(game_id);
+                var chatAsDTO = chat.Select(chat => _mapper.Map<ChatReadDTO>(chat));
+                return Ok(chatAsDTO);
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ErrorCategory.INTERNAL);
+            }
+        }
+
+
+        [HttpGet("{game_id}/chat/{chat_id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<ChatReadDTO[]>> GetGameChat(int game_id, int chat_id)
+        {
+            try
+            {
+                var chat = await _repo.GetChat(game_id, chat_id);
+
+                if (chat == null) return NotFound(ErrorCategory.CHAT_NOT_FOUND(chat_id, game_id));
+                var chatAsDTO = _mapper.Map<ChatReadDTO>(chat);
+                return Ok(chatAsDTO);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ErrorCategory.INTERNAL);
+            }
+        }
+
     }
 }

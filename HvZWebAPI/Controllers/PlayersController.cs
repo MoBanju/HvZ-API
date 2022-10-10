@@ -29,6 +29,45 @@ namespace HvZWebAPI.Controllers
         }
 
         /// <summary>
+        /// Registers a new user for the game if there is no or unused user id is provided i player object.
+        ///  Adds a player object to the user, each user only has one player in each game. 
+        /// </summary>
+        /// <param name="game_id"></param>
+        /// <param name="playerDTO"></param>
+        /// <returns></returns>
+        [HttpPost("{game_id}/[controller]")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        public async Task<ActionResult<Player>> PostPlayer(int game_id, PlayerCreateDTO playerDTO)
+        {
+            Player player = _mapper.Map<PlayerCreateDTO, Player>(playerDTO);
+
+            player.GameId = game_id;
+            try
+            {
+
+                Player? savedPlayer = await _repo.Add(game_id, player);
+
+                if (savedPlayer == null)
+                    return BadRequest(ErrorCategory.FAILED_TO_CREATE("Player"));
+                
+                PlayerReadAdminDTO mapped = _mapper.Map<Player, PlayerReadAdminDTO>(savedPlayer);
+
+                return CreatedAtAction("GetPlayer", new { game_id = game_id, player_id = savedPlayer.Id }, mapped);
+
+            }catch(ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ErrorCategory.INTERNAL);
+            }
+        }
+
+        /// <summary>
         /// Get a list of players in a given game
         /// Each player object is only visible in it's entirety to administrators 
         /// </summary>
@@ -107,6 +146,7 @@ namespace HvZWebAPI.Controllers
         /// <param name="player"></param>
         /// <returns></returns>
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [HttpPut("{game_id}/[controller]/{player_id}")]
@@ -119,7 +159,8 @@ namespace HvZWebAPI.Controllers
 
             try
             {
-                await _repo.Update(game_id, _mapper.Map<PlayerUpdateDeleteDTO, Player>(player));
+                bool succuess = await _repo.Update(game_id, _mapper.Map<PlayerUpdateDeleteDTO, Player>(player));
+                if (!succuess) return NotFound(ErrorCategory.FAILURE);
             }
             catch (ArgumentException ex)
             {
@@ -131,47 +172,6 @@ namespace HvZWebAPI.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ErrorCategory.INTERNAL);
             }
             return NoContent();
-        }
-
-        /// <summary>
-        /// Registers a new user for the game if there is no or unused user id is provided i player object.
-        ///  Adds a player object to the user, each user only has one player in each game. 
-        /// </summary>
-        /// <param name="game_id"></param>
-        /// <param name="playerDTO"></param>
-        /// <returns></returns>
-        [HttpPost("{game_id}/[controller]")]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public async Task<ActionResult<Player>> PostPlayer(int game_id, PlayerCreateDTO playerDTO)
-        {
-            Player player = _mapper.Map<PlayerCreateDTO, Player>(playerDTO);
-
-            player.GameId = game_id;
-            try
-            {
-
-                Player? savedPlayer = await _repo.Add(game_id, player);
-
-                if (savedPlayer == null)
-                {
-                    return BadRequest();
-                }
-                PlayerReadAdminDTO mapped = _mapper.Map<Player, PlayerReadAdminDTO>(savedPlayer);
-                //mapped.UserDTO.FirstName = savedPlayer
-
-                return CreatedAtAction("GetPlayer", new { game_id = game_id, player_id = savedPlayer.Id }, mapped);
-
-            }catch(ArgumentException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError, ErrorCategory.INTERNAL);
-            }
         }
 
         /// <summary>
@@ -188,7 +188,8 @@ namespace HvZWebAPI.Controllers
         {
             try
             {
-               await _repo.Delete(game_id, player_id);
+               bool succuess = await _repo.Delete(game_id, player_id);
+                if (!succuess) return NotFound(ErrorCategory.FAILURE);
             }
             catch (ArgumentException ex)
             {
