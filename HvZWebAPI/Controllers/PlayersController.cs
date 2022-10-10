@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using HvZWebAPI.DTOs.Player;
 using HvZWebAPI.Interfaces;
 using HvZWebAPI.DTOs.Player;
+using Newtonsoft.Json.Serialization;
 
 namespace HvZWebAPI.Controllers
 {
@@ -50,7 +51,8 @@ namespace HvZWebAPI.Controllers
             //TODO: Keycloak, if Not ADMIN Null out the IsPatientZeroField and add JSONresult
             return new JsonResult(playersDTO, new JsonSerializerSettings()
             {
-                NullValueHandling = NullValueHandling.Ignore
+                NullValueHandling = NullValueHandling.Ignore,
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
             });
         }
 
@@ -75,7 +77,8 @@ namespace HvZWebAPI.Controllers
                 //Is a type of actionresult, remember this does not typecheck
                 return new JsonResult(playerDTO, new JsonSerializerSettings()
                 {
-                    NullValueHandling = NullValueHandling.Ignore
+                    NullValueHandling = NullValueHandling.Ignore,
+                    ContractResolver = new CamelCasePropertyNamesContractResolver()
                 });
             }
             catch (ArgumentException ex)

@@ -7,6 +7,8 @@ using HvZWebAPI.Interfaces;
 namespace HvZWebAPI.Controllers
 {
     [Route("/game")]
+    [Produces("application/json")]
+    [Consumes("application/json")]
     [ApiController]
     public class GamesController : ControllerBase
     {
