@@ -1,11 +1,15 @@
 using HvZWebAPI.DTOs.Chat;
 using HvZWebAPI.Models;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace HvZWebAPI.DTOs.Game;
 
 public class GameReadDTO
 {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public State State { get; set; }
+    public int Id { get; set; }
+    public string Name { get; set; }
+
+    [JsonConverter(typeof(StringEnumConverter))]
+    public State State { get; set; }
 }
