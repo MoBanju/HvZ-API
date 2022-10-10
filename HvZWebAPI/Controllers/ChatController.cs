@@ -3,10 +3,11 @@ using AutoMapper;
 using HvZWebAPI.DTOs.Chat;
 using HvZWebAPI.Models;
 using HvZWebAPI.Interfaces;
+using HvZWebAPI.DTOs.Player;
 
 namespace HvZWebAPI.Controllers
 {
-    [Route("api/game")]
+    [Route("game")]
     [ApiController]
     public class ChatController : ControllerBase
     {
@@ -19,28 +20,39 @@ namespace HvZWebAPI.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("{id}/chat")]
-        public async Task<ActionResult<ChatReadDTO[]>> GetGameChat(int id)
+        [HttpGet("{game_id}/chat")]
+        public async Task<ActionResult<ChatReadDTO[]>> GetGameChats(int game_id)
         {
-            var chat = await _repo.GetChat(id);
+            var chat = await _repo.GetChats(game_id);
             var chatAsDTO = chat.Select(chat => _mapper.Map<ChatReadDTO>(chat));
             return Ok(chatAsDTO);
         }
 
-        [HttpPost("{id}/chat")]
-        public async Task<IActionResult> PostGameChat(int id, ChatCreateDTO chatAsDTO)
+
+
+        [HttpGet("{game_id}/chat/{chat_id}")]
+        public async Task<ActionResult<ChatReadDTO[]>> GetGameChat(int game_id, int chat_id)
+        {
+            var chat = await _repo.GetChat(game_id, chat_id);
+            var chatAsDTO = _mapper.Map<ChatReadDTO>(chat);
+            return Ok(chatAsDTO);
+        }
+
+        [HttpPost("{game_id}/chat")]
+        public async Task<ActionResult<ChatReadDTO>> PostGameChat(int game_id, ChatCreateDTO chatAsDTO)
         {
             try
             {
                 Chat chat = _mapper.Map<Chat>(chatAsDTO);
-                var success = await _repo.PostChat(id, chat);
+                var chatDTO = _mapper.Map<Chat, ChatReadDTO>(await _repo.PostChat(game_id, chat));
 
-                if(!success)
+
+                if (chatDTO == null)
                     return NotFound();
 
-                return NoContent();
+                return CreatedAtAction("GetGameChat", new { game_id = game_id, chat_id = chat.Id }, chatDTO);
             }
-            catch(ArgumentException e)
+            catch (ArgumentException e)
             {
                 return BadRequest(e.Message);
             }

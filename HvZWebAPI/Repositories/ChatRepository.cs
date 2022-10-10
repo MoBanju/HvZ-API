@@ -14,12 +14,17 @@ public class ChatRepository : IChatRepository
         _context = context;
     }
 
-    public async Task<IEnumerable<Chat>> GetChat(int gameId)
+    public async Task<IEnumerable<Chat>> GetChats(int gameId)
     {
         return await _context.Chats.Where(chat => chat.GameId == gameId).ToListAsync();
     }
 
-    public async Task<bool> PostChat(int gameId, Chat chat)
+    public async Task<Chat?> GetChat(int gameId, int chat_id)
+    {
+        return await _context.Chats.FirstOrDefaultAsync(chat => chat.GameId == gameId && chat.Id == chat_id);
+    }
+
+    public async Task<Chat> PostChat(int gameId, Chat chat)
     {
         Game? game = await _context.Games
             .Include(game => game.Players
@@ -37,6 +42,8 @@ public class ChatRepository : IChatRepository
         chat.GameId = gameId;
         await _context.Chats.AddAsync(chat);
 
-        return await _context.SaveChangesAsync() > 0;
+        await _context.SaveChangesAsync();
+
+        return chat;
     }
 }
