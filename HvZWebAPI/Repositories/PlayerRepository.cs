@@ -48,7 +48,7 @@ public class PlayerRepository : IPlayerRepository
 
             }
 
-            _context.Players.Add(player);
+            await _context.Players.AddAsync(player);
 
 
             await _context.SaveChangesAsync();
@@ -170,7 +170,7 @@ public class PlayerRepository : IPlayerRepository
     {
         if (!GameExists(game_id)) throw new ArgumentException("There is no game with that id");
 
-        Player? player = await _context.Players.Include(p => p.User).SingleOrDefaultAsync(p => p.Id == player_id);
+        Player? player = await _context.Players.Include(p => p.User).FirstOrDefaultAsync(p => p.Id == player_id);
         if (player == null)
         {
             throw new ArgumentException("There is no player with that id");
