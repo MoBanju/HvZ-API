@@ -6,7 +6,7 @@ using HvZWebAPI.Interfaces;
 
 namespace HvZWebAPI.Controllers
 {
-    [Route("api/game")]
+    [Route("/game")]
     [ApiController]
     public class GamesController : ControllerBase
     {
@@ -19,7 +19,11 @@ namespace HvZWebAPI.Controllers
             _mapper = mapper;
         }
 
-        // GET: api/Games
+        /// <summary>
+        /// Returns a list of all games
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet]
         public async Task<ActionResult<GameReadDTO[]>> GetGames()
         {
@@ -28,7 +32,14 @@ namespace HvZWebAPI.Controllers
             return gamesAsDTOs;
         }
 
-        // GET: api/Games/5
+        /// <summary>
+        /// Returns a specific game object
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="gameAsDto"></param>
+        /// <returns></returns>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet("{id}")]
         public async Task<ActionResult<GameReadDTO>> GetGame(int id)
         {
@@ -43,8 +54,15 @@ namespace HvZWebAPI.Controllers
             return gameAsDto;
         }
 
-        // PUT: api/Games/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Updates a game, Admin only
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="gameAsDto"></param>
+        /// <returns></returns>
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutGame(int id, GameUpdateDeleteDTO gameAsDto)
         {
@@ -62,8 +80,13 @@ namespace HvZWebAPI.Controllers
             return NoContent();
         }
 
-        // POST: api/Games
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Creates a new game, Admin only
+        /// </summary>
+        /// <param name="gameAsDTO"></param>
+        /// <returns></returns>
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpPost]
         public async Task<ActionResult<GameReadDTO>> PostGame(GameCreateDTO gameAsDTO)
         {
@@ -77,7 +100,13 @@ namespace HvZWebAPI.Controllers
             return CreatedAtAction("GetGame", new { id = game.Id }, _mapper.Map<GameReadDTO>(game));
         }
 
-        // DELETE: api/Games/5
+        /// <summary>
+        /// Deletes a game, Admin only
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteGame(int id)
         {
