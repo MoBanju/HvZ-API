@@ -13,7 +13,7 @@ namespace HvZWebAPI.Controllers
         private readonly IKillRepository _repo;
         private readonly IMapper _mapper;
 
-        public KillController(IMapper mapper, IGameRepository repo)
+        public KillController(IMapper mapper, IKillRepository repo)
         {
             _mapper = mapper;
             _repo = repo;
