@@ -14,22 +14,16 @@ namespace HvZWebAPI.Repositories
             _context = context;
         }
 
-        public async Task<bool> Delete(User entity)
+        public async Task<bool> Delete(int id)
         {
-            int rowsChanged = 0;
-            _context.Users.Remove(entity);
-            try
-            {
-                rowsChanged = await _context.SaveChangesAsync();
-            }
-            catch (Exception e)
-            {
-                throw;
-            }
-            Console.WriteLine("rows changed in Delete " + rowsChanged);
 
+            User? user = await _context.Users.FindAsync(id);
 
-            return rowsChanged > 0;
+            if (user is null)
+                return false;
+
+            _context.Remove(user);
+            return await _context.SaveChangesAsync() > 0;
         }
 
         public async Task<IEnumerable<User>> GetAll()
@@ -50,7 +44,7 @@ namespace HvZWebAPI.Repositories
         async Task<User?> IRepository<User>.Add(User entity)
         {
 
-            _context.Users.Add(entity);
+            await _context.Users.AddAsync(entity);
             int rowsAffected = await _context.SaveChangesAsync();
 
             if (rowsAffected == 0) return null;

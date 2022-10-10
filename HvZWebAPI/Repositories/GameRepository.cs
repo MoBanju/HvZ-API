@@ -40,18 +40,6 @@ public class GameRepository : IGameRepository
         return await _context.SaveChangesAsync() > 0;
     }
 
-    public async Task<bool> Delete(Game entity)
-    {
-        Game? game = await _context.Games.FindAsync(entity.Id);
-        
-        if(game is null)
-            return false;
-        
-        int rowsAffected = await _context.SaveChangesAsync();
-
-        return rowsAffected > 0;
-    }
-
     async Task<Game?>  IRepository<Game>.Add(Game entity)
     {
         _context.Games.Add(entity);

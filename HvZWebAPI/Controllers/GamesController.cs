@@ -3,10 +3,13 @@ using HvZWebAPI.Models;
 using AutoMapper;
 using HvZWebAPI.DTOs.Game;
 using HvZWebAPI.Interfaces;
+using HvZWebAPI.Utils;
 
 namespace HvZWebAPI.Controllers
 {
-    [Route("api/game")]
+    [Route("/game")]
+    [Produces("application/json")]
+    [Consumes("application/json")]
     [ApiController]
     public class GamesController : ControllerBase
     {
@@ -19,79 +22,152 @@ namespace HvZWebAPI.Controllers
             _mapper = mapper;
         }
 
-        // GET: api/Games
+        /// <summary>
+        /// Returns a list of all games
+        /// </summary>
+        /// <returns></returns>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet]
         public async Task<ActionResult<GameReadDTO[]>> GetGames()
         {
-            IEnumerable<Game> games = await _repo.GetAll();
-            GameReadDTO[] gamesAsDTOs = games.Select(game => _mapper.Map<GameReadDTO>(game)).ToArray();
-            return gamesAsDTOs;
+            try
+            {
+                IEnumerable<Game> games = await _repo.GetAll();
+                GameReadDTO[] gamesAsDTOs = games.Select(game => _mapper.Map<GameReadDTO>(game)).ToArray();
+                return gamesAsDTOs;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ErrorCategory.INTERNAL);
+            }
         }
 
-        // GET: api/Games/5
+        /// <summary>
+        /// Returns a specific game object
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet("{id}")]
         public async Task<ActionResult<GameReadDTO>> GetGame(int id)
         {
-            Game? game = await _repo.GetById(id);
-            if (game is null)
+            try
             {
-                return NotFound();
+                Game? game = await _repo.GetById(id);
+                if (game is null)
+                {
+                    return NotFound();
+                }
+                GameReadDTO gameAsDto = _mapper.Map<GameReadDTO>(game);
+                return gameAsDto;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ErrorCategory.INTERNAL);
             }
 
-            GameReadDTO gameAsDto = _mapper.Map<GameReadDTO>(game);
-
-            return gameAsDto;
         }
 
-        // PUT: api/Games/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Updates a game, Admin only
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="gameAsDto"></param>
+        /// <returns></returns>
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutGame(int id, GameUpdateDeleteDTO gameAsDto)
         {
-            if(id != gameAsDto.Id) {
+            if (id != gameAsDto.Id)
+            {
                 return BadRequest();
             }
 
-            Game game = _mapper.Map<Game>(gameAsDto);
-            Boolean success = await _repo.Update(game);
+            try
+            {
+                Game game = _mapper.Map<Game>(gameAsDto);
+                Boolean success = await _repo.Update(game);
 
-            if(!success) {
-                return NotFound();
+
+                if (!success)
+                {
+                    return NotFound();
+                }
+
+                return NoContent();
             }
-
-            return NoContent();
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ErrorCategory.INTERNAL);
+            }
         }
 
-        // POST: api/Games
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Creates a new game, Admin only
+        /// </summary>
+        /// <param name="gameAsDTO"></param>
+        /// <returns></returns>
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPost]
         public async Task<ActionResult<GameReadDTO>> PostGame(GameCreateDTO gameAsDTO)
         {
+
+
             Game? game = _mapper.Map<Game>(gameAsDTO);
             game.State = State.Registration;
-            game = await _repo.Add(game);
-            if(game == null)
-                return BadRequest();
+            try
+            {
+                game = await _repo.Add(game);
+                if (game == null)
+                    return BadRequest();
 
 
-            return CreatedAtAction("GetGame", new { id = game.Id }, _mapper.Map<GameReadDTO>(game));
+                return CreatedAtAction("GetGame", new { id = game.Id }, _mapper.Map<GameReadDTO>(game));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ErrorCategory.INTERNAL);
+            }
         }
 
-        // DELETE: api/Games/5
+        /// <summary>
+        /// Deletes a game, Admin only
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteGame(int id)
         {
-            Game? game = await _repo.GetById(id);
+            try
+            {
+                //Unhandeled error
+                Boolean success = await _repo.Delete(id);
 
-            if(game is null)
-                return NotFound();
+                if (!success)
+                    return BadRequest();
 
-            Boolean success = await _repo.Delete(game);
-
-            if(!success)
-                return NotFound();
-
-            return NoContent();
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ErrorCategory.INTERNAL);
+            }
         }
     }
 }

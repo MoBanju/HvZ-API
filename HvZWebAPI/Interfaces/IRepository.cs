@@ -7,7 +7,7 @@ public interface IRepository<T>
     public Task<IEnumerable<T>> GetAll();
     public Task<T?> Add(T entity);
     public Task<bool> Update(T entity);
-    public Task<bool> Delete(T entity);
+    public Task<bool> Delete(int id);
 
 
 }
