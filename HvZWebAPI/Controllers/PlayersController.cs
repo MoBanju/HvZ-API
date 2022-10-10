@@ -9,6 +9,7 @@ using HvZWebAPI.DTOs.Player;
 using HvZWebAPI.Interfaces;
 using HvZWebAPI.DTOs.Player;
 using Newtonsoft.Json.Serialization;
+using HvZWebAPI.Utils;
 
 namespace HvZWebAPI.Controllers
 {
@@ -47,6 +48,10 @@ namespace HvZWebAPI.Controllers
             catch (ArgumentException ex)
             {
                 return BadRequest(ex.Message);
+            }catch(Exception ex)
+            {
+                Console.WriteLine($"error: {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, ErrorCategory.INTERNAL);
             }
             //TODO: Keycloak, if Not ADMIN Null out the IsPatientZeroField and add JSONresult
             return new JsonResult(playersDTO, new JsonSerializerSettings()
@@ -83,12 +88,13 @@ namespace HvZWebAPI.Controllers
             }
             catch (ArgumentException ex)
             {
+                Console.WriteLine($"error: {ex.Message}");
                 return BadRequest(ex.Message);
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError, "Oops, internal error try again later");
+                Console.WriteLine($"error: {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, ErrorCategory.INTERNAL);
             }
         }
 
@@ -122,7 +128,7 @@ namespace HvZWebAPI.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError, "Oops, internal error try again later");
+                return StatusCode(StatusCodes.Status500InternalServerError, ErrorCategory.INTERNAL);
             }
             return NoContent();
         }
@@ -164,7 +170,7 @@ namespace HvZWebAPI.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError, "Oops, internal error try again later");
+                return StatusCode(StatusCodes.Status500InternalServerError, ErrorCategory.INTERNAL);
             }
         }
 
@@ -191,7 +197,7 @@ namespace HvZWebAPI.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError, "Oops, internal error try again later");
+                return StatusCode(StatusCodes.Status500InternalServerError, ErrorCategory.INTERNAL);
             }
             return NoContent();
         }
