@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using HvZWebAPI.Models;
 using AutoMapper;
 using HvZWebAPI.Interfaces;
+using HvZWebAPI.DTOs.Kill;
+using HvZWebAPI.DTOs.Game;
 
 namespace HvZWebAPI.Controllers
 {
@@ -11,12 +13,14 @@ namespace HvZWebAPI.Controllers
     public class KillController : ControllerBase
     {
         private readonly IKillRepository _repo;
+        private readonly IGameRepository _gameRepository;
         private readonly IMapper _mapper;
 
-        public KillController(IMapper mapper, IKillRepository repo)
+        public KillController(IMapper mapper, IKillRepository repo, IGameRepository gameRepository)
         {
             _mapper = mapper;
             _repo = repo;
+            _gameRepository = gameRepository;
         }
 
         [HttpGet("{gameId}/kill")]
@@ -33,7 +37,7 @@ namespace HvZWebAPI.Controllers
         [HttpGet("{gameId}/kill/{killId}")]
         public async Task<ActionResult<GameReadDTO>> GetKill(int gameId, int killId)
         {
-            Game? game = await _repo.GetById(id);
+            Game? game = await _gameRepository.GetById(gameId);
             if (game is null)
             {
                 return NotFound();
