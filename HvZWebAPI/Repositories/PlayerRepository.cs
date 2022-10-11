@@ -1,6 +1,7 @@
 ﻿using HvZWebAPI.Data;
 using HvZWebAPI.Interfaces;
 using HvZWebAPI.Models;
+using HvZWebAPI.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -31,7 +32,7 @@ public class PlayerRepository : IPlayerRepository
         try
         {
             await ValidateUniquePlayer(game_id, player.UserId);
-  
+
             player.GameId = game_id;
             var exsistingUser = _context.Users.SingleOrDefault(u => u.Id == player.User.Id);
             if (exsistingUser != null)
@@ -72,32 +73,9 @@ public class PlayerRepository : IPlayerRepository
     {
         var list = await GetAll(game_id);
         if (list.Any(p => p.UserId == user_id))
-            throw new ArgumentException("You are only allowed to have one player each game");
+            throw new ArgumentException(ErrorCategory.UNIQUE_PLAYER(user_id));
     }
 
-    /// <summary>
-    /// Deletes only the playerobject from the database
-    /// </summary>
-    /// <param name="game_id"></param>
-    /// <param name="player_id"></param>
-    /// <returns></returns>
-    /// <exception cref="ArgumentException">When there are problems with the player_id, game_id or the combination of them</exception>
-    public async Task Delete(int game_id, int player_id)
-    {
-        int rowsChanged = 0;
-        try
-        {
-            var player = await FindPlayerInGame(game_id, player_id);
-
-            _context.Players.Remove(player);
-
-            rowsChanged = await _context.SaveChangesAsync();
-        }
-        catch (Exception e)
-        {
-            throw;
-        }
-    }
 
     /// <summary>
     /// Returns a list of all the players with a given game_id
@@ -107,7 +85,7 @@ public class PlayerRepository : IPlayerRepository
     /// <exception cref="ArgumentException">Thrown when the game_id provided does not exist</exception>
     public async Task<IEnumerable<Player>> GetAll(int game_id)
     {
-        if (!GameExists(game_id)) throw new ArgumentException("Game by that id does not exsist");
+        if (!GameExists(game_id)) throw new ArgumentException(ErrorCategory.GAME_NOT_FOUND(game_id));
 
         return await _context.Players.Include(p => p.User).Where(p => p.GameId == game_id).ToListAsync();
     }
@@ -123,8 +101,6 @@ public class PlayerRepository : IPlayerRepository
     {
         var player = await FindPlayerInGame(game_id, player_id);
         return player;
-
-        //return await _context.Players.Include(p => p.User).Where(p => p.Id == player_id).FirstOrDefaultAsync();
     }
 
     /// <summary>
@@ -135,26 +111,38 @@ public class PlayerRepository : IPlayerRepository
     /// <param name="player"></param>
     /// <returns></returns>
     /// <exception cref="ArgumentException">When there are problems with the player_id, game_id or the combination of them</exception>
-    public async Task Update(int game_id, Player player)
+    public async Task<bool> Update(int game_id, Player player)
     {
-        try
-        {
-            var exsistingPlayer = await FindPlayerInGame(game_id, player.Id);
-            if (exsistingPlayer != null)
-            {
-                //This sets the foreign keys
-                _context.Entry(exsistingPlayer).State = EntityState.Detached;
-                player.UserId = exsistingPlayer.UserId;
-                player.GameId = exsistingPlayer.GameId;
-            }
 
-            _context.Update(player);
-            await _context.SaveChangesAsync();
-        }
-        catch (Exception)
+        var exsistingPlayer = await FindPlayerInGame(game_id, player.Id);
+        if (exsistingPlayer != null)
         {
-            throw;
+            //This sets the foreign keys
+            _context.Entry(exsistingPlayer).State = EntityState.Detached;
+            player.UserId = exsistingPlayer.UserId;
+            player.GameId = exsistingPlayer.GameId;
         }
+
+        _context.Update(player);
+        return await _context.SaveChangesAsync() > 0;
+    }
+
+    /// <summary>
+    /// Deletes only the playerobject from the database
+    /// </summary>
+    /// <param name="game_id"></param>
+    /// <param name="player_id"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentException">When there are problems with the player_id, game_id or the combination of them</exception>
+    public async Task<bool> Delete(int game_id, int player_id)
+    {
+        int rowsChanged = 0;
+
+        var player = await FindPlayerInGame(game_id, player_id);
+
+        _context.Players.Remove(player);
+
+        return await _context.SaveChangesAsync() > 0;
     }
 
 
@@ -168,17 +156,17 @@ public class PlayerRepository : IPlayerRepository
     /// <exception cref="ArgumentException"></exception>
     private async Task<Player> FindPlayerInGame(int game_id, int player_id)
     {
-        if (!GameExists(game_id)) throw new ArgumentException("There is no game with that id");
+        if (!GameExists(game_id)) throw new ArgumentException(ErrorCategory.GAME_NOT_FOUND(game_id));
 
         Player? player = await _context.Players.Include(p => p.User).FirstOrDefaultAsync(p => p.Id == player_id);
         if (player == null)
         {
-            throw new ArgumentException("There is no player with that id");
+            throw new ArgumentException(ErrorCategory.PLAYER_NOT_FOUND(player_id));
         }
 
         if (player.GameId != game_id)
         {
-            throw new ArgumentException("The player-id you sent in is not in the game you sent in");
+            throw new ArgumentException(ErrorCategory.PLAYER_NOT_IN_GAME(game_id, player_id));
         }
 
         return player;

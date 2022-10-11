@@ -23,6 +23,37 @@ namespace HvZWebAPI.Controllers
         }
 
         /// <summary>
+        /// Creates a new game, Admin only
+        /// </summary>
+        /// <param name="gameAsDTO"></param>
+        /// <returns></returns>
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [HttpPost]
+        public async Task<ActionResult<GameReadDTO>> PostGame(GameCreateDTO gameAsDTO)
+        {
+
+
+            Game? game = _mapper.Map<Game>(gameAsDTO);
+            game.State = State.Registration;
+            try
+            {
+                game = await _repo.Add(game);
+                if (game == null)
+                    return BadRequest(ErrorCategory.FAILED_TO_CREATE("Game"));
+
+
+                return CreatedAtAction("GetGame", new { id = game.Id }, _mapper.Map<GameReadDTO>(game));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ErrorCategory.INTERNAL);
+            }
+        }
+
+        /// <summary>
         /// Returns a list of all games
         /// </summary>
         /// <returns></returns>
@@ -60,7 +91,7 @@ namespace HvZWebAPI.Controllers
                 Game? game = await _repo.GetById(id);
                 if (game is null)
                 {
-                    return NotFound();
+                    return NotFound(ErrorCategory.FAILURE);
                 }
                 GameReadDTO gameAsDto = _mapper.Map<GameReadDTO>(game);
                 return gameAsDto;
@@ -99,7 +130,7 @@ namespace HvZWebAPI.Controllers
 
                 if (!success)
                 {
-                    return NotFound();
+                    return BadRequest(ErrorCategory.FAILED_TO_UPDATE("Game"));
                 }
 
                 return NoContent();
@@ -111,36 +142,6 @@ namespace HvZWebAPI.Controllers
             }
         }
 
-        /// <summary>
-        /// Creates a new game, Admin only
-        /// </summary>
-        /// <param name="gameAsDTO"></param>
-        /// <returns></returns>
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [HttpPost]
-        public async Task<ActionResult<GameReadDTO>> PostGame(GameCreateDTO gameAsDTO)
-        {
-
-
-            Game? game = _mapper.Map<Game>(gameAsDTO);
-            game.State = State.Registration;
-            try
-            {
-                game = await _repo.Add(game);
-                if (game == null)
-                    return BadRequest();
-
-
-                return CreatedAtAction("GetGame", new { id = game.Id }, _mapper.Map<GameReadDTO>(game));
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError, ErrorCategory.INTERNAL);
-            }
-        }
 
         /// <summary>
         /// Deletes a game, Admin only
@@ -159,7 +160,7 @@ namespace HvZWebAPI.Controllers
                 Boolean success = await _repo.Delete(id);
 
                 if (!success)
-                    return BadRequest();
+                    return NotFound(ErrorCategory.FAILURE);
 
                 return NoContent();
             }

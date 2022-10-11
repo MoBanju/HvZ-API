@@ -8,8 +8,8 @@ public interface IPlayerRepository
     public Task<Player> GetById(int game_id, int player_id);
     public Task<IEnumerable<Player>> GetAll(int game_id);
     public Task<Player?> Add(int game_id, Player entity);
-    public Task Update(int game_id, Player entity);
-    public Task Delete(int game_id, int player_id);
+    public Task<bool> Update(int game_id, Player entity);
+    public Task<bool> Delete(int game_id, int player_id);
 
 
 }

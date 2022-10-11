@@ -1,6 +1,7 @@
 using HvZWebAPI.Data;
 using HvZWebAPI.Interfaces;
 using HvZWebAPI.Models;
+using HvZWebAPI.Utils;
 using Microsoft.EntityFrameworkCore;
 
 namespace HvZWebAPI.Repositories;
@@ -33,11 +34,11 @@ public class ChatRepository : IChatRepository
         
         // Game has to exist
         if(game is null)
-            throw new ArgumentException($"No game with id {gameId} found");
+            throw new ArgumentException(ErrorCategory.GAME_NOT_FOUND(gameId));
 
         // Player has to be apart of given game.
         if(!game.Players.Any(player => player.Id == chat.PlayerId))
-            throw new ArgumentException($"No player with player id {chat.PlayerId} is participating in a game with game id {gameId}");
+            throw new ArgumentException(ErrorCategory.PLAYER_NOT_IN_GAME(gameId, chat.PlayerId));
 
         chat.GameId = gameId;
         await _context.Chats.AddAsync(chat);
