@@ -5,6 +5,7 @@ using AutoMapper;
 using HvZWebAPI.Interfaces;
 using HvZWebAPI.DTOs.Kill;
 using HvZWebAPI.Utils;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HvZWebAPI.Controllers
 {
@@ -73,6 +74,7 @@ namespace HvZWebAPI.Controllers
         /// <param name="kill_id">Specified Kill</param>
         /// <param name="killAsDTO">Kill Data Transfer Object</param>
         /// <returns></returns>
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -109,6 +111,7 @@ namespace HvZWebAPI.Controllers
         /// <param name="game_id">Specified Game</param>
         /// <param name="killAsDTO">Kill Data Transfer Object</param>
         /// <returns></returns>
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -152,6 +155,7 @@ namespace HvZWebAPI.Controllers
         /// <param name="game_id">Specified Game</param>
         /// <param name="kill_id">Specified Kill</param>
         /// <returns></returns>
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
