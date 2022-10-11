@@ -4,11 +4,15 @@ using HvZWebAPI.Models;
 using AutoMapper;
 using HvZWebAPI.Interfaces;
 using HvZWebAPI.DTOs.Kill;
+using HvZWebAPI.Utils;
 
 namespace HvZWebAPI.Controllers
 {
-    [Route("api/game")]
+    [Route("game/")]
     [ApiController]
+    [Produces("application/json")]
+    [Consumes("application/json")]
+
     public class KillController : ControllerBase
     {
         private readonly IKillRepository _repo;
@@ -27,10 +31,14 @@ namespace HvZWebAPI.Controllers
             IEnumerable<Kill> kills = await _repo.GetAllByGameId(gameId);
             KillReadDTO[] killsAsDTOs = kills.Select(kill => _mapper.Map<KillReadDTO>(kill)).ToArray();
             return killsAsDTOs;
-            /**/
         }
 
-        // GET: api/Games/5
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="gameId">Game Id</param>
+        /// <param name="killId">Kill Id</param>
+        /// <returns></returns>
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -40,8 +48,8 @@ namespace HvZWebAPI.Controllers
             try
             {
                 Kill? kill = await _repo.GetById(gameId, killId);
-                KillReadDTO killAsDto = _mapper.Map<KillReadDTO>(kill);
-                return killAsDto;
+                KillReadDTO killAsDTO = _mapper.Map<KillReadDTO>(kill);
+                return killAsDTO;
 
             }
             catch (ArgumentException ex)
@@ -57,22 +65,28 @@ namespace HvZWebAPI.Controllers
 
         }
 
-        // PUT: api/Games/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Updates the kill object itself.
+        /// Admin only
+        /// </summary>
+        /// <param name="gameId">Specified Game</param>
+        /// <param name="killId">Specified Kill</param>
+        /// <param name="killAsDTO">Kill Data Transfer Object</param>
+        /// <returns></returns>
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [HttpPut("{gameId}/[controller]/{killId}")]
-        public async Task<IActionResult> PutKill(int gameId, int killId, KillUpdateDeleteDTO killAsDto)
+        public async Task<IActionResult> PutKill(int gameId, int killId, KillUpdateDeleteDTO killAsDTO)
         {
-            if (killId != killAsDto.Id)
+            if (killId != killAsDTO.Id)
             {
                 return BadRequest("Id in body and url doesn't match");
             }
 
             try
             {
-                await _repo.Update(gameId, _mapper.Map<KillUpdateDeleteDTO, Kill>(killAsDto));
+                await _repo.Update(gameId, _mapper.Map<KillUpdateDeleteDTO, Kill>(killAsDTO));
             }
             catch (ArgumentException ex)
             {
@@ -87,8 +101,14 @@ namespace HvZWebAPI.Controllers
         }
 
 
-        // POST: api/Games
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Adds the kill object itself.
+        /// Admin only.
+        /// Also it throws error if the specified bitecode is invlid
+        /// </summary>
+        /// <param name="gameId">Specified Game</param>
+        /// <param name="killAsDTO">Kill Data Transfer Object</param>
+        /// <returns></returns>
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -125,7 +145,13 @@ namespace HvZWebAPI.Controllers
         }
 
 
-        // DELETE: api/Games/5
+        /// <summary>
+        /// Deletes the kill object itself.
+        /// Admin only.
+        /// </summary>
+        /// <param name="gameId">Specified Game</param>
+        /// <param name="killId">Specified Kill</param>
+        /// <returns></returns>
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
