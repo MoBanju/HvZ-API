@@ -4,7 +4,6 @@ using HvZWebAPI.Models;
 using AutoMapper;
 using HvZWebAPI.Interfaces;
 using HvZWebAPI.DTOs.Kill;
-using HvZWebAPI.DTOs.Game;
 
 namespace HvZWebAPI.Controllers
 {
@@ -13,17 +12,15 @@ namespace HvZWebAPI.Controllers
     public class KillController : ControllerBase
     {
         private readonly IKillRepository _repo;
-        private readonly IGameRepository _gameRepository;
         private readonly IMapper _mapper;
 
-        public KillController(IMapper mapper, IKillRepository repo, IGameRepository gameRepository)
+        public KillController(IMapper mapper, IKillRepository repo)
         {
             _mapper = mapper;
             _repo = repo;
-            _gameRepository = gameRepository;
         }
 
-        [HttpGet("{gameId}/kill")]
+        [HttpGet("{gameId}/[controller]")]
         public async Task<ActionResult<KillReadDTO[]>> GetKills(int gameId)
         {
             
@@ -34,69 +31,122 @@ namespace HvZWebAPI.Controllers
         }
 
         // GET: api/Games/5
-        [HttpGet("{gameId}/kill/{killId}")]
-        public async Task<ActionResult<GameReadDTO>> GetKill(int gameId, int killId)
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [HttpGet("{gameId}/[controller]/{killId}")]
+        public async Task<ActionResult<KillReadDTO>> GetKill(int gameId, int killId)
         {
-            Game? game = await _gameRepository.GetById(gameId);
-            if (game is null)
+            try
             {
-                return NotFound();
+                Kill? kill = await _repo.GetById(gameId, killId);
+                KillReadDTO killAsDto = _mapper.Map<KillReadDTO>(kill);
+                return killAsDto;
+
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine($"error: {ex.Message}");
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"error: {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, ErrorCategory.INTERNAL);
             }
 
-            GameReadDTO gameAsDto = _mapper.Map<GameReadDTO>(game);
-
-            return gameAsDto;
         }
 
         // PUT: api/Games/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{gameId}/kill/{killId}")]
-        public async Task<IActionResult> PutKill(int gameId, int killId, GameUpdateDeleteDTO gameAsDto)
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [HttpPut("{gameId}/[controller]/{killId}")]
+        public async Task<IActionResult> PutKill(int gameId, int killId, KillUpdateDeleteDTO killAsDto)
         {
-            if(id != gameAsDto.Id) {
-                return BadRequest();
+            if (killId != killAsDto.Id)
+            {
+                return BadRequest("Id in body and url doesn't match");
             }
 
-            Game game = _mapper.Map<Game>(gameAsDto);
-            Boolean success = await _repo.Update(game);
-
-            if(!success) {
-                return NotFound();
+            try
+            {
+                await _repo.Update(gameId, _mapper.Map<KillUpdateDeleteDTO, Kill>(killAsDto));
             }
-
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ErrorCategory.INTERNAL);
+            }
             return NoContent();
         }
+
 
         // POST: api/Games
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost("{gameId}/kill")]
-        public async Task<ActionResult<GameReadDTO>> PostKill(int gameId, GameCreateDTO gameAsDTO)
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [HttpPost("{gameId}/[controller]")]
+        public async Task<ActionResult<KillReadDTO>> PostKill(int gameId, KillCreateDTO killAsDTO)
         {
-            Game? game = _mapper.Map<Game>(gameAsDTO);
-            game.State = State.Registration;
-            game = await _repo.Add(game);
-            if(game == null)
-                return BadRequest();
+            Kill kill = _mapper.Map<KillCreateDTO, Kill>(killAsDTO);
 
+            kill.GameId = gameId;
+            try
+            {
 
-            return CreatedAtAction("GetGame", new { id = game.Id }, _mapper.Map<GameReadDTO>(game));
+                Kill? savedKill = await _repo.Add(gameId, kill);
+
+                if (savedKill == null)
+                {
+                    return BadRequest();
+                }
+                KillReadDTO mapped = _mapper.Map<Kill, KillReadDTO>(savedKill);
+                //mapped.UserDTO.FirstName = savedKill
+
+                return CreatedAtAction("GetKill", new { gameId = gameId, kill_id = savedKill.Id }, mapped);
+
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ErrorCategory.INTERNAL);
+            }
         }
+
 
         // DELETE: api/Games/5
-        [HttpDelete("{gameId}/kill/{killId}")]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [HttpDelete("{gameId}/[controller]/{killId}")]
         public async Task<IActionResult> DeleteKill(int gameId, int killId)
         {
-            Game? game = await _repo.GetById(id);
-
-            if(game is null)
-                return NotFound();
-
-            Boolean success = await _repo.Delete(game);
-
-            if(!success)
-                return NotFound();
-
+            try
+            {
+                await _repo.Delete(gameId, killId);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ErrorCategory.INTERNAL);
+            }
             return NoContent();
         }
+
     }
 }
