@@ -8,7 +8,7 @@ public class KillProfile : Profile
 {
     public KillProfile()
     {
-        CreateMap<Kill, KillCreateDTO>().ReverseMap();
+        CreateMap<Kill, KillReadDTO>().ReverseMap();
         CreateMap<KillUpdateDeleteDTO, Kill>();
         CreateMap<KillCreateDTO, Kill>();
     }

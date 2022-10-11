@@ -47,9 +47,9 @@ namespace HvZWebAPI.Data
         {
             List<Kill> kills = new List<Kill>()
             {
-                new Kill(){ Id=1, TimeDeath= DateTime.Now, GameId=2, KillerId=2, VictimId=1},
-                new Kill(){ Id=2, TimeDeath= DateTime.Now, GameId=2, KillerId=4, VictimId=3},
-                new Kill(){ Id=3, TimeDeath= DateTime.Now, GameId=2, KillerId=2, VictimId=4},
+                new Kill(){ Id=1, TimeDeath= DateTime.UtcNow, GameId=2, KillerId=2, VictimId=1},
+                new Kill(){ Id=2, TimeDeath= DateTime.UtcNow, GameId=2, KillerId=4, VictimId=3},
+                new Kill(){ Id=3, TimeDeath= DateTime.UtcNow, GameId=2, KillerId=2, VictimId=4},
             };
             return kills;
         }
@@ -58,11 +58,11 @@ namespace HvZWebAPI.Data
         {
             List<Chat> chats = new List<Chat>()
             {
-                new Chat(){ Id=1, Message="Got him!", ChatTime=DateTime.Now,
+                new Chat(){ Id=1, Message="Got him!", ChatTime=DateTime.UtcNow,
                     IsHumanGlobal=false, IsZombieGlobal= true, GameId=2, PlayerId=2},
-                new Chat(){ Id=2, Message="Run away!", ChatTime=DateTime.Now,
+                new Chat(){ Id=2, Message="Run away!", ChatTime=DateTime.UtcNow,
                     IsHumanGlobal=true, IsZombieGlobal= false, GameId=2, PlayerId=1},
-                new Chat(){ Id=3, Message="Like... Hello", ChatTime=DateTime.Now,
+                new Chat(){ Id=3, Message="Like... Hello", ChatTime=DateTime.UtcNow,
                     IsHumanGlobal=false, IsZombieGlobal= false, GameId=2, PlayerId=3},
             };
             return chats;

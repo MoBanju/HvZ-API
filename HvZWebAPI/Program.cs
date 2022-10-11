@@ -47,6 +47,7 @@ builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
 builder.Services.AddScoped<IGameRepository, GameRepository>();
 builder.Services.AddScoped<IChatRepository, ChatRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IKillRepository, KillRepository>();
 
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 DotEnv.Load();

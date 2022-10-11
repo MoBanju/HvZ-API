@@ -24,11 +24,11 @@ namespace HvZWebAPI.Controllers
             _repo = repo;
         }
 
-        [HttpGet("{gameId}/[controller]")]
-        public async Task<ActionResult<KillReadDTO[]>> GetKills(int gameId)
+        [HttpGet("{game_id}/[controller]")]
+        public async Task<ActionResult<KillReadDTO[]>> GetKills(int game_id)
         {
             
-            IEnumerable<Kill> kills = await _repo.GetAllByGameId(gameId);
+            IEnumerable<Kill> kills = await _repo.GetAllByGameId(game_id);
             KillReadDTO[] killsAsDTOs = kills.Select(kill => _mapper.Map<KillReadDTO>(kill)).ToArray();
             return killsAsDTOs;
         }
@@ -36,18 +36,18 @@ namespace HvZWebAPI.Controllers
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="gameId">Game Id</param>
-        /// <param name="killId">Kill Id</param>
+        /// <param name="game_id">Game Id</param>
+        /// <param name="kill_id">Kill Id</param>
         /// <returns></returns>
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [HttpGet("{gameId}/[controller]/{killId}")]
-        public async Task<ActionResult<KillReadDTO>> GetKill(int gameId, int killId)
+        [HttpGet("{game_id}/[controller]/{kill_id}")]
+        public async Task<ActionResult<KillReadDTO>> GetKill(int game_id, int kill_id)
         {
             try
             {
-                Kill? kill = await _repo.GetById(gameId, killId);
+                Kill? kill = await _repo.GetById(game_id, kill_id);
                 KillReadDTO killAsDTO = _mapper.Map<KillReadDTO>(kill);
                 return killAsDTO;
 
@@ -69,24 +69,24 @@ namespace HvZWebAPI.Controllers
         /// Updates the kill object itself.
         /// Admin only
         /// </summary>
-        /// <param name="gameId">Specified Game</param>
-        /// <param name="killId">Specified Kill</param>
+        /// <param name="game_id">Specified Game</param>
+        /// <param name="kill_id">Specified Kill</param>
         /// <param name="killAsDTO">Kill Data Transfer Object</param>
         /// <returns></returns>
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [HttpPut("{gameId}/[controller]/{killId}")]
-        public async Task<IActionResult> PutKill(int gameId, int killId, KillUpdateDeleteDTO killAsDTO)
+        [HttpPut("{game_id}/[controller]/{kill_id}")]
+        public async Task<IActionResult> PutKill(int game_id, int kill_id, KillUpdateDeleteDTO killAsDTO)
         {
-            if (killId != killAsDTO.Id)
+            if (kill_id != killAsDTO.Id)
             {
                 return BadRequest("Id in body and url doesn't match");
             }
 
             try
             {
-                await _repo.Update(gameId, _mapper.Map<KillUpdateDeleteDTO, Kill>(killAsDTO));
+                await _repo.Update(game_id, _mapper.Map<KillUpdateDeleteDTO, Kill>(killAsDTO));
             }
             catch (ArgumentException ex)
             {
@@ -106,22 +106,22 @@ namespace HvZWebAPI.Controllers
         /// Admin only.
         /// Also it throws error if the specified bitecode is invlid
         /// </summary>
-        /// <param name="gameId">Specified Game</param>
+        /// <param name="game_id">Specified Game</param>
         /// <param name="killAsDTO">Kill Data Transfer Object</param>
         /// <returns></returns>
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [HttpPost("{gameId}/[controller]")]
-        public async Task<ActionResult<KillReadDTO>> PostKill(int gameId, KillCreateDTO killAsDTO)
+        [HttpPost("{game_id}/[controller]")]
+        public async Task<ActionResult<KillReadDTO>> PostKill(int game_id, KillCreateDTO killAsDTO)
         {
             Kill kill = _mapper.Map<KillCreateDTO, Kill>(killAsDTO);
 
-            kill.GameId = gameId;
+            kill.GameId = game_id;
             try
             {
 
-                Kill? savedKill = await _repo.Add(gameId, kill);
+                Kill? savedKill = await _repo.Add(game_id, kill);
 
                 if (savedKill == null)
                 {
@@ -130,7 +130,7 @@ namespace HvZWebAPI.Controllers
                 KillReadDTO mapped = _mapper.Map<Kill, KillReadDTO>(savedKill);
                 //mapped.UserDTO.FirstName = savedKill
 
-                return CreatedAtAction("GetKill", new { gameId = gameId, kill_id = savedKill.Id }, mapped);
+                return CreatedAtAction("GetKill", new { game_id = game_id, kill_id = savedKill.Id }, mapped);
 
             }
             catch (ArgumentException ex)
@@ -149,18 +149,18 @@ namespace HvZWebAPI.Controllers
         /// Deletes the kill object itself.
         /// Admin only.
         /// </summary>
-        /// <param name="gameId">Specified Game</param>
-        /// <param name="killId">Specified Kill</param>
+        /// <param name="game_id">Specified Game</param>
+        /// <param name="kill_id">Specified Kill</param>
         /// <returns></returns>
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [HttpDelete("{gameId}/[controller]/{killId}")]
-        public async Task<IActionResult> DeleteKill(int gameId, int killId)
+        [HttpDelete("{game_id}/[controller]/{kill_id}")]
+        public async Task<IActionResult> DeleteKill(int game_id, int kill_id)
         {
             try
             {
-                await _repo.Delete(gameId, killId);
+                await _repo.Delete(game_id, kill_id);
             }
             catch (ArgumentException ex)
             {
