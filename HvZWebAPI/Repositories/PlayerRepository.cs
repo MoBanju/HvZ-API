@@ -20,13 +20,6 @@ public class PlayerRepository : IPlayerRepository
         _userRepository = userRepository;
     }
 
-    /// <summary>
-    /// Add a player to the database, and also it's associated user if it's not allready in the database.
-    /// </summary>
-    /// <param name="game_id"></param>
-    /// <param name="player"></param>
-    /// <returns></returns>
-    /// <exception cref="ArgumentException">Thrown when the game_id provided does not exist</exception>
     public async Task<Player?> Add(int game_id, Player player)
     {
         try
@@ -76,13 +69,6 @@ public class PlayerRepository : IPlayerRepository
             throw new ArgumentException(ErrorCategory.UNIQUE_PLAYER(user_id));
     }
 
-
-    /// <summary>
-    /// Returns a list of all the players with a given game_id
-    /// </summary>
-    /// <param name="game_id"></param>
-    /// <returns></returns>
-    /// <exception cref="ArgumentException">Thrown when the game_id provided does not exist</exception>
     public async Task<IEnumerable<Player>> GetAll(int game_id)
     {
         if (!GameExists(game_id)) throw new ArgumentException(ErrorCategory.GAME_NOT_FOUND(game_id));
@@ -90,27 +76,12 @@ public class PlayerRepository : IPlayerRepository
         return await _context.Players.Include(p => p.User).Where(p => p.GameId == game_id).ToListAsync();
     }
 
-    /// <summary>
-    /// Returns a given player in a given game
-    /// </summary>
-    /// <param name="game_id"></param>
-    /// <param name="player_id"></param>
-    /// <returns></returns>
-    /// <exception cref="ArgumentException">When there are problems with the player_id, game_id or the combination of them</exception>
     public async Task<Player> GetById(int game_id, int player_id)
     {
         var player = await FindPlayerInGame(game_id, player_id);
         return player;
     }
 
-    /// <summary>
-    /// Updates a player object
-    /// NB: does not update the associated user object
-    /// </summary>
-    /// <param name="game_id"></param>
-    /// <param name="player"></param>
-    /// <returns></returns>
-    /// <exception cref="ArgumentException">When there are problems with the player_id, game_id or the combination of them</exception>
     public async Task<bool> Update(int game_id, Player player)
     {
 
@@ -127,13 +98,6 @@ public class PlayerRepository : IPlayerRepository
         return await _context.SaveChangesAsync() > 0;
     }
 
-    /// <summary>
-    /// Deletes only the playerobject from the database
-    /// </summary>
-    /// <param name="game_id"></param>
-    /// <param name="player_id"></param>
-    /// <returns></returns>
-    /// <exception cref="ArgumentException">When there are problems with the player_id, game_id or the combination of them</exception>
     public async Task<bool> Delete(int game_id, int player_id)
     {
         int rowsChanged = 0;
