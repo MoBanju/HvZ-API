@@ -24,7 +24,13 @@ public class ChatController : ControllerBase
         _repo = repo;
         _mapper = mapper;
     }
-
+    
+    /// <summary>
+    /// Creates a new gamechat for a given game
+    /// </summary>
+    /// <param name="game_id"></param>
+    /// <param name="chatAsDTO"></param>
+    /// <returns></returns>
     [Authorize]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -54,6 +60,11 @@ public class ChatController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Gets all the chats for a given game 
+    /// </summary>
+    /// <param name="game_id"></param>
+    /// <returns></returns>
     [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -75,7 +86,12 @@ public class ChatController : ControllerBase
         }
     }
 
-
+    /// <summary>
+    /// Gets a chat for a given game
+    /// </summary>
+    /// <param name="game_id"></param>
+    /// <param name="chat_id"></param>
+    /// <returns></returns>
     [Authorize]
     [HttpGet("{game_id}/chat/{chat_id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
