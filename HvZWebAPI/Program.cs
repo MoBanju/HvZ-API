@@ -7,6 +7,9 @@ using dotenv.net;
 using System.Text.Json.Serialization;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -52,7 +55,31 @@ DotEnv.Load();
 
 string connectionString = Environment.GetEnvironmentVariable("SQL_CONNECTION") ?? builder.Configuration.GetConnectionString("DefaultConnection");
 
-builder.Services.AddDbContext<HvZDbContext>(opt => opt.UseSqlServer(connectionString)); 
+builder.Services.AddDbContext<HvZDbContext>(opt => opt.UseSqlServer(connectionString));
+
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options => {
+        options.TokenValidationParameters = new TokenValidationParameters()
+        {
+            IssuerSigningKeyResolver = (token, securityToken, kid, paramaters) =>
+            {
+                var client = new HttpClient();
+                var keyURI = "https://hvz-2022-keycloak.herokuapp.com/auth/realms/HvZ/protocol/openid-connect/certs";
+
+                var response = client.GetAsync(keyURI).Result;
+                var responseString = response.Content.ReadAsStringAsync().Result;
+                var keys = JsonConvert.DeserializeObject<JsonWebKeySet>(responseString);
+
+                return keys.Keys;
+            },
+            ValidIssuers = new List<string>()
+            {
+                "https://hvz-2022-keycloak.herokuapp.com/auth/realms/HvZ",
+            },
+            ValidAudience = "account"
+        };
+    });
 
 var app = builder.Build();
 
@@ -63,7 +90,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+else
+{
 
+}
+
+    app.UseAuthentication();
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

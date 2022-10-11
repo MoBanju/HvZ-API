@@ -113,7 +113,6 @@ public class PlayerRepository : IPlayerRepository
     /// <exception cref="ArgumentException">When there are problems with the player_id, game_id or the combination of them</exception>
     public async Task<bool> Update(int game_id, Player player)
     {
-
         var exsistingPlayer = await FindPlayerInGame(game_id, player.Id);
         if (exsistingPlayer != null)
         {
