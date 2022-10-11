@@ -14,9 +14,9 @@ public class KillRepository : IKillRepository
     {
         _context = context;
     }
-    public async Task<Kill?> Add(int gameId, Kill kill)
+    public async Task<Kill?> Add(int game_id, Kill kill)
     {
-        if (!GameExists(gameId)) throw new ArgumentException("Game by that id does not exsist");
+        if (!GameExists(game_id)) throw new ArgumentException("Game by that id does not exsist");
         _context.Kills.Add(kill);
         int rowsAffected = await _context.SaveChangesAsync();
         if(rowsAffected == 0)
@@ -24,12 +24,12 @@ public class KillRepository : IKillRepository
         return kill;
     }
 
-    public async Task Delete(int gameId, int killId)
+    public async Task Delete(int game_id, int kill_id)
     {
         int rowsChanged = 0;
         try
         {
-            var kill = await FindKillInGame(gameId, killId);
+            var kill = await FindKillInGame(game_id, kill_id);
 
             _context.Kills.Remove(kill);
 
@@ -47,24 +47,24 @@ public class KillRepository : IKillRepository
         return await _context.Kills.Include(g => g.Game).ToListAsync();
     }
 
-    public async Task<IEnumerable<Kill>> GetAllByGameId(int gameId)
+    public async Task<IEnumerable<Kill>> GetAllByGameId(int game_id)
     {
-        if (!GameExists(gameId)) throw new ArgumentException("Game by that id does not exsist");
+        if (!GameExists(game_id)) throw new ArgumentException("Game by that id does not exsist");
 
-        return await _context.Kills.Include(k => k.Game).Where(k => k.GameId == gameId).ToListAsync();
+        return await _context.Kills.Include(k => k.Game).Where(k => k.GameId == game_id).ToListAsync();
     }
 
-    public async Task<Kill> GetById(int gameId, int killId)
+    public async Task<Kill> GetById(int game_id, int kill_id)
     {
-        Kill kill = await FindKillInGame(gameId, killId);
+        Kill kill = await FindKillInGame(game_id, kill_id);
         return kill;
     }
 
-    public async Task Update(int gameId, Kill kill)
+    public async Task Update(int game_id, Kill kill)
     {
         try
         {
-            var exsistingKill = await FindKillInGame(gameId, kill.Id);
+            var exsistingKill = await FindKillInGame(game_id, kill.Id);
             if (exsistingKill != null)
             {
                 //This sets the foreign keys
@@ -88,22 +88,22 @@ public class KillRepository : IKillRepository
     /// Used to retrieve the player that fits the combination of game id and player id
     /// This is the main validation method, returning argument exceptions
     /// </summary>
-    /// <param name="gameId">Specific Game</param>
-    /// <param name="killId">Specific Kill</param>
+    /// <param name="game_id">Specific Game</param>
+    /// <param name="kill_id">Specific Kill</param>
     /// <returns>A Kill from the context or database</returns>
-    /// <exception cref="ArgumentException">When the game or kill does not exist, or the game id from kill is different from the param gameId</exception>
+    /// <exception cref="ArgumentException">When the game or kill does not exist, or the game id from kill is different from the param game_id</exception>
 
-    private async Task<Kill> FindKillInGame(int gameId, int killId)
+    private async Task<Kill> FindKillInGame(int game_id, int kill_id)
     {
-        if (!GameExists(gameId)) throw new ArgumentException("There is no game with that id");
+        if (!GameExists(game_id)) throw new ArgumentException("There is no game with that id");
 
-        Kill? kill = await _context.Kills.Include(k => k.Game).FirstOrDefaultAsync(k => k.Id == killId);
+        Kill? kill = await _context.Kills.Include(k => k.Game).FirstOrDefaultAsync(k => k.Id == kill_id);
         if (kill == null)
         {
             throw new ArgumentException("There is no kill with that id");
         }
 
-        if (kill.GameId != gameId)
+        if (kill.GameId != game_id)
         {
             throw new ArgumentException("The kill-id you sent in is not in the game you sent in");
         }
@@ -115,21 +115,21 @@ public class KillRepository : IKillRepository
     /// <summary>
     /// Checks if the game is tracked in the context
     /// </summary>
-    /// <param name="gameId">Specific Game</param>
+    /// <param name="game_id">Specific Game</param>
     /// <returns>Existent game</returns>
-    private bool GameExists(int gameId)
+    private bool GameExists(int game_id)
     {
-        return _context.Games.Any(e => e.Id == gameId);
+        return _context.Games.Any(e => e.Id == game_id);
     }
 
     /// <summary>
     /// Checks if the kill is tracked in context
     /// </summary>
-    /// <param name="killId">Kill Id</param>
+    /// <param name="kill_id">Kill Id</param>
     /// <returns>Returns the existent kill</returns>
-    private bool KillExists(int killId)
+    private bool KillExists(int kill_id)
     {
-        return _context.Kills.Any(e => e.Id == killId);
+        return _context.Kills.Any(e => e.Id == kill_id);
     }
 
 
