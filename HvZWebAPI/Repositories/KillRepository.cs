@@ -84,6 +84,15 @@ public class KillRepository : IKillRepository
 
     }
 
+    /// <summary>
+    /// Used to retrieve the player that fits the combination of game id and player id
+    /// This is the main validation method, returning argument exceptions
+    /// </summary>
+    /// <param name="gameId">Specific Game</param>
+    /// <param name="killId">Specific Kill</param>
+    /// <returns>A Kill from the context or database</returns>
+    /// <exception cref="ArgumentException">When the game or kill does not exist, or the game id from kill is different from the param gameId</exception>
+
     private async Task<Kill> FindKillInGame(int gameId, int killId)
     {
         if (!GameExists(gameId)) throw new ArgumentException("There is no game with that id");
@@ -106,18 +115,18 @@ public class KillRepository : IKillRepository
     /// <summary>
     /// Checks if the game is tracked in the context
     /// </summary>
-    /// <param name="gameId"></param>
-    /// <returns></returns>
+    /// <param name="gameId">Specific Game</param>
+    /// <returns>Existent game</returns>
     private bool GameExists(int gameId)
     {
         return _context.Games.Any(e => e.Id == gameId);
     }
 
     /// <summary>
-    /// Checks if the player is tracked in context
+    /// Checks if the kill is tracked in context
     /// </summary>
-    /// <param name="killId"></param>
-    /// <returns></returns>
+    /// <param name="killId">Kill Id</param>
+    /// <returns>Returns the existent kill</returns>
     private bool KillExists(int killId)
     {
         return _context.Kills.Any(e => e.Id == killId);
