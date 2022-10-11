@@ -14,17 +14,7 @@ public class ChatRepository : IChatRepository
     {
         _context = context;
     }
-
-    public async Task<IEnumerable<Chat>> GetChats(int gameId)
-    {
-        return await _context.Chats.Where(chat => chat.GameId == gameId).ToListAsync();
-    }
-
-    public async Task<Chat?> GetChat(int gameId, int chat_id)
-    {
-        return await _context.Chats.FirstOrDefaultAsync(chat => chat.GameId == gameId && chat.Id == chat_id);
-    }
-
+    
     public async Task<Chat> PostChat(int gameId, Chat chat)
     {
         Game? game = await _context.Games
@@ -32,7 +22,7 @@ public class ChatRepository : IChatRepository
                 .Where(player => player.GameId == gameId))
             .FirstOrDefaultAsync(game => game.Id == gameId);
         
-        // Game has to exist
+        // Game has to exist, more like game with player not found
         if(game is null)
             throw new ArgumentException(ErrorCategory.GAME_NOT_FOUND(gameId));
 
@@ -47,4 +37,23 @@ public class ChatRepository : IChatRepository
 
         return chat;
     }
+
+    public async Task<IEnumerable<Chat>> GetChats(int gameId)
+    {
+        return await _context.Chats.Where(chat => chat.GameId == gameId).ToListAsync();
+    }
+
+    public async Task<Chat?> GetChat(int game_id, int chat_id)
+    {
+        Game? game = await _context.Games
+            .Include(game => game.Chats)
+            .FirstOrDefaultAsync(game => game.Id == game_id);
+        if (game is null)
+            throw new ArgumentException(ErrorCategory.GAME_NOT_FOUND(game_id));
+
+        Chat? chat = game.Chats.FirstOrDefault(chat => chat.Id == chat_id);
+
+        return chat;
+    }
+
 }
