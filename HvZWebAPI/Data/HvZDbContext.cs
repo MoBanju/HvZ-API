@@ -46,6 +46,12 @@ namespace HvZWebAPI.Data
             modelBuilder.Entity<Chat>().HasData(SeedDataHelper.GetChats());
 
 
+            //Add restrictions
+            modelBuilder.Entity<User>().Property(u => u.FirstName).HasMaxLength(50);
+            modelBuilder.Entity<User>().Property(u => u.LastName).HasMaxLength(50);
+            
+            modelBuilder.Entity<Player>().Property(p => p.BiteCode).HasMaxLength(50);
+
         }
     }
 }
