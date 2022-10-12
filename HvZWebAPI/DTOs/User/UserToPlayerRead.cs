@@ -13,6 +13,7 @@ public class UserToPlayerReadResolver : IValueResolver<Models.Player, PlayerRead
         userDTO.FirstName = (source.User.FirstName)??"";
         userDTO.LastName = (source.User.LastName)??"";
         userDTO.Id = source.User.Id;
+        userDTO.KeyCloakId = source.User.KeyCloakId;
         return userDTO;
     }
 }

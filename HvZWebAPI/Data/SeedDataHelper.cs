@@ -8,13 +8,13 @@ namespace HvZWebAPI.Data
         {
             List<User> users = new List<User>()
             {
-                new User() {Id=1, FirstName="Ole", LastName="Streetman"},
-                new User() {Id=2, FirstName="Eivind", LastName="Johnson"},
-                new User() {Id=3, FirstName="Ibrahim", LastName="Banjai"},
-                new User() {Id=4, FirstName="Hakon", LastName="Haga"},
-                new User() {Id=5, FirstName="Patricia", LastName="Mahomes"},
-                new User() {Id=6, FirstName="James", LastName="Jackson"},
-                new User() {Id=7, FirstName="Lamar", LastName="Random"},
+                new User() {Id=1, KeyCloakId="KC11", FirstName="Ole", LastName="Streetman"},
+                new User() {Id=2, KeyCloakId="KC12", FirstName="Eivind", LastName="Johnson"},
+                new User() {Id=3, KeyCloakId="KC13", FirstName="Ibrahim", LastName="Banjai"},
+                new User() {Id=4, KeyCloakId="KC14", FirstName="Hakon", LastName="Haga"},
+                new User() {Id=5, KeyCloakId="KC15", FirstName="Patricia", LastName="Mahomes"},
+                new User() {Id=6, KeyCloakId="KC16", FirstName="James", LastName="Jackson"},
+                new User() {Id=7, KeyCloakId="KC17", FirstName="Lamar", LastName="Random"},
             };
             return users;
         }
@@ -35,10 +35,10 @@ namespace HvZWebAPI.Data
         {
             List<Game> games = new List<Game>()
             {
-                new Game(){ Id=1, Name="Jungle", State=State.Registration},
-                new Game(){ Id=2, Name="Island", State=State.Progress},
-                new Game(){ Id=3, Name="Ocean", State=State.Progress},
-                new Game(){ Id=4, Name="Space", State=State.Complete},
+                new Game(){ Id=1, Name="Jungle", State=State.Registration, Description="Hosted by George of the Jungle."},
+                new Game(){ Id=2, Name="Island", State=State.Progress, Description="Match happens in Finland."},
+                new Game(){ Id=3, Name="Ocean", State=State.Progress, Description = "Sharks, Bombs and Boats."},
+                new Game(){ Id=4, Name="Space", State=State.Complete, Description = "Armstrong in the building."},
             };
             return games;
         }
