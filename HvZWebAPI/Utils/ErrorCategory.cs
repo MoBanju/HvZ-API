@@ -13,6 +13,11 @@ public class ErrorCategory
         return $"No player with player id {player_id} is participating in a game with game id {game_id}";
     }
 
+    public static string PLAYER_NOT_IN_GAME(int game_id, string bitecode)
+    {
+        return $"No player with player bitecode {bitecode} is participating in a game with game id {game_id}";
+    }
+
     public static string GAME_NOT_FOUND(int game_id)
     {
         return $"No game with id {game_id} found";
@@ -23,9 +28,14 @@ public class ErrorCategory
         return $"No player with id {player_id} found";
     }
 
-    public static string UNIQUE_PLAYER(int user_id)
+    public static string PLAYER_NOT_FOUND(string bitecode)
     {
-        return $"User {user_id} allready has a player in this game, no more are allowed";
+        return $"No player with bitecode {bitecode} found";
+    }
+
+    public static string UNIQUE_PLAYER(string keycloak_id)
+    {
+        return $"User {keycloak_id} allready has a player in this game, no more are allowed";
     }
 
     public static string FAILURE

@@ -36,7 +36,7 @@ public class PlayersController : ControllerBase
     /// <param name="game_id"></param>
     /// <param name="playerDTO"></param>
     /// <returns></returns>
-    [Authorize]
+    //[Authorize]
     [HttpPost("{game_id}/[controller]")]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -75,7 +75,7 @@ public class PlayersController : ControllerBase
     /// </summary>
     /// <param name="game_id"></param>
     /// <returns></returns>
-    [Authorize]
+    //[Authorize]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [HttpGet("{game_id}/[controller]")]
