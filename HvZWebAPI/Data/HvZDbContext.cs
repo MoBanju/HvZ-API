@@ -45,13 +45,16 @@ namespace HvZWebAPI.Data
                 .WithMany(k => k.PlayerKills)
                 .HasForeignKey(pk => pk.KillId);
 
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.KeyCloakId)
+                .IsUnique();
 
 
             // Game
             modelBuilder.Entity<Game>().HasMany<Chat>(g => g.Chats).WithOne(c => c.Game);
 
   
-            modelBuilder.Entity<Game>().HasMany<Player>(g => g.Players).WithOne(p => p.Game).OnDelete(DeleteBehavior.ClientCascade);
+            modelBuilder.Entity<Game>().HasMany<Player>(g => g.Players).WithOne(p => p.Game).OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<Player>().HasOne<Game>(p => p.Game).WithMany(g => g.Players).OnDelete(DeleteBehavior.NoAction);
             modelBuilder.Entity<Game>().HasMany<Kill>(g => g.Kills).WithOne(k => k.Game);
 
@@ -72,6 +75,9 @@ namespace HvZWebAPI.Data
             modelBuilder.Entity<User>().Property(u => u.LastName).HasMaxLength(50);
             
             modelBuilder.Entity<Player>().Property(p => p.BiteCode).HasMaxLength(50);
+
+            modelBuilder.Entity<Game>().Property(g => g.Name).HasMaxLength(50);
+            modelBuilder.Entity<Game>().Property(g => g.Description).HasMaxLength(200);
 
         }
     }
