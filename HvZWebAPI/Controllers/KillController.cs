@@ -111,7 +111,7 @@ namespace HvZWebAPI.Controllers
         /// <param name="game_id">Specified Game</param>
         /// <param name="killAsDTO">Kill Data Transfer Object</param>
         /// <returns></returns>
-        [Authorize]
+        //[Authorize]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]

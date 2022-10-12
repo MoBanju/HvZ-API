@@ -36,7 +36,6 @@
     <Folder Include="DTOs\Kill\" />
     <Folder Include="DTOs\Chat\" />
     <Folder Include="DTOs\Player\" />
-    <Folder Include="Profiles\" />
     <Folder Include="Repositories\" />
   </ItemGroup>
 
