@@ -24,10 +24,10 @@ public class PlayerRepository : IPlayerRepository
     {
         try
         {
-            await ValidateUniquePlayer(game_id, player.UserId);
+            await ValidateUniquePlayer(game_id, player.User.KeyCloakId);
 
             player.GameId = game_id;
-            var exsistingUser = _context.Users.SingleOrDefault(u => u.Id == player.User.Id);
+            var exsistingUser = _context.Users.SingleOrDefault(u => u.KeyCloakId == player.User.KeyCloakId);
             if (exsistingUser != null)
             {
                 //If the user is allready in the context then it should not be updated
@@ -62,11 +62,11 @@ public class PlayerRepository : IPlayerRepository
 
     }
 
-    private async Task ValidateUniquePlayer(int game_id, int user_id)
+    private async Task ValidateUniquePlayer(int game_id, string keycloak_id)
     {
         var list = await GetAll(game_id);
-        if (list.Any(p => p.UserId == user_id))
-            throw new ArgumentException(ErrorCategory.UNIQUE_PLAYER(user_id));
+        if (list.Any(p => p.User.KeyCloakId == keycloak_id))
+            throw new ArgumentException(ErrorCategory.UNIQUE_PLAYER(keycloak_id));
     }
 
     public async Task<IEnumerable<Player>> GetAll(int game_id)
@@ -74,6 +74,26 @@ public class PlayerRepository : IPlayerRepository
         if (!GameExists(game_id)) throw new ArgumentException(ErrorCategory.GAME_NOT_FOUND(game_id));
 
         return await _context.Players.Include(p => p.User).Where(p => p.GameId == game_id).ToListAsync();
+    }
+
+    public async Task<Player> GetByBiteCode(int game_id, string biteCode)
+    {
+        if (!GameExists(game_id)) throw new ArgumentException(ErrorCategory.GAME_NOT_FOUND(game_id));
+
+        Player? player = await _context.Players.FirstOrDefaultAsync(p => p.BiteCode == biteCode);
+
+        if (player == null)
+        {
+            throw new ArgumentException(ErrorCategory.PLAYER_NOT_FOUND(biteCode));
+        }
+
+        if (player.GameId != game_id)
+        {
+            throw new ArgumentException(ErrorCategory.PLAYER_NOT_IN_GAME(game_id, biteCode));
+        }
+
+        return player;
+
     }
 
     public async Task<Player> GetById(int game_id, int player_id)
@@ -111,7 +131,7 @@ public class PlayerRepository : IPlayerRepository
         return await _context.SaveChangesAsync() > 0;
     }
     
-
+    
     /// <summary>
     /// Used to retrieve the player that fits the combination of game id and player id
     /// This is the main validation method, returning argument exceptions
