@@ -152,7 +152,7 @@ public class GamesController : ControllerBase
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
-    [Authorize]
+    //[Authorize]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]

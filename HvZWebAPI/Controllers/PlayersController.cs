@@ -185,7 +185,6 @@ public class PlayersController : ControllerBase
     /// <param name="game_id"></param>
     /// <param name="player_id"></param>
     /// <returns></returns>
-    [Authorize]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -203,7 +202,7 @@ public class PlayersController : ControllerBase
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex.Message);
+            Console.WriteLine(ex.InnerException);
             return StatusCode(StatusCodes.Status500InternalServerError, ErrorCategory.INTERNAL);
         }
         return NoContent();

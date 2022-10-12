@@ -8,9 +8,7 @@
         // Navigation Properties
         public Game Game { get; set; }
         public int GameId { get; set; }
-        public Player Killer { get; set; }
-        public int KillerId { get; set; }
-        public Player Victim { get; set; }
-        public int VictimId { get; set; }
+
+        public ICollection<PlayerKill> PlayerKills { get; set; }
     }
 }

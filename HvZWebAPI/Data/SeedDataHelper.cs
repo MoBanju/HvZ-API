@@ -26,7 +26,7 @@ namespace HvZWebAPI.Data
                 new Player(){ Id=1, IsHuman=true, BiteCode="Street", IsPatientZero=false, UserId=1, GameId=2},
                 new Player(){ Id=2, IsHuman=false, BiteCode="BooHoo", IsPatientZero=true, UserId=3, GameId=2},
                 new Player(){ Id=3, IsHuman=false, BiteCode="Hello", IsPatientZero=false, UserId=4, GameId=2},
-                new Player(){ Id=4, IsHuman=true, BiteCode="Hello", IsPatientZero=false, UserId=7, GameId=2},
+                new Player(){ Id=4, IsHuman=true, BiteCode="Helloma", IsPatientZero=false, UserId=7, GameId=2},
             };
             return players;
         }
@@ -47,11 +47,21 @@ namespace HvZWebAPI.Data
         {
             List<Kill> kills = new List<Kill>()
             {
-                new Kill(){ Id=1, TimeDeath= DateTime.UtcNow, GameId=2, KillerId=2, VictimId=1},
-                new Kill(){ Id=2, TimeDeath= DateTime.UtcNow, GameId=2, KillerId=4, VictimId=3},
-                new Kill(){ Id=3, TimeDeath= DateTime.UtcNow, GameId=2, KillerId=2, VictimId=4},
+                new Kill(){ Id=1, TimeDeath= DateTime.UtcNow, GameId=2 },
+                new Kill(){ Id=2, TimeDeath= DateTime.UtcNow, GameId=2 },
+                new Kill(){ Id=3, TimeDeath= DateTime.UtcNow, GameId=2 },
             };
             return kills;
+        }
+
+        public static List<PlayerKill> GetPlayerKills()
+        {
+            List<PlayerKill> playerKills = new()
+            {
+                new PlayerKill(){ KillId=1, IsVictim = false, PlayerId=1 },
+                new PlayerKill(){ KillId=1, IsVictim = true, PlayerId=1 },
+            };
+            return playerKills;
         }
 
         public static List<Chat> GetChats()
