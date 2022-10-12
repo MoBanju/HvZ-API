@@ -9,6 +9,7 @@ public class GameReadDTO
 {
     public int Id { get; set; }
     public string Name { get; set; }
+    public string Description { get; set; }
 
     [JsonConverter(typeof(StringEnumConverter))]
     public State State { get; set; }
