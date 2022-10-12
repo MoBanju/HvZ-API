@@ -31,10 +31,11 @@ public class GameRepository : IGameRepository
     }
     public async Task<bool> Delete(int id)
     {
-        Game? game = await _context.Games.FindAsync(id);
+        Game? game = await _context.Games.Where(g => g.Id == id).FirstOrDefaultAsync();
 
         if(game is null)
             return false;
+
 
         _context.Remove(game);
         return await _context.SaveChangesAsync() > 0;

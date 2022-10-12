@@ -14,13 +14,11 @@
 
         public Game Game{ get; set; }
         public int GameId { get; set; }
-
-        public ICollection<Kill> Kills { get; set; }
-        public ICollection<Kill> Deaths { get; set; }
         public ICollection<Chat> Chats { get; set; }
 
+        public ICollection<PlayerKill> PlayerKills { get; set; }
 
 
-      
+
     }
 }

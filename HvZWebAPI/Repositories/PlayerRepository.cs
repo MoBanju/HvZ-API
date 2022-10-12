@@ -104,11 +104,13 @@ public class PlayerRepository : IPlayerRepository
 
         var player = await FindPlayerInGame(game_id, player_id);
 
+
+
         _context.Players.Remove(player);
 
         return await _context.SaveChangesAsync() > 0;
     }
-
+    
 
     /// <summary>
     /// Used to retrieve the player that fits the combination of game id and player id
@@ -118,11 +120,14 @@ public class PlayerRepository : IPlayerRepository
     /// <param name="player_id"></param>
     /// <returns>A player from the context or database</returns>
     /// <exception cref="ArgumentException"></exception>
-    private async Task<Player> FindPlayerInGame(int game_id, int player_id)
+    private async Task<Player> FindPlayerInGame(int game_id, int player_id, bool getuser = true)
     {
         if (!GameExists(game_id)) throw new ArgumentException(ErrorCategory.GAME_NOT_FOUND(game_id));
 
+
         Player? player = await _context.Players.Include(p => p.User).FirstOrDefaultAsync(p => p.Id == player_id);
+        
+        
         if (player == null)
         {
             throw new ArgumentException(ErrorCategory.PLAYER_NOT_FOUND(player_id));

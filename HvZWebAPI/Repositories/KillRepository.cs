@@ -69,8 +69,8 @@ public class KillRepository : IKillRepository
             {
                 //This sets the foreign keys
                 _context.Entry(exsistingKill).State = EntityState.Detached;
-                kill.KillerId = exsistingKill.KillerId;
-                kill.VictimId = exsistingKill.VictimId;
+                //kill.KillerId = exsistingKill.KillerId;
+                //kill.VictimId = exsistingKill.VictimId;
                 kill.GameId = exsistingKill.GameId;
             }
 
