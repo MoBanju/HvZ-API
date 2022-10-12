@@ -4,17 +4,40 @@ namespace HvZWebAPI.Data
 {
     public class SeedDataHelper
     {
+
+        /*
+         * [
+ {
+   firstname: "mordi",
+   lastname: "007",
+   keyCloakId: "f416c45a-2945-4047-b609-06de42279237"
+ },
+{
+   firstname: "Øyvind",
+   lastname: "Sande Reitan",
+   keyCloakId: "2e951202-167e-40fd-8fb1-91d2416d0d10"
+ },
+{
+   firstname: "Funny",
+   lastname: "Man",
+   keyCloakId: "816cf1b0-c9e5-47b1-92f0-5927695b238a"
+ },
+{
+   firstname: "Bertelsen",
+   lastname: "Eivind",
+   keyCloakId: "d2cb4a5b-3bb1-4a36-b3ae-a370c26e9646"
+ },
+]
+         */
+
         public static List<User> GetUsers()
         {
             List<User> users = new List<User>()
             {
-                new User() {Id=1, KeyCloakId="KC11", FirstName="Ole", LastName="Streetman"},
-                new User() {Id=2, KeyCloakId="KC12", FirstName="Eivind", LastName="Johnson"},
-                new User() {Id=3, KeyCloakId="KC13", FirstName="Ibrahim", LastName="Banjai"},
-                new User() {Id=4, KeyCloakId="KC14", FirstName="Hakon", LastName="Haga"},
-                new User() {Id=5, KeyCloakId="KC15", FirstName="Patricia", LastName="Mahomes"},
-                new User() {Id=6, KeyCloakId="KC16", FirstName="James", LastName="Jackson"},
-                new User() {Id=7, KeyCloakId="KC17", FirstName="Lamar", LastName="Random"},
+                new User() {Id=1, KeyCloakId="f416c45a-2945-4047-b609-06de42279237", FirstName="mordi", LastName="007"},
+                new User() {Id=2, KeyCloakId="2e951202-167e-40fd-8fb1-91d2416d0d10", FirstName="Øyvind", LastName="Sande Reitan"},
+                new User() {Id=3, KeyCloakId="816cf1b0-c9e5-47b1-92f0-5927695b238a", FirstName="Funny", LastName="Man"},
+                new User() {Id=4, KeyCloakId="d2cb4a5b-3bb1-4a36-b3ae-a370c26e9646", FirstName="Bertelsen", LastName="Eivind"},
             };
             return users;
         }
@@ -24,9 +47,9 @@ namespace HvZWebAPI.Data
             List<Player> players = new List<Player>()
             {
                 new Player(){ Id=1, IsHuman=true, BiteCode="Street", IsPatientZero=false, UserId=1, GameId=2},
-                new Player(){ Id=2, IsHuman=false, BiteCode="BooHoo", IsPatientZero=true, UserId=3, GameId=2},
-                new Player(){ Id=3, IsHuman=false, BiteCode="Hello", IsPatientZero=false, UserId=4, GameId=2},
-                new Player(){ Id=4, IsHuman=true, BiteCode="Helloma", IsPatientZero=false, UserId=7, GameId=2},
+                new Player(){ Id=2, IsHuman=false, BiteCode="BooHoo", IsPatientZero=true, UserId=3, GameId=3},
+                new Player(){ Id=3, IsHuman=false, BiteCode="Hello", IsPatientZero=false, UserId=4, GameId=3},
+                new Player(){ Id=4, IsHuman=true, BiteCode="Helloma", IsPatientZero=false, UserId=2, GameId=2},
             };
             return players;
         }
@@ -50,6 +73,7 @@ namespace HvZWebAPI.Data
                 new Kill(){ Id=1, TimeDeath= DateTime.UtcNow, GameId=2 },
                 new Kill(){ Id=2, TimeDeath= DateTime.UtcNow, GameId=2 },
                 new Kill(){ Id=3, TimeDeath= DateTime.UtcNow, GameId=2 },
+                new Kill(){ Id=4, TimeDeath= DateTime.UtcNow, GameId=3 },
             };
             return kills;
         }
@@ -59,7 +83,9 @@ namespace HvZWebAPI.Data
             List<PlayerKill> playerKills = new()
             {
                 new PlayerKill(){ KillId=1, IsVictim = false, PlayerId=1 },
-                new PlayerKill(){ KillId=1, IsVictim = true, PlayerId=1 },
+                new PlayerKill(){ KillId=1, IsVictim = true, PlayerId=4 },
+                new PlayerKill(){ KillId=2, IsVictim = true, PlayerId=2 },
+                new PlayerKill(){ KillId=2, IsVictim = false, PlayerId=3 },
             };
             return playerKills;
         }
