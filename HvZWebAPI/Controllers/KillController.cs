@@ -124,7 +124,7 @@ namespace HvZWebAPI.Controllers
             try
             {
 
-                Kill? savedKill = await _repo.Add(game_id, kill);
+                Kill? savedKill = await _repo.Add(game_id, kill, killAsDTO.BiteCode);
 
                 if (savedKill == null)
                 {
