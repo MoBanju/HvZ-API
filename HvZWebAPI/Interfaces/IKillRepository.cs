@@ -31,7 +31,7 @@ public interface IKillRepository
     /// <param name="game_id">Specific Game</param>
     /// <param name="kill">new Kill</param>
     /// <returns>Kill that was created</returns>
-    public Task<Kill?> Add(int game_id, Kill kill);
+    public Task<Kill?> Add(int game_id, Kill kill, string bitecode);
 
     /// <summary>
     /// Updates the kill

@@ -9,14 +9,18 @@ namespace HvZWebAPI.Repositories;
 public class KillRepository : IKillRepository
 {
     private readonly HvZDbContext _context;
+    private readonly IPlayerRepository _playerRepository;
 
-    public KillRepository(HvZDbContext context)
+    public KillRepository(HvZDbContext context, IPlayerRepository playerRepository)
     {
         _context = context;
+        _playerRepository = playerRepository;
     }
-    public async Task<Kill?> Add(int game_id, Kill kill)
+    public async Task<Kill?> Add(int game_id, Kill kill, string bitecode)
     {
         if (!GameExists(game_id)) throw new ArgumentException("Game by that id does not exsist");
+
+
         _context.Kills.Add(kill);
         int rowsAffected = await _context.SaveChangesAsync();
         if(rowsAffected == 0)
