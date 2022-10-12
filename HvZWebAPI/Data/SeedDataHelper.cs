@@ -38,6 +38,9 @@ namespace HvZWebAPI.Data
                 new User() {Id=2, KeyCloakId="2e951202-167e-40fd-8fb1-91d2416d0d10", FirstName="Øyvind", LastName="Sande Reitan"},
                 new User() {Id=3, KeyCloakId="816cf1b0-c9e5-47b1-92f0-5927695b238a", FirstName="Funny", LastName="Man"},
                 new User() {Id=4, KeyCloakId="d2cb4a5b-3bb1-4a36-b3ae-a370c26e9646", FirstName="Bertelsen", LastName="Eivind"},
+                new User() {Id=5, KeyCloakId="fa31d802-1e3c-4909-b9e9-210978fd9688", FirstName="Kaffi", LastName="Elsker"},
+                new User() {Id=6, KeyCloakId="cd501590-5292-41cd-a170-7fea0b879bb0", FirstName="Vann", LastName="Elsker"},
+                new User() {Id=7, KeyCloakId="6cbfe3cb-9e81-438a-a56c-625624efc2a4", FirstName="Cola", LastName="Elske"},
             };
             return users;
         }
@@ -46,10 +49,15 @@ namespace HvZWebAPI.Data
         {
             List<Player> players = new List<Player>()
             {
+                new Player(){ Id=5, IsHuman=true, BiteCode="Five", IsPatientZero=false, UserId=1, GameId=1},
                 new Player(){ Id=1, IsHuman=true, BiteCode="Street", IsPatientZero=false, UserId=1, GameId=2},
-                new Player(){ Id=2, IsHuman=false, BiteCode="BooHoo", IsPatientZero=true, UserId=3, GameId=3},
-                new Player(){ Id=3, IsHuman=false, BiteCode="Hello", IsPatientZero=false, UserId=4, GameId=3},
+                new Player(){ Id=8, IsHuman=true, BiteCode="Eight", IsPatientZero=false, UserId=1, GameId=3},
                 new Player(){ Id=4, IsHuman=true, BiteCode="Helloma", IsPatientZero=false, UserId=2, GameId=2},
+                new Player(){ Id=9, IsHuman=true, BiteCode="Nine", IsPatientZero=false, UserId=2, GameId=2},
+                new Player(){ Id=2, IsHuman=false, BiteCode="BooHoo", IsPatientZero=true, UserId=3, GameId=3},
+                new Player(){ Id=6, IsHuman=true, BiteCode="Six", IsPatientZero=false, UserId=3, GameId=1},
+                new Player(){ Id=3, IsHuman=false, BiteCode="Hello", IsPatientZero=false, UserId=4, GameId=3},
+                new Player(){ Id=7, IsHuman=true, BiteCode="Seven", IsPatientZero=false, UserId=4, GameId=1},
             };
             return players;
         }

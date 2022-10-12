@@ -21,9 +21,30 @@ public class KillRepository : IKillRepository
         if (!GameExists(game_id)) throw new ArgumentException("Game by that id does not exsist");
 
 
+        // Victim and Killer in the same game
+
+        Player victim = await _playerRepository.GetByBiteCode(game_id, bitecode);
+        victim.IsHuman = false;
+
+        _context.Entry(victim).State = EntityState.Modified;
+
+        var pk1 = new PlayerKill() { KillId = kill.Id, PlayerId = victim.Id, IsVictim = true };
+        var pk2 = new PlayerKill() { KillId = kill.Id, PlayerId = 4, IsVictim = false };
+
+        //Select one kill
+        //And it's two player kills
+        _context.Kills.Where(k => k.Id == pk1.KillId).Include(k => k.PlayerKills);
+
+        var pkdb = _context.PlayerKills.Where(pk => pk.KillId == kill.Id && pk.PlayerId == pk1.PlayerId);
+        var pk2db = _context.PlayerKills.Where(pk => pk.KillId == kill.Id && pk.PlayerId == pk2.PlayerId);
+
+        _context.PlayerKills.Add(pk1);
+        _context.PlayerKills.Add(pk2);
         _context.Kills.Add(kill);
+
+
         int rowsAffected = await _context.SaveChangesAsync();
-        if(rowsAffected == 0)
+        if (rowsAffected == 0)
             return null;
         return kill;
     }
@@ -55,7 +76,9 @@ public class KillRepository : IKillRepository
     {
         if (!GameExists(game_id)) throw new ArgumentException("Game by that id does not exsist");
 
-        return await _context.Kills.Include(k => k.Game).Where(k => k.GameId == game_id).ToListAsync();
+
+
+        return await _context.Kills.Where(k => k.GameId == game_id).Include(k=>k.PlayerKills).ToListAsync();
     }
 
     public async Task<Kill> GetById(int game_id, int kill_id)

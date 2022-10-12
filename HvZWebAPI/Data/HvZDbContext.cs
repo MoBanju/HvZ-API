@@ -12,7 +12,7 @@ namespace HvZWebAPI.Data
         public DbSet<Game> Games { get; set; }
         public DbSet<Kill> Kills { get; set; }
         public DbSet<Chat> Chats { get; set; }
-        //public DbSet<PlayerKill> PlayerKills { get; set; }
+        public DbSet<PlayerKill> PlayerKills { get; set; }
 
         // 
         public HvZDbContext(DbContextOptions options) : base(options)

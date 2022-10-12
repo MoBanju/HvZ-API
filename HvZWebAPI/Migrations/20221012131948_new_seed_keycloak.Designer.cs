@@ -4,6 +4,7 @@ using HvZWebAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HvZWebAPI.Migrations
 {
     [DbContext(typeof(HvZDbContext))]
-    partial class HvZDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221012131948_new_seed_keycloak")]
+    partial class new_seed_keycloak
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -61,7 +63,7 @@ namespace HvZWebAPI.Migrations
                         new
                         {
                             Id = 1,
-                            ChatTime = new DateTime(2022, 10, 12, 13, 54, 45, 813, DateTimeKind.Utc).AddTicks(2339),
+                            ChatTime = new DateTime(2022, 10, 12, 13, 19, 48, 490, DateTimeKind.Utc).AddTicks(6072),
                             GameId = 2,
                             IsHumanGlobal = false,
                             IsZombieGlobal = true,
@@ -71,7 +73,7 @@ namespace HvZWebAPI.Migrations
                         new
                         {
                             Id = 2,
-                            ChatTime = new DateTime(2022, 10, 12, 13, 54, 45, 813, DateTimeKind.Utc).AddTicks(2378),
+                            ChatTime = new DateTime(2022, 10, 12, 13, 19, 48, 490, DateTimeKind.Utc).AddTicks(6077),
                             GameId = 2,
                             IsHumanGlobal = true,
                             IsZombieGlobal = false,
@@ -81,7 +83,7 @@ namespace HvZWebAPI.Migrations
                         new
                         {
                             Id = 3,
-                            ChatTime = new DateTime(2022, 10, 12, 13, 54, 45, 813, DateTimeKind.Utc).AddTicks(2379),
+                            ChatTime = new DateTime(2022, 10, 12, 13, 19, 48, 490, DateTimeKind.Utc).AddTicks(6078),
                             GameId = 2,
                             IsHumanGlobal = false,
                             IsZombieGlobal = false,
@@ -171,25 +173,25 @@ namespace HvZWebAPI.Migrations
                         {
                             Id = 1,
                             GameId = 2,
-                            TimeDeath = new DateTime(2022, 10, 12, 13, 54, 45, 813, DateTimeKind.Utc).AddTicks(2314)
+                            TimeDeath = new DateTime(2022, 10, 12, 13, 19, 48, 490, DateTimeKind.Utc).AddTicks(6047)
                         },
                         new
                         {
                             Id = 2,
                             GameId = 2,
-                            TimeDeath = new DateTime(2022, 10, 12, 13, 54, 45, 813, DateTimeKind.Utc).AddTicks(2318)
+                            TimeDeath = new DateTime(2022, 10, 12, 13, 19, 48, 490, DateTimeKind.Utc).AddTicks(6051)
                         },
                         new
                         {
                             Id = 3,
                             GameId = 2,
-                            TimeDeath = new DateTime(2022, 10, 12, 13, 54, 45, 813, DateTimeKind.Utc).AddTicks(2319)
+                            TimeDeath = new DateTime(2022, 10, 12, 13, 19, 48, 490, DateTimeKind.Utc).AddTicks(6052)
                         },
                         new
                         {
                             Id = 4,
                             GameId = 3,
-                            TimeDeath = new DateTime(2022, 10, 12, 13, 54, 45, 813, DateTimeKind.Utc).AddTicks(2320)
+                            TimeDeath = new DateTime(2022, 10, 12, 13, 19, 48, 490, DateTimeKind.Utc).AddTicks(6053)
                         });
                 });
 
@@ -283,7 +285,7 @@ namespace HvZWebAPI.Migrations
 
                     b.HasIndex("KillId");
 
-                    b.ToTable("PlayerKills");
+                    b.ToTable("PlayerKill");
 
                     b.HasData(
                         new
@@ -369,27 +371,6 @@ namespace HvZWebAPI.Migrations
                             FirstName = "Bertelsen",
                             KeyCloakId = "d2cb4a5b-3bb1-4a36-b3ae-a370c26e9646",
                             LastName = "Eivind"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            FirstName = "Kaffi",
-                            KeyCloakId = "fa31d802-1e3c-4909-b9e9-210978fd9688",
-                            LastName = "Elsker"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            FirstName = "Vann",
-                            KeyCloakId = "cd501590-5292-41cd-a170-7fea0b879bb0",
-                            LastName = "Elsker"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            FirstName = "Cola",
-                            KeyCloakId = "6cbfe3cb-9e81-438a-a56c-625624efc2a4",
-                            LastName = "Elske"
                         });
                 });
 
