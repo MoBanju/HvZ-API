@@ -8,16 +8,16 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace HvZWebAPI.Controllers;
 
-[Route("/game")]
+[Route("/[controller]")]
 [Produces("application/json")]
 [Consumes("application/json")]
 [ApiController]
-public class GamesController : ControllerBase
+public class GameController : ControllerBase
 {
     private readonly IGameRepository _repo;
     private readonly IMapper _mapper;
 
-    public GamesController(IGameRepository repo, IMapper mapper)
+    public GameController(IGameRepository repo, IMapper mapper)
     {
         _repo = repo;
         _mapper = mapper;
@@ -68,12 +68,24 @@ public class GamesController : ControllerBase
         {
             IEnumerable<Game> games = await _repo.GetAll();
             GameReadDTO[] gamesAsDTOs = games.Select(game => _mapper.Map<GameReadDTO>(game)).ToArray();
+            addPlayerCounts(gamesAsDTOs, games);
             return gamesAsDTOs;
         }
         catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
             return StatusCode(StatusCodes.Status500InternalServerError, ErrorCategory.INTERNAL);
+        }
+    }
+
+    private void addPlayerCounts(GameReadDTO[] gamesAsDTOs, IEnumerable<Game> games)
+    {
+        int count = 0;
+        foreach (var g in games)
+        {
+            if (g.Players != null)
+                gamesAsDTOs[count].PlayerCount = g.Players.Count();
+            count++;
         }
     }
 
