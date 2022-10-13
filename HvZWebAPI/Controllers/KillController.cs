@@ -124,7 +124,7 @@ namespace HvZWebAPI.Controllers
             try
             {
 
-                Kill? savedKill = await _repo.Add(game_id, kill, killAsDTO.BiteCode);
+                Kill? savedKill = await _repo.Add(game_id, kill, killAsDTO.BiteCode, killAsDTO.KillerId);
 
                 if (savedKill == null)
                 {
@@ -142,7 +142,7 @@ namespace HvZWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex);
                 return StatusCode(StatusCodes.Status500InternalServerError, ErrorCategory.INTERNAL);
             }
         }
