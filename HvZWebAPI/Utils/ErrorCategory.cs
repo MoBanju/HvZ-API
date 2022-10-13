@@ -7,7 +7,20 @@ public class ErrorCategory
     public static string INTERNAL {
         get { return "Oops, internal error try again later"; }
     }
-
+    public static string INVALID_CHAT_SCOPE {
+        get { return "A chat message can only be zombie, human or global scoped."; }
+    }
+    public static string POST_PLAYER_HUMAN_AND_PATIENT_ZERO {
+        get { return "Cant add new player being human and patient zero simultaneously"; }
+    }
+    public static string ONLY_A_ZOMBIE_CAN_POST_TO_ZOMBIE_CHAT(int game_id, int player_id)
+    {
+        return $"player {player_id} cant post to the zombie chat because she/he is human";
+    }
+    public static string ONLY_A_HUMAN_CAN_POST_TO_HUMAN_CHAT(int game_id, int player_id)
+    {
+        return $"player {player_id} cant post to the human chat because she/he is a zombie";
+    }
     public static string PLAYER_NOT_IN_GAME(int game_id, int player_id)
     {
         return $"No player with player id {player_id} is participating in a game with game id {game_id}";

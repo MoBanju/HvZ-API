@@ -25,10 +25,24 @@ public class ChatRepository : IChatRepository
         // Game has to exist, more like game with player not found
         if(game is null)
             throw new ArgumentException(ErrorCategory.GAME_NOT_FOUND(gameId));
-
+        
+        Player? sender = game.Players.FirstOrDefault(player => player.Id == chat.PlayerId);
         // Player has to be apart of given game.
-        if(!game.Players.Any(player => player.Id == chat.PlayerId))
+        if(sender is null)
             throw new ArgumentException(ErrorCategory.PLAYER_NOT_IN_GAME(gameId, chat.PlayerId));
+
+        // Invalid case .. Global chat is IsHumanGlobal equals false and IsZombieGlobal equals false
+        if(chat.IsHumanGlobal && chat.IsZombieGlobal)
+            throw new ArgumentException(ErrorCategory.INVALID_CHAT_SCOPE);
+
+        // Sender of chat message is a zombie, but tries to post in the human chat.
+        if(chat.IsHumanGlobal && !chat.IsZombieGlobal && !sender.IsHuman)
+            throw new ArgumentException(ErrorCategory.ONLY_A_HUMAN_CAN_POST_TO_HUMAN_CHAT(game.Id, sender.Id));
+
+        // Sender of chat message is human, but tries to post in zombie chat
+        if(chat.IsZombieGlobal && !chat.IsHumanGlobal && sender.IsHuman)
+            throw new ArgumentException(ErrorCategory.ONLY_A_ZOMBIE_CAN_POST_TO_ZOMBIE_CHAT(game.Id, sender.Id));
+
 
         chat.GameId = gameId;
         await _context.Chats.AddAsync(chat);
