@@ -24,6 +24,9 @@ public class PlayerRepository : IPlayerRepository
     {
         try
         {
+            if(player.IsHuman && player.IsPatientZero)
+                throw new ArgumentException(ErrorCategory.POST_PLAYER_HUMAN_AND_PATIENT_ZERO);
+
             await ValidateUniquePlayer(game_id, player.User.KeyCloakId);
 
             player.GameId = game_id;
