@@ -53,7 +53,7 @@ namespace HvZWebAPI.Data
                 new Player(){ Id=1, IsHuman=true, BiteCode="Street", IsPatientZero=false, UserId=1, GameId=2},
                 new Player(){ Id=8, IsHuman=true, BiteCode="Eight", IsPatientZero=false, UserId=1, GameId=3},
                 new Player(){ Id=4, IsHuman=true, BiteCode="Helloma", IsPatientZero=false, UserId=2, GameId=2},
-                new Player(){ Id=9, IsHuman=true, BiteCode="Nine", IsPatientZero=false, UserId=2, GameId=2},
+                new Player(){ Id=9, IsHuman=true, BiteCode="Nine", IsPatientZero=false, UserId=2, GameId=3},
                 new Player(){ Id=2, IsHuman=false, BiteCode="BooHoo", IsPatientZero=true, UserId=3, GameId=3},
                 new Player(){ Id=6, IsHuman=true, BiteCode="Six", IsPatientZero=false, UserId=3, GameId=1},
                 new Player(){ Id=3, IsHuman=false, BiteCode="Hello", IsPatientZero=false, UserId=4, GameId=3},
@@ -80,8 +80,6 @@ namespace HvZWebAPI.Data
             {
                 new Kill(){ Id=1, TimeDeath= DateTime.UtcNow, GameId=2 },
                 new Kill(){ Id=2, TimeDeath= DateTime.UtcNow, GameId=2 },
-                new Kill(){ Id=3, TimeDeath= DateTime.UtcNow, GameId=2 },
-                new Kill(){ Id=4, TimeDeath= DateTime.UtcNow, GameId=3 },
             };
             return kills;
         }
@@ -107,7 +105,7 @@ namespace HvZWebAPI.Data
                 new Chat(){ Id=2, Message="Run away!", ChatTime=DateTime.UtcNow,
                     IsHumanGlobal=true, IsZombieGlobal= false, GameId=2, PlayerId=1},
                 new Chat(){ Id=3, Message="Like... Hello", ChatTime=DateTime.UtcNow,
-                    IsHumanGlobal=false, IsZombieGlobal= false, GameId=2, PlayerId=3},
+                    IsHumanGlobal=false, IsZombieGlobal= false, GameId=3, PlayerId=3},
             };
             return chats;
         }

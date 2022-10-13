@@ -4,6 +4,7 @@ using HvZWebAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HvZWebAPI.Migrations
 {
     [DbContext(typeof(HvZDbContext))]
-    partial class HvZDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221013071553_zero_to_many")]
+    partial class zero_to_many
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -61,7 +63,7 @@ namespace HvZWebAPI.Migrations
                         new
                         {
                             Id = 1,
-                            ChatTime = new DateTime(2022, 10, 13, 7, 25, 44, 467, DateTimeKind.Utc).AddTicks(9759),
+                            ChatTime = new DateTime(2022, 10, 13, 7, 15, 52, 456, DateTimeKind.Utc).AddTicks(3540),
                             GameId = 2,
                             IsHumanGlobal = false,
                             IsZombieGlobal = true,
@@ -71,7 +73,7 @@ namespace HvZWebAPI.Migrations
                         new
                         {
                             Id = 2,
-                            ChatTime = new DateTime(2022, 10, 13, 7, 25, 44, 467, DateTimeKind.Utc).AddTicks(9766),
+                            ChatTime = new DateTime(2022, 10, 13, 7, 15, 52, 456, DateTimeKind.Utc).AddTicks(3552),
                             GameId = 2,
                             IsHumanGlobal = true,
                             IsZombieGlobal = false,
@@ -81,7 +83,7 @@ namespace HvZWebAPI.Migrations
                         new
                         {
                             Id = 3,
-                            ChatTime = new DateTime(2022, 10, 13, 7, 25, 44, 467, DateTimeKind.Utc).AddTicks(9769),
+                            ChatTime = new DateTime(2022, 10, 13, 7, 15, 52, 456, DateTimeKind.Utc).AddTicks(3555),
                             GameId = 3,
                             IsHumanGlobal = false,
                             IsZombieGlobal = false,
@@ -171,13 +173,13 @@ namespace HvZWebAPI.Migrations
                         {
                             Id = 1,
                             GameId = 2,
-                            TimeDeath = new DateTime(2022, 10, 13, 7, 25, 44, 467, DateTimeKind.Utc).AddTicks(9703)
+                            TimeDeath = new DateTime(2022, 10, 13, 7, 15, 52, 456, DateTimeKind.Utc).AddTicks(3481)
                         },
                         new
                         {
                             Id = 2,
                             GameId = 2,
-                            TimeDeath = new DateTime(2022, 10, 13, 7, 25, 44, 467, DateTimeKind.Utc).AddTicks(9715)
+                            TimeDeath = new DateTime(2022, 10, 13, 7, 15, 52, 456, DateTimeKind.Utc).AddTicks(3495)
                         });
                 });
 
@@ -258,7 +260,7 @@ namespace HvZWebAPI.Migrations
                         {
                             Id = 9,
                             BiteCode = "Nine",
-                            GameId = 3,
+                            GameId = 2,
                             IsHuman = true,
                             IsPatientZero = false,
                             UserId = 2
