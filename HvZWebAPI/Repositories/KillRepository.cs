@@ -89,11 +89,28 @@ public class KillRepository : IKillRepository
             var exsistingKill = await FindKillInGame(game_id, kill.Id);
             if (exsistingKill != null)
             {
+                PlayerKill epkVictim = exsistingKill.PlayerKills.Where(pk => pk.IsVictim == true).FirstOrDefault();
+                //Player existingVictim = ;
+                int exVictimId = _playerRepository.GetById(game_id, epkVictim.PlayerId).Id;/*existingVictim.Id*/;
+
                 //This sets the foreign keys
                 _context.Entry(exsistingKill).State = EntityState.Detached;
-                //kill.KillerId = exsistingKill.KillerId;
-                //kill.VictimId = exsistingKill.VictimId;
+
                 kill.GameId = exsistingKill.GameId;
+                kill.PlayerKills = exsistingKill.PlayerKills;
+                kill.TimeDeath = exsistingKill.TimeDeath;
+
+                if(exsistingKill.PlayerKills.FirstOrDefault().PlayerId != exVictimId )
+                {
+                    Player oldVictim = await _playerRepository.GetById(game_id, exVictimId);
+                    Player newVictim = await _playerRepository.GetById(game_id, exsistingKill.PlayerKills.FirstOrDefault().PlayerId);
+
+
+                    oldVictim.IsHuman = true;
+                    newVictim.IsHuman = false;
+                }
+
+
             }
 
             _context.Update(kill);
@@ -119,7 +136,7 @@ public class KillRepository : IKillRepository
     {
         if (!GameExists(game_id)) throw new ArgumentException("There is no game with that id");
 
-        Kill? kill = await _context.Kills.Include(k => k.Game).FirstOrDefaultAsync(k => k.Id == kill_id);
+        Kill? kill = await _context.Kills/*.Where(k => k.Id == kill_id)*/.Include(k => k.Game).Include(k => k.PlayerKills).ThenInclude(pk => pk.PlayerId).FirstOrDefaultAsync(k => k.Id == kill_id/**/);
         if (kill == null)
         {
             throw new ArgumentException("There is no kill with that id");
@@ -133,6 +150,32 @@ public class KillRepository : IKillRepository
         return kill;
     }
 
+    /*
+    private async Task<PlayerKill> FindVictimInGame(int game_id, int kill_id)
+    {
+        if (!GameExists(game_id)) throw new ArgumentException("There is no game with that id");
+
+        Kill? kill = await _context.Kills.Include(k => k.PlayerKills).Include(k => k.Game).FirstOrDefaultAsync(k => k.Id == kill_id);
+        if (kill == null)
+        {
+            throw new ArgumentException("There is no kill with that id");
+        }
+
+        if (kill.GameId != game_id)
+        {
+            throw new ArgumentException("The kill-id you sent in is not in the game you sent in");
+        }
+
+        foreach (var pk in kill.PlayerKills)
+        {
+            if(pk.IsVictim == true)
+            {
+                PlayerKill victim = pk;
+            }
+        }
+        //return kill.PlayerKills.Where(pk => pk.IsVictim = false);
+    }
+    */
 
     /// <summary>
     /// Checks if the game is tracked in the context

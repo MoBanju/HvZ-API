@@ -155,7 +155,7 @@ namespace HvZWebAPI.Controllers
         /// <param name="game_id">Specified Game</param>
         /// <param name="kill_id">Specified Kill</param>
         /// <returns></returns>
-        [Authorize]
+        //[Authorize]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
