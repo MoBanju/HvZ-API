@@ -16,7 +16,7 @@ public class KillRepository : IKillRepository
         _context = context;
         _playerRepository = playerRepository;
     }
-    public async Task<Kill?> Add(int game_id, Kill kill, string bitecode)
+    public async Task<Kill?> Add(int game_id, Kill kill, string bitecode, int killer_id)
     {
         if (!GameExists(game_id)) throw new ArgumentException("Game by that id does not exsist");
 
@@ -29,17 +29,12 @@ public class KillRepository : IKillRepository
         _context.Entry(victim).State = EntityState.Modified;
 
         var pk1 = new PlayerKill() { KillId = kill.Id, PlayerId = victim.Id, IsVictim = true };
-        var pk2 = new PlayerKill() { KillId = kill.Id, PlayerId = 4, IsVictim = false };
+        var pk2 = new PlayerKill() { KillId = kill.Id, PlayerId = killer_id, IsVictim = false };
 
-        //Select one kill
-        //And it's two player kills
-        _context.Kills.Where(k => k.Id == pk1.KillId).Include(k => k.PlayerKills);
+        kill.PlayerKills = new List<PlayerKill>();
+        kill.PlayerKills.Add(pk1);
+        kill.PlayerKills.Add(pk2);
 
-        var pkdb = _context.PlayerKills.Where(pk => pk.KillId == kill.Id && pk.PlayerId == pk1.PlayerId);
-        var pk2db = _context.PlayerKills.Where(pk => pk.KillId == kill.Id && pk.PlayerId == pk2.PlayerId);
-
-        _context.PlayerKills.Add(pk1);
-        _context.PlayerKills.Add(pk2);
         _context.Kills.Add(kill);
 
 
