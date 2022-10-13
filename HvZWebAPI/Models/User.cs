@@ -8,5 +8,5 @@ public class User
     public string LastName { get; set; }
 
     // Navigation Properties
-    public ICollection<Player> Players { get; set; }
+    public ICollection<Player>? Players { get; set; }
 }

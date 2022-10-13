@@ -18,12 +18,12 @@ namespace HvZWebAPI.Controllers;
 [ApiController]
 [Produces("application/json")]
 [Consumes("application/json")]
-public class PlayersController : ControllerBase
+public class PlayerController : ControllerBase
 {
     private readonly IPlayerRepository _repo;
     private readonly IMapper _mapper;
 
-    public PlayersController(IPlayerRepository repo, IMapper mapper)
+    public PlayerController(IPlayerRepository repo, IMapper mapper)
     {
         _repo = repo;
         _mapper = mapper;

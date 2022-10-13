@@ -11,7 +11,7 @@
 
         public ICollection<Kill> Kills { get; set; }
 
-        public ICollection<Player> Players { get; set; }
+        public ICollection<Player>? Players { get; set; }
 
         public ICollection<Chat> Chats { get; set; }
 

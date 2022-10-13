@@ -13,4 +13,6 @@ public class GameReadDTO
 
     [JsonConverter(typeof(StringEnumConverter))]
     public State State { get; set; }
+
+    public int PlayerCount { get; set; }
 }
