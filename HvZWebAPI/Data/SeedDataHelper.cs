@@ -34,7 +34,7 @@ namespace HvZWebAPI.Data
         {
             List<User> users = new List<User>()
             {
-                new User() {Id=1, KeyCloakId="f416c45a-2945-4047-b609-06de42279237", FirstName="mordi", LastName="007"},
+                new User() {Id=1, KeyCloakId="f416c45a-2945-4047-b609-06de42279237", FirstName="mordi", LastName="007"}, //Admin
                 new User() {Id=2, KeyCloakId="2e951202-167e-40fd-8fb1-91d2416d0d10", FirstName="Øyvind", LastName="Sande Reitan"},
                 new User() {Id=3, KeyCloakId="816cf1b0-c9e5-47b1-92f0-5927695b238a", FirstName="Funny", LastName="Man"},
                 new User() {Id=4, KeyCloakId="d2cb4a5b-3bb1-4a36-b3ae-a370c26e9646", FirstName="Bertelsen", LastName="Eivind"},
@@ -50,13 +50,13 @@ namespace HvZWebAPI.Data
             List<Player> players = new List<Player>()
             {
                 new Player(){ Id=5, IsHuman=true, BiteCode="Five", IsPatientZero=false, UserId=1, GameId=1},
-                new Player(){ Id=1, IsHuman=true, BiteCode="Street", IsPatientZero=false, UserId=1, GameId=2},
+                new Player(){ Id=1, IsHuman=false, BiteCode="Street", IsPatientZero=false, UserId=1, GameId=2},
                 new Player(){ Id=8, IsHuman=true, BiteCode="Eight", IsPatientZero=false, UserId=1, GameId=3},
-                new Player(){ Id=4, IsHuman=true, BiteCode="Helloma", IsPatientZero=false, UserId=2, GameId=2},
+                new Player(){ Id=4, IsHuman=false, BiteCode="Helloma", IsPatientZero=true, UserId=2, GameId=2},
                 new Player(){ Id=9, IsHuman=true, BiteCode="Nine", IsPatientZero=false, UserId=2, GameId=3},
-                new Player(){ Id=2, IsHuman=false, BiteCode="BooHoo", IsPatientZero=true, UserId=3, GameId=3},
+                new Player(){ Id=2, IsHuman=false, BiteCode="BooHoo", IsPatientZero=false, UserId=3, GameId=3},
                 new Player(){ Id=6, IsHuman=true, BiteCode="Six", IsPatientZero=false, UserId=3, GameId=1},
-                new Player(){ Id=3, IsHuman=false, BiteCode="Hello", IsPatientZero=false, UserId=4, GameId=3},
+                new Player(){ Id=3, IsHuman=false, BiteCode="Hello", IsPatientZero=true, UserId=4, GameId=3},
                 new Player(){ Id=7, IsHuman=true, BiteCode="Seven", IsPatientZero=false, UserId=4, GameId=1},
             };
             return players;
@@ -79,7 +79,7 @@ namespace HvZWebAPI.Data
             List<Kill> kills = new List<Kill>()
             {
                 new Kill(){ Id=1, TimeDeath= DateTime.UtcNow, GameId=2 },
-                new Kill(){ Id=2, TimeDeath= DateTime.UtcNow, GameId=2 },
+                new Kill(){ Id=2, TimeDeath= DateTime.UtcNow, GameId=3 },
             };
             return kills;
         }
@@ -101,11 +101,11 @@ namespace HvZWebAPI.Data
             List<Chat> chats = new List<Chat>()
             {
                 new Chat(){ Id=1, Message="Got him!", ChatTime=DateTime.UtcNow,
-                    IsHumanGlobal=false, IsZombieGlobal= true, GameId=2, PlayerId=2},
+                    IsHumanGlobal=false, IsZombieGlobal= true, GameId=3, PlayerId=2},
                 new Chat(){ Id=2, Message="Run away!", ChatTime=DateTime.UtcNow,
-                    IsHumanGlobal=true, IsZombieGlobal= false, GameId=2, PlayerId=1},
+                    IsHumanGlobal=false, IsZombieGlobal= false, GameId=2, PlayerId=1},
                 new Chat(){ Id=3, Message="Like... Hello", ChatTime=DateTime.UtcNow,
-                    IsHumanGlobal=false, IsZombieGlobal= false, GameId=3, PlayerId=3},
+                    IsHumanGlobal=true, IsZombieGlobal= false, GameId=1, PlayerId=7},
             };
             return chats;
         }
