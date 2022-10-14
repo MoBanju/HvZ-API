@@ -86,6 +86,10 @@ public class PlayerController : ControllerBase
         try
         {
             playersDTO = _mapper.Map<List<PlayerReadAdminDTO>>(await _repo.GetAll(game_id));
+            if (!User.IsInRole(ClaimsTransformer.ADMIN_ROLE))
+            {
+                playersDTO.ForEach(pdto => pdto.IsPatientZero = null);
+            }
         }
         catch (ArgumentException ex)
         {
