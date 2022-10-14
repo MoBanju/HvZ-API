@@ -36,7 +36,7 @@ public class PlayerController : ControllerBase
     /// <param name="game_id"></param>
     /// <param name="playerDTO"></param>
     /// <returns></returns>
-    //[Authorize]
+    [Authorize]
     [HttpPost("{game_id}/[controller]")]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -75,7 +75,7 @@ public class PlayerController : ControllerBase
     /// </summary>
     /// <param name="game_id"></param>
     /// <returns></returns>
-    //[Authorize]
+    [Authorize]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [HttpGet("{game_id}/[controller]")]
@@ -86,6 +86,10 @@ public class PlayerController : ControllerBase
         try
         {
             playersDTO = _mapper.Map<List<PlayerReadAdminDTO>>(await _repo.GetAll(game_id));
+            if (!User.IsInRole(ClaimsTransformer.ADMIN_ROLE))
+            {
+                playersDTO.ForEach(pdto => pdto.IsPatientZero = null);
+            }
         }
         catch (ArgumentException ex)
         {
@@ -149,7 +153,7 @@ public class PlayerController : ControllerBase
     /// <param name="player_id"></param>
     /// <param name="player"></param>
     /// <returns></returns>
-    [Authorize]
+    [Authorize(Roles = "admin-client-role")]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -185,6 +189,7 @@ public class PlayerController : ControllerBase
     /// <param name="game_id"></param>
     /// <param name="player_id"></param>
     /// <returns></returns>
+    [Authorize(Roles = "admin-client-role")]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]

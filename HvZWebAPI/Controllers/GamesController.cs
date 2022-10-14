@@ -5,6 +5,11 @@ using HvZWebAPI.DTOs.Game;
 using HvZWebAPI.Interfaces;
 using HvZWebAPI.Utils;
 using Microsoft.AspNetCore.Authorization;
+using NuGet.Versioning;
+using System.Security.Claims;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.Diagnostics;
 
 namespace HvZWebAPI.Controllers;
 
@@ -28,7 +33,7 @@ public class GameController : ControllerBase
     /// </summary>
     /// <param name="gameAsDTO"></param>
     /// <returns></returns>
-    [Authorize]
+    [Authorize(Roles = "admin-client-role")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -101,6 +106,20 @@ public class GameController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<GameReadDTO>> GetGame(int id)
     {
+
+
+        User.HasClaim((c) => {
+
+            if(c.Type == ClaimTypes.Role)
+             Debug.WriteLine("Roleclaim " + c);
+            return c.Value == ClaimTypes.Role;
+        });
+
+
+        var roles = User.Claims.Where(c=> c.Type == ClaimTypes.Role).Select(c=>c.Value);
+
+        var roles3 = User.IsInRole(ClaimsTransformer.ADMIN_ROLE);
+
         try
         {
             Game? game = await _repo.GetById(id);
@@ -125,7 +144,7 @@ public class GameController : ControllerBase
     /// <param name="id"></param>
     /// <param name="gameAsDto"></param>
     /// <returns></returns>
-    [Authorize]
+    [Authorize(Roles = "admin-client-role")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -164,7 +183,7 @@ public class GameController : ControllerBase
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
-    //[Authorize]
+    [Authorize(Roles = "admin-client-role")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]

@@ -10,6 +10,9 @@ using System.Reflection;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.Authentication;
+using HvZWebAPI.Utils;
+using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,6 +40,35 @@ builder.Services.AddSwaggerGen(options =>
             Url = new Uri("https://example.com/license")
         }
     });
+
+
+    var schema = new OpenApiSecurityScheme()
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "JWT Authorization header using the Bearer scheme.",
+        Reference = new OpenApiReference
+        {
+            Type = ReferenceType.SecurityScheme,
+            Id = "Bearer"
+
+        },
+    };
+
+    options.AddSecurityDefinition("Bearer", schema);
+
+    options.AddSecurityRequirement(
+        new OpenApiSecurityRequirement {
+            {
+                schema, new[] { "Bearer" }
+            }
+        }
+      );
+
+
     // using System.Reflection;
     var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
@@ -48,6 +80,7 @@ builder.Services.AddScoped<IGameRepository, GameRepository>();
 builder.Services.AddScoped<IChatRepository, ChatRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IKillRepository, KillRepository>();
+builder.Services.AddTransient<IClaimsTransformation, ClaimsTransformer>();
 
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 DotEnv.Load();
@@ -60,7 +93,8 @@ builder.Services.AddDbContext<HvZDbContext>(opt => opt.UseSqlServer(connectionSt
 
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options => {
+    .AddJwtBearer(options =>
+    {
         options.TokenValidationParameters = new TokenValidationParameters()
         {
             IssuerSigningKeyResolver = (token, securityToken, kid, paramaters) =>
@@ -96,7 +130,7 @@ else
 
 }
 
-    app.UseAuthentication();
+app.UseAuthentication();
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

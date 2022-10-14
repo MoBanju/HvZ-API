@@ -77,7 +77,9 @@ namespace HvZWebAPI.Data
             modelBuilder.Entity<Player>().Property(p => p.BiteCode).HasMaxLength(50);
 
             modelBuilder.Entity<Game>().Property(g => g.Name).HasMaxLength(50);
-            modelBuilder.Entity<Game>().Property(g => g.Description).HasMaxLength(200);
+            modelBuilder.Entity<Game>().Property(g => g.Description).HasMaxLength(800);
+
+            modelBuilder.Entity<Chat>().Property(c => c.Message).HasMaxLength(200);
 
         }
     }
