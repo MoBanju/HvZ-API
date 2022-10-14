@@ -82,22 +82,44 @@ public class KillRepository : IKillRepository
         return kill;
     }
 
-    public async Task Update(int game_id, Kill kill)
+    public async Task Update(int game_id, Kill kill, string bitecode)
     {
         try
         {
-            var exsistingKill = await FindKillInGame(game_id, kill.Id);
-            if (exsistingKill != null)
+            var onlyKill = await _context.Kills.FindAsync(kill.Id);
+            if (onlyKill != null)
             {
-                //This sets the foreign keys
-                _context.Entry(exsistingKill).State = EntityState.Detached;
-                //kill.KillerId = exsistingKill.KillerId;
-                //kill.VictimId = exsistingKill.VictimId;
-                kill.GameId = exsistingKill.GameId;
-            }
+                onlyKill.GameId = game_id;
+                onlyKill.TimeDeath = kill.TimeDeath;
 
-            _context.Update(kill);
-            await _context.SaveChangesAsync();
+                //To be killed
+                Player newVictim = await _playerRepository.GetByBiteCode(game_id, bitecode); //Should be human at this point
+                newVictim.IsHuman = false;
+
+                //Old PK
+                PlayerKill pkVictim = await _context.PlayerKills.Where(pk => pk.KillId == kill.Id && pk.IsVictim == true).FirstAsync(); //Should be Zombie at this point
+
+
+                //Revert the death of the old victim
+                Player exVictim = await _playerRepository.GetById(game_id, pkVictim.PlayerId);/*existingVictim.Id*/;
+                exVictim.IsHuman = true;
+
+                //New PK
+                PlayerKill newPK = new PlayerKill();
+                newPK.Player = newVictim;
+                newPK.PlayerId = newVictim.Id;
+                newPK.KillId = onlyKill.Id;
+                newPK.Kill = onlyKill;
+                newPK.IsVictim = true;
+
+                _context.Entry(newVictim).State = EntityState.Modified;
+                _context.Remove(pkVictim);
+                _context.Add(newPK);
+                _context.Entry(onlyKill).State = EntityState.Modified;
+                _context.Entry(exVictim).State = EntityState.Modified;
+
+                await _context.SaveChangesAsync();
+            }
         }
         catch (Exception)
         {
@@ -119,7 +141,7 @@ public class KillRepository : IKillRepository
     {
         if (!GameExists(game_id)) throw new ArgumentException("There is no game with that id");
 
-        Kill? kill = await _context.Kills.Include(k => k.Game).FirstOrDefaultAsync(k => k.Id == kill_id);
+        Kill? kill = await _context.Kills/*.Where(k => k.Id == kill_id)*/.Include(k => k.Game).Include(k => k.PlayerKills).FirstOrDefaultAsync(k => k.Id == kill_id/**/);
         if (kill == null)
         {
             throw new ArgumentException("There is no kill with that id");
@@ -133,6 +155,32 @@ public class KillRepository : IKillRepository
         return kill;
     }
 
+    /*
+    private async Task<PlayerKill> FindVictimInGame(int game_id, int kill_id)
+    {
+        if (!GameExists(game_id)) throw new ArgumentException("There is no game with that id");
+
+        Kill? kill = await _context.Kills.Include(k => k.PlayerKills).Include(k => k.Game).FirstOrDefaultAsync(k => k.Id == kill_id);
+        if (kill == null)
+        {
+            throw new ArgumentException("There is no kill with that id");
+        }
+
+        if (kill.GameId != game_id)
+        {
+            throw new ArgumentException("The kill-id you sent in is not in the game you sent in");
+        }
+
+        foreach (var pk in kill.PlayerKills)
+        {
+            if(pk.IsVictim == true)
+            {
+                PlayerKill victim = pk;
+            }
+        }
+        //return kill.PlayerKills.Where(pk => pk.IsVictim = false);
+    }
+    */
 
     /// <summary>
     /// Checks if the game is tracked in the context

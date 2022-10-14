@@ -33,7 +33,6 @@
 
   <ItemGroup>
     <Folder Include="DTOs\Game\" />
-    <Folder Include="DTOs\Kill\" />
     <Folder Include="DTOs\Chat\" />
     <Folder Include="DTOs\Player\" />
     <Folder Include="Repositories\" />

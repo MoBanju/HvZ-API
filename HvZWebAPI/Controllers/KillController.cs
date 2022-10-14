@@ -74,12 +74,12 @@ namespace HvZWebAPI.Controllers
         /// <param name="kill_id">Specified Kill</param>
         /// <param name="killAsDTO">Kill Data Transfer Object</param>
         /// <returns></returns>
-        [Authorize]
+        //[Authorize]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [HttpPut("{game_id}/[controller]/{kill_id}")]
-        public async Task<IActionResult> PutKill(int game_id, int kill_id, KillUpdateDeleteDTO killAsDTO)
+        public async Task<IActionResult> PutKill(int game_id, int kill_id, KillUpdateDTO killAsDTO)
         {
             if (kill_id != killAsDTO.Id)
             {
@@ -88,7 +88,7 @@ namespace HvZWebAPI.Controllers
 
             try
             {
-                await _repo.Update(game_id, _mapper.Map<KillUpdateDeleteDTO, Kill>(killAsDTO));
+                await _repo.Update(game_id, _mapper.Map<KillUpdateDTO, Kill>(killAsDTO), killAsDTO.Bitecode);
             }
             catch (ArgumentException ex)
             {
@@ -155,7 +155,7 @@ namespace HvZWebAPI.Controllers
         /// <param name="game_id">Specified Game</param>
         /// <param name="kill_id">Specified Kill</param>
         /// <returns></returns>
-        [Authorize]
+        //[Authorize]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
