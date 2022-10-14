@@ -33,7 +33,7 @@ public class GameController : ControllerBase
     /// </summary>
     /// <param name="gameAsDTO"></param>
     /// <returns></returns>
-    [Authorize]
+    [Authorize(Roles = "admin-client-role")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -108,38 +108,6 @@ public class GameController : ControllerBase
     {
 
 
-     
-
-
-        /*     var roles2 = ((ClaimsIdentity)User.Identity);
-
-             foreach(var claim in roles2.Claims)
-             {
-                 Console.WriteLine(claim.Type);
-                 Console.WriteLine(claim.ValueType);
-                 if(claim.Type == "realm_access")
-                 {
-                     var realmAccessAsDict = JsonConvert.DeserializeObject<Dictionary<string, string[]>>(claim.Value);
-                     if (realmAccessAsDict != null && realmAccessAsDict["roles"] != null)
-                     {
-                         foreach(var role in realmAccessAsDict["roles"])
-                         {
-                             roles2.AddClaim(new Claim(ClaimTypes.Role, role));        
-                         }
-                     }
-                     Console.WriteLine("Actual role claim");
-
-                 }
-
-             }
-
-             var isAdmin = roles2.HasClaim(c=> c.Type == "ADMIN");
-     */
-
-
-        //ClaimsTransformer
-
-
         User.HasClaim((c) => {
 
             if(c.Type == ClaimTypes.Role)
@@ -150,10 +118,7 @@ public class GameController : ControllerBase
 
         var roles = User.Claims.Where(c=> c.Type == ClaimTypes.Role).Select(c=>c.Value);
 
-        var roles3 = User.IsInRole("ADMIN");
-
-        
-        //{realm_access: {"roles":["offline_access","uma_authorization","default-roles-hvz"]}}
+        var roles3 = User.IsInRole(ClaimsTransformer.ADMIN_ROLE);
 
         try
         {
@@ -179,7 +144,7 @@ public class GameController : ControllerBase
     /// <param name="id"></param>
     /// <param name="gameAsDto"></param>
     /// <returns></returns>
-    [Authorize]
+    [Authorize(Roles = "admin-client-role")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -218,7 +183,7 @@ public class GameController : ControllerBase
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
-    //[Authorize]
+    [Authorize(Roles = "admin-client-role")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
