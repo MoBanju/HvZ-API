@@ -9,7 +9,7 @@ namespace HvZWebAPI.Utils;
 
 public class ClaimsTransformer : IClaimsTransformation
 {
-    private string _resource_client = "account";
+    private string _resource_client = "react-client";
 
 
     public Task<ClaimsPrincipal> TransformAsync(ClaimsPrincipal principal)
@@ -20,6 +20,10 @@ public class ClaimsTransformer : IClaimsTransformation
 
         if (claimsIdentity != null && claimsIdentity.IsAuthenticated && claimsIdentity.HasClaim((claim) => claim.Type == "resource_access"))
         {
+            var resourceClaims = claimsIdentity.FindAll((claim) => claim.Type == "resource_access");
+
+
+
             var userRoles = claimsIdentity.FindFirst((claim) => claim.Type == "resource_access");
             if (userRoles != null)
             {
