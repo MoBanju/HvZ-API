@@ -5,6 +5,11 @@ using HvZWebAPI.DTOs.Game;
 using HvZWebAPI.Interfaces;
 using HvZWebAPI.Utils;
 using Microsoft.AspNetCore.Authorization;
+using NuGet.Versioning;
+using System.Security.Claims;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.Diagnostics;
 
 namespace HvZWebAPI.Controllers;
 
@@ -101,6 +106,55 @@ public class GameController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<GameReadDTO>> GetGame(int id)
     {
+
+
+     
+
+
+        /*     var roles2 = ((ClaimsIdentity)User.Identity);
+
+             foreach(var claim in roles2.Claims)
+             {
+                 Console.WriteLine(claim.Type);
+                 Console.WriteLine(claim.ValueType);
+                 if(claim.Type == "realm_access")
+                 {
+                     var realmAccessAsDict = JsonConvert.DeserializeObject<Dictionary<string, string[]>>(claim.Value);
+                     if (realmAccessAsDict != null && realmAccessAsDict["roles"] != null)
+                     {
+                         foreach(var role in realmAccessAsDict["roles"])
+                         {
+                             roles2.AddClaim(new Claim(ClaimTypes.Role, role));        
+                         }
+                     }
+                     Console.WriteLine("Actual role claim");
+
+                 }
+
+             }
+
+             var isAdmin = roles2.HasClaim(c=> c.Type == "ADMIN");
+     */
+
+
+        //ClaimsTransformer
+
+
+        User.HasClaim((c) => {
+
+            if(c.Type == ClaimTypes.Role)
+             Debug.WriteLine("Roleclaim " + c);
+            return c.Value == ClaimTypes.Role;
+        });
+
+
+        var roles = User.Claims.Where(c=> c.Type == ClaimTypes.Role).Select(c=>c.Value);
+
+        var roles3 = User.IsInRole("ADMIN");
+
+        
+        //{realm_access: {"roles":["offline_access","uma_authorization","default-roles-hvz"]}}
+
         try
         {
             Game? game = await _repo.GetById(id);
