@@ -4,6 +4,7 @@ using HvZWebAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HvZWebAPI.Migrations
 {
     [DbContext(typeof(HvZDbContext))]
-    partial class HvZDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221013072545_fix_seeding")]
+    partial class fix_seeding
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -44,8 +46,7 @@ namespace HvZWebAPI.Migrations
 
                     b.Property<string>("Message")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("PlayerId")
                         .HasColumnType("int");
@@ -62,8 +63,8 @@ namespace HvZWebAPI.Migrations
                         new
                         {
                             Id = 1,
-                            ChatTime = new DateTime(2022, 10, 14, 10, 49, 59, 298, DateTimeKind.Utc).AddTicks(537),
-                            GameId = 3,
+                            ChatTime = new DateTime(2022, 10, 13, 7, 25, 44, 467, DateTimeKind.Utc).AddTicks(9759),
+                            GameId = 2,
                             IsHumanGlobal = false,
                             IsZombieGlobal = true,
                             Message = "Got him!",
@@ -72,9 +73,9 @@ namespace HvZWebAPI.Migrations
                         new
                         {
                             Id = 2,
-                            ChatTime = new DateTime(2022, 10, 14, 10, 49, 59, 298, DateTimeKind.Utc).AddTicks(541),
+                            ChatTime = new DateTime(2022, 10, 13, 7, 25, 44, 467, DateTimeKind.Utc).AddTicks(9766),
                             GameId = 2,
-                            IsHumanGlobal = false,
+                            IsHumanGlobal = true,
                             IsZombieGlobal = false,
                             Message = "Run away!",
                             PlayerId = 1
@@ -82,12 +83,12 @@ namespace HvZWebAPI.Migrations
                         new
                         {
                             Id = 3,
-                            ChatTime = new DateTime(2022, 10, 14, 10, 49, 59, 298, DateTimeKind.Utc).AddTicks(542),
-                            GameId = 1,
-                            IsHumanGlobal = true,
+                            ChatTime = new DateTime(2022, 10, 13, 7, 25, 44, 467, DateTimeKind.Utc).AddTicks(9769),
+                            GameId = 3,
+                            IsHumanGlobal = false,
                             IsZombieGlobal = false,
                             Message = "Like... Hello",
-                            PlayerId = 7
+                            PlayerId = 3
                         });
                 });
 
@@ -101,8 +102,8 @@ namespace HvZWebAPI.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasMaxLength(800)
-                        .HasColumnType("nvarchar(800)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -172,13 +173,13 @@ namespace HvZWebAPI.Migrations
                         {
                             Id = 1,
                             GameId = 2,
-                            TimeDeath = new DateTime(2022, 10, 14, 10, 49, 59, 298, DateTimeKind.Utc).AddTicks(520)
+                            TimeDeath = new DateTime(2022, 10, 13, 7, 25, 44, 467, DateTimeKind.Utc).AddTicks(9703)
                         },
                         new
                         {
                             Id = 2,
-                            GameId = 3,
-                            TimeDeath = new DateTime(2022, 10, 14, 10, 49, 59, 298, DateTimeKind.Utc).AddTicks(523)
+                            GameId = 2,
+                            TimeDeath = new DateTime(2022, 10, 13, 7, 25, 44, 467, DateTimeKind.Utc).AddTicks(9715)
                         });
                 });
 
@@ -233,7 +234,7 @@ namespace HvZWebAPI.Migrations
                             Id = 1,
                             BiteCode = "Street",
                             GameId = 2,
-                            IsHuman = false,
+                            IsHuman = true,
                             IsPatientZero = false,
                             UserId = 1
                         },
@@ -251,8 +252,8 @@ namespace HvZWebAPI.Migrations
                             Id = 4,
                             BiteCode = "Helloma",
                             GameId = 2,
-                            IsHuman = false,
-                            IsPatientZero = true,
+                            IsHuman = true,
+                            IsPatientZero = false,
                             UserId = 2
                         },
                         new
@@ -270,7 +271,7 @@ namespace HvZWebAPI.Migrations
                             BiteCode = "BooHoo",
                             GameId = 3,
                             IsHuman = false,
-                            IsPatientZero = false,
+                            IsPatientZero = true,
                             UserId = 3
                         },
                         new
@@ -288,7 +289,7 @@ namespace HvZWebAPI.Migrations
                             BiteCode = "Hello",
                             GameId = 3,
                             IsHuman = false,
-                            IsPatientZero = true,
+                            IsPatientZero = false,
                             UserId = 4
                         },
                         new

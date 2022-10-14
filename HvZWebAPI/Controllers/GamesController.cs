@@ -5,19 +5,24 @@ using HvZWebAPI.DTOs.Game;
 using HvZWebAPI.Interfaces;
 using HvZWebAPI.Utils;
 using Microsoft.AspNetCore.Authorization;
+using NuGet.Versioning;
+using System.Security.Claims;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.Diagnostics;
 
 namespace HvZWebAPI.Controllers;
 
-[Route("/game")]
+[Route("/[controller]")]
 [Produces("application/json")]
 [Consumes("application/json")]
 [ApiController]
-public class GamesController : ControllerBase
+public class GameController : ControllerBase
 {
     private readonly IGameRepository _repo;
     private readonly IMapper _mapper;
 
-    public GamesController(IGameRepository repo, IMapper mapper)
+    public GameController(IGameRepository repo, IMapper mapper)
     {
         _repo = repo;
         _mapper = mapper;
@@ -28,7 +33,7 @@ public class GamesController : ControllerBase
     /// </summary>
     /// <param name="gameAsDTO"></param>
     /// <returns></returns>
-    [Authorize]
+    [Authorize(Roles = "admin-client-role")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -68,12 +73,24 @@ public class GamesController : ControllerBase
         {
             IEnumerable<Game> games = await _repo.GetAll();
             GameReadDTO[] gamesAsDTOs = games.Select(game => _mapper.Map<GameReadDTO>(game)).ToArray();
+            addPlayerCounts(gamesAsDTOs, games);
             return gamesAsDTOs;
         }
         catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
             return StatusCode(StatusCodes.Status500InternalServerError, ErrorCategory.INTERNAL);
+        }
+    }
+
+    private void addPlayerCounts(GameReadDTO[] gamesAsDTOs, IEnumerable<Game> games)
+    {
+        int count = 0;
+        foreach (var g in games)
+        {
+            if (g.Players != null)
+                gamesAsDTOs[count].PlayerCount = g.Players.Count();
+            count++;
         }
     }
 
@@ -89,6 +106,20 @@ public class GamesController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<GameReadDTO>> GetGame(int id)
     {
+
+
+        User.HasClaim((c) => {
+
+            if(c.Type == ClaimTypes.Role)
+             Debug.WriteLine("Roleclaim " + c);
+            return c.Value == ClaimTypes.Role;
+        });
+
+
+        var roles = User.Claims.Where(c=> c.Type == ClaimTypes.Role).Select(c=>c.Value);
+
+        var roles3 = User.IsInRole(ClaimsTransformer.ADMIN_ROLE);
+
         try
         {
             Game? game = await _repo.GetById(id);
@@ -113,7 +144,7 @@ public class GamesController : ControllerBase
     /// <param name="id"></param>
     /// <param name="gameAsDto"></param>
     /// <returns></returns>
-    [Authorize]
+    [Authorize(Roles = "admin-client-role")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -152,7 +183,7 @@ public class GamesController : ControllerBase
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
-    //[Authorize]
+    [Authorize(Roles = "admin-client-role")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]

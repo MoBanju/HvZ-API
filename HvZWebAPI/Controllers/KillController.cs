@@ -25,6 +25,7 @@ namespace HvZWebAPI.Controllers
             _repo = repo;
         }
 
+        [Authorize]
         [HttpGet("{game_id}/[controller]")]
         public async Task<ActionResult<KillReadDTO[]>> GetKills(int game_id)
         {
@@ -40,6 +41,7 @@ namespace HvZWebAPI.Controllers
         /// <param name="game_id">Game Id</param>
         /// <param name="kill_id">Kill Id</param>
         /// <returns></returns>
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -111,7 +113,7 @@ namespace HvZWebAPI.Controllers
         /// <param name="game_id">Specified Game</param>
         /// <param name="killAsDTO">Kill Data Transfer Object</param>
         /// <returns></returns>
-        //[Authorize]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -155,7 +157,7 @@ namespace HvZWebAPI.Controllers
         /// <param name="game_id">Specified Game</param>
         /// <param name="kill_id">Specified Kill</param>
         /// <returns></returns>
-        //[Authorize]
+        [Authorize(Roles = "admin-client-role")]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
