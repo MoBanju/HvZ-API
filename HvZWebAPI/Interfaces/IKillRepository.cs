@@ -39,7 +39,7 @@ public interface IKillRepository
     /// <param name="game_id">Specific Game</param>
     /// <param name="kill">Kill in update</param>
     /// <returns>Either the changes are saved or the error is throwed</returns>
-    public Task Update(int game_id, Kill kill);
+    public Task Update(int game_id, Kill kill, string bitecode);
 
     /// <summary>
     /// Deletes the kill

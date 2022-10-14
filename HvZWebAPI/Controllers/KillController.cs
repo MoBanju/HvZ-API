@@ -79,7 +79,7 @@ namespace HvZWebAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [HttpPut("{game_id}/[controller]/{kill_id}")]
-        public async Task<IActionResult> PutKill(int game_id, int kill_id, KillUpdateDeleteDTO killAsDTO)
+        public async Task<IActionResult> PutKill(int game_id, int kill_id, KillUpdateDTO killAsDTO)
         {
             if (kill_id != killAsDTO.Id)
             {
@@ -88,7 +88,7 @@ namespace HvZWebAPI.Controllers
 
             try
             {
-                await _repo.Update(game_id, _mapper.Map<KillUpdateDeleteDTO, Kill>(killAsDTO));
+                await _repo.Update(game_id, _mapper.Map<KillUpdateDTO, Kill>(killAsDTO), killAsDTO.Bitecode);
             }
             catch (ArgumentException ex)
             {

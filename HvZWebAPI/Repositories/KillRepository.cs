@@ -82,39 +82,44 @@ public class KillRepository : IKillRepository
         return kill;
     }
 
-    public async Task Update(int game_id, Kill kill)
+    public async Task Update(int game_id, Kill kill, string bitecode)
     {
         try
         {
-            var exsistingKill = await FindKillInGame(game_id, kill.Id);
-            if (exsistingKill != null)
+            var onlyKill = await _context.Kills.FindAsync(kill.Id);
+            if (onlyKill != null)
             {
-                PlayerKill epkVictim = exsistingKill.PlayerKills.Where(pk => pk.IsVictim == true).FirstOrDefault();
-                //Player existingVictim = ;
-                int exVictimId = _playerRepository.GetById(game_id, epkVictim.PlayerId).Id;/*existingVictim.Id*/;
+                onlyKill.GameId = game_id;
+                onlyKill.TimeDeath = kill.TimeDeath;
 
-                //This sets the foreign keys
-                _context.Entry(exsistingKill).State = EntityState.Detached;
+                //To be killed
+                Player newVictim = await _playerRepository.GetByBiteCode(game_id, bitecode); //Should be human at this point
+                newVictim.IsHuman = false;
 
-                kill.GameId = exsistingKill.GameId;
-                kill.PlayerKills = exsistingKill.PlayerKills;
-                kill.TimeDeath = exsistingKill.TimeDeath;
-
-                if(exsistingKill.PlayerKills.FirstOrDefault().PlayerId != exVictimId )
-                {
-                    Player oldVictim = await _playerRepository.GetById(game_id, exVictimId);
-                    Player newVictim = await _playerRepository.GetById(game_id, exsistingKill.PlayerKills.FirstOrDefault().PlayerId);
+                //Old PK
+                PlayerKill pkVictim = await _context.PlayerKills.Where(pk => pk.KillId == kill.Id && pk.IsVictim == true).FirstAsync(); //Should be Zombie at this point
 
 
-                    oldVictim.IsHuman = true;
-                    newVictim.IsHuman = false;
-                }
+                //Revert the death of the old victim
+                Player exVictim = await _playerRepository.GetById(game_id, pkVictim.PlayerId);/*existingVictim.Id*/;
+                exVictim.IsHuman = true;
 
+                //New PK
+                PlayerKill newPK = new PlayerKill();
+                newPK.Player = newVictim;
+                newPK.PlayerId = newVictim.Id;
+                newPK.KillId = onlyKill.Id;
+                newPK.Kill = onlyKill;
+                newPK.IsVictim = true;
 
+                _context.Entry(newVictim).State = EntityState.Modified;
+                _context.Remove(pkVictim);
+                _context.Add(newPK);
+                _context.Entry(onlyKill).State = EntityState.Modified;
+                _context.Entry(exVictim).State = EntityState.Modified;
+
+                await _context.SaveChangesAsync();
             }
-
-            _context.Update(kill);
-            await _context.SaveChangesAsync();
         }
         catch (Exception)
         {
@@ -136,7 +141,7 @@ public class KillRepository : IKillRepository
     {
         if (!GameExists(game_id)) throw new ArgumentException("There is no game with that id");
 
-        Kill? kill = await _context.Kills/*.Where(k => k.Id == kill_id)*/.Include(k => k.Game).Include(k => k.PlayerKills).ThenInclude(pk => pk.PlayerId).FirstOrDefaultAsync(k => k.Id == kill_id/**/);
+        Kill? kill = await _context.Kills/*.Where(k => k.Id == kill_id)*/.Include(k => k.Game).Include(k => k.PlayerKills).FirstOrDefaultAsync(k => k.Id == kill_id/**/);
         if (kill == null)
         {
             throw new ArgumentException("There is no kill with that id");
