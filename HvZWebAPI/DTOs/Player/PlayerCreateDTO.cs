@@ -7,9 +7,9 @@ namespace HvZWebAPI.DTOs.Player;
 public class PlayerCreateDTO
 {
     [Required]
-    public bool IsPatientZero { get; set; }
+    public bool? IsPatientZero { get; set; }
     [Required]
-    public bool IsHuman { get; set; }
+    public bool? IsHuman { get; set; }
     [Required]
     [MaxLength(FValid.PLAYER_BITECODE_MAXLENGTH)]
     [MinLength(FValid.PLAYER_BITECODE_MINLENGTH)]

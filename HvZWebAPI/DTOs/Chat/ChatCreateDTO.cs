@@ -6,7 +6,7 @@ namespace HvZWebAPI.DTOs.Chat;
 
 public class ChatCreateDTO
 {
-    [MaxLength(FValid.CHAT_MESSAGE_MAXLENGTH)]
+    [MaxLength(FValid.CHAT_MESSAGE_MAXLENGTH), MinLength(FValid.CHAT_MESSAGE_MINLENGTH)]
     [Required]
     public string Message { get; set; }
     [Required]

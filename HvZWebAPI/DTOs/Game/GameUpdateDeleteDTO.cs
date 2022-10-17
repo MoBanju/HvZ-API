@@ -7,10 +7,10 @@ namespace HvZWebAPI.DTOs.Game;
 public class GameUpdateDeleteDTO
 {
     [Required]
-    public int Id { get; set; }
+    public int? Id { get; set; }
 
     [Required]
-    [MaxLength(FValid.GAME_NAME_MAXLENGTH)]
+    [MaxLength(FValid.GAME_NAME_MAXLENGTH), MinLength(FValid.GAME_NAME_MINLENGTH)]
     public string Name { get; set; }
 
     [Required]
