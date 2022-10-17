@@ -51,6 +51,10 @@ namespace HvZWebAPI.Controllers
             try
             {
                 Kill? kill = await _repo.GetById(game_id, kill_id);
+                if(kill is null)
+                {
+                    return NotFound(ErrorCategory.FAILURE);
+                }
                 KillReadDTO killAsDTO = _mapper.Map<KillReadDTO>(kill);
                 return killAsDTO;
 
@@ -130,11 +134,13 @@ namespace HvZWebAPI.Controllers
 
                 if (savedKill == null)
                 {
-                    return BadRequest();
+                    return BadRequest(ErrorCategory.FAILED_TO_CREATE("Kill"));
                 }
+                
                 KillReadDTO mapped = _mapper.Map<Kill, KillReadDTO>(savedKill);
                 //mapped.UserDTO.FirstName = savedKill
 
+                //if()
                 return CreatedAtAction("GetKill", new { game_id = game_id, kill_id = savedKill.Id }, mapped);
 
             }
