@@ -5,9 +5,11 @@ namespace HvZWebAPI.DTOs.Game;
 
 public class GameCreateDTO
 {
+    [Required]
     [MaxLength(FValid.GAME_NAME_MAXLENGTH)]
     public string Name { get; set; }
 
+    [Required]
     [MaxLength(FValid.GAME_DESCRIPTION_MAXLENGTH)]
     public string Description { get; set; }
 
