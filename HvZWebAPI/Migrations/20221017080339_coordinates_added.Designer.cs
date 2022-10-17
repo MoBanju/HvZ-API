@@ -4,6 +4,7 @@ using HvZWebAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HvZWebAPI.Migrations
 {
     [DbContext(typeof(HvZDbContext))]
-    partial class HvZDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221017080339_coordinates_added")]
+    partial class coordinates_added
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -62,7 +64,7 @@ namespace HvZWebAPI.Migrations
                         new
                         {
                             Id = 1,
-                            ChatTime = new DateTime(2022, 10, 17, 9, 15, 16, 262, DateTimeKind.Utc).AddTicks(4670),
+                            ChatTime = new DateTime(2022, 10, 17, 8, 3, 39, 79, DateTimeKind.Utc).AddTicks(1613),
                             GameId = 3,
                             IsHumanGlobal = false,
                             IsZombieGlobal = true,
@@ -72,7 +74,7 @@ namespace HvZWebAPI.Migrations
                         new
                         {
                             Id = 2,
-                            ChatTime = new DateTime(2022, 10, 17, 9, 15, 16, 262, DateTimeKind.Utc).AddTicks(4674),
+                            ChatTime = new DateTime(2022, 10, 17, 8, 3, 39, 79, DateTimeKind.Utc).AddTicks(1617),
                             GameId = 2,
                             IsHumanGlobal = false,
                             IsZombieGlobal = false,
@@ -82,7 +84,7 @@ namespace HvZWebAPI.Migrations
                         new
                         {
                             Id = 3,
-                            ChatTime = new DateTime(2022, 10, 17, 9, 15, 16, 262, DateTimeKind.Utc).AddTicks(4675),
+                            ChatTime = new DateTime(2022, 10, 17, 8, 3, 39, 79, DateTimeKind.Utc).AddTicks(1618),
                             GameId = 1,
                             IsHumanGlobal = true,
                             IsZombieGlobal = false,
@@ -112,10 +114,16 @@ namespace HvZWebAPI.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<double>("Ne_lat")
+                    b.Property<double>("Nw_lat")
                         .HasColumnType("float");
 
-                    b.Property<double>("Ne_lng")
+                    b.Property<double>("Nw_lng")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Se_lat")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Se_lng")
                         .HasColumnType("float");
 
                     b.Property<DateTime>("StartTime")
@@ -123,12 +131,6 @@ namespace HvZWebAPI.Migrations
 
                     b.Property<int>("State")
                         .HasColumnType("int");
-
-                    b.Property<double>("Sw_lat")
-                        .HasColumnType("float");
-
-                    b.Property<double>("Sw_lng")
-                        .HasColumnType("float");
 
                     b.HasKey("Id");
 
@@ -141,12 +143,12 @@ namespace HvZWebAPI.Migrations
                             Description = "Hosted by George of the Jungle.",
                             EndTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Jungle",
-                            Ne_lat = 0.0,
-                            Ne_lng = 0.0,
+                            Nw_lat = 0.0,
+                            Nw_lng = 0.0,
+                            Se_lat = 0.0,
+                            Se_lng = 0.0,
                             StartTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            State = 0,
-                            Sw_lat = 0.0,
-                            Sw_lng = 0.0
+                            State = 0
                         },
                         new
                         {
@@ -154,12 +156,12 @@ namespace HvZWebAPI.Migrations
                             Description = "Match happens in Finland.",
                             EndTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Island",
-                            Ne_lat = 0.0,
-                            Ne_lng = 0.0,
+                            Nw_lat = 0.0,
+                            Nw_lng = 0.0,
+                            Se_lat = 0.0,
+                            Se_lng = 0.0,
                             StartTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            State = 1,
-                            Sw_lat = 0.0,
-                            Sw_lng = 0.0
+                            State = 1
                         },
                         new
                         {
@@ -167,12 +169,12 @@ namespace HvZWebAPI.Migrations
                             Description = "Sharks, Bombs and Boats.",
                             EndTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Ocean",
-                            Ne_lat = 0.0,
-                            Ne_lng = 0.0,
+                            Nw_lat = 0.0,
+                            Nw_lng = 0.0,
+                            Se_lat = 0.0,
+                            Se_lng = 0.0,
                             StartTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            State = 1,
-                            Sw_lat = 0.0,
-                            Sw_lng = 0.0
+                            State = 1
                         },
                         new
                         {
@@ -180,12 +182,12 @@ namespace HvZWebAPI.Migrations
                             Description = "Armstrong in the building.",
                             EndTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Space",
-                            Ne_lat = 0.0,
-                            Ne_lng = 0.0,
+                            Nw_lat = 0.0,
+                            Nw_lng = 0.0,
+                            Se_lat = 0.0,
+                            Se_lng = 0.0,
                             StartTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            State = 2,
-                            Sw_lat = 0.0,
-                            Sw_lng = 0.0
+                            State = 2
                         });
                 });
 
@@ -224,13 +226,13 @@ namespace HvZWebAPI.Migrations
                         {
                             Id = 1,
                             GameId = 2,
-                            TimeDeath = new DateTime(2022, 10, 17, 9, 15, 16, 262, DateTimeKind.Utc).AddTicks(4650)
+                            TimeDeath = new DateTime(2022, 10, 17, 8, 3, 39, 79, DateTimeKind.Utc).AddTicks(1592)
                         },
                         new
                         {
                             Id = 2,
                             GameId = 3,
-                            TimeDeath = new DateTime(2022, 10, 17, 9, 15, 16, 262, DateTimeKind.Utc).AddTicks(4653)
+                            TimeDeath = new DateTime(2022, 10, 17, 8, 3, 39, 79, DateTimeKind.Utc).AddTicks(1596)
                         });
                 });
 

@@ -81,6 +81,8 @@ namespace HvZWebAPI.Data
 
             modelBuilder.Entity<Chat>().Property(c => c.Message).HasMaxLength(200);
 
+            modelBuilder.Entity<Kill>().Property(k => k.Description).HasMaxLength(200);
+
         }
     }
 }
