@@ -1,11 +1,14 @@
-﻿namespace HvZWebAPI.Models
+﻿using HvZWebAPI.Utils;
+using System.ComponentModel.DataAnnotations;
+
+namespace HvZWebAPI.Models
 {
     public class Player
     {
         public int Id { get; set; }
-
         public bool IsPatientZero { get; set; }
         public bool IsHuman { get; set; }
+        [MaxLength(FValid.PLAYER_BITECODE_MAXLENGTH)]
         public string BiteCode { get; set; }
         
         // Navigation Properties

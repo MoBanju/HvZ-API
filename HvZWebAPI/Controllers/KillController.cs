@@ -129,7 +129,7 @@ namespace HvZWebAPI.Controllers
                 Kill? savedKill = await _repo.Add(game_id, kill, killAsDTO.BiteCode, killAsDTO.KillerId??0);
 
                 if (savedKill == null)
-                {
+                {   
                     return BadRequest();
                 }
                 KillReadDTO mapped = _mapper.Map<Kill, KillReadDTO>(savedKill);
