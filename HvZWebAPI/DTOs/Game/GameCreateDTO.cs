@@ -6,11 +6,11 @@ namespace HvZWebAPI.DTOs.Game;
 public class GameCreateDTO
 {
     [Required]
-    [MaxLength(FValid.GAME_NAME_MAXLENGTH)]
+    [MaxLength(FValid.GAME_NAME_MAXLENGTH), MinLength(FValid.GAME_NAME_MINLENGTH)]
     public string Name { get; set; }
 
     [Required]
-    [MaxLength(FValid.GAME_DESCRIPTION_MAXLENGTH)]
+    [MaxLength(FValid.GAME_DESCRIPTION_MAXLENGTH), MinLength(FValid.GAME_DESCRIPTION_MINLENGTH)]
     public string Description { get; set; }
 
     public double Ne_lat { get; set; }
