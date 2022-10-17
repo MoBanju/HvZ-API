@@ -125,15 +125,14 @@ namespace HvZWebAPI.Controllers
             kill.GameId = game_id;
             try
             {
-
-                Kill? savedKill = await _repo.Add(game_id, kill, killAsDTO.BiteCode, killAsDTO.KillerId);
+                //KillerId will never be null as it is tagged as required
+                Kill? savedKill = await _repo.Add(game_id, kill, killAsDTO.BiteCode, killAsDTO.KillerId??0);
 
                 if (savedKill == null)
-                {
+                {   
                     return BadRequest();
                 }
                 KillReadDTO mapped = _mapper.Map<Kill, KillReadDTO>(savedKill);
-                //mapped.UserDTO.FirstName = savedKill
 
                 return CreatedAtAction("GetKill", new { game_id = game_id, kill_id = savedKill.Id }, mapped);
 
