@@ -1,5 +1,6 @@
 using HvZWebAPI.DTOs.Chat;
 using HvZWebAPI.Models;
+using Microsoft.Build.Framework;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
@@ -15,6 +16,7 @@ public class GameReadDTO
     public State State { get; set; }
 
     public int PlayerCount { get; set; }
+    
     public double Ne_lat { get; set; }
     public double Ne_lng { get; set; }
     public double Sw_lat { get; set; }
