@@ -35,8 +35,9 @@ builder.Services.AddSwaggerGen(options =>
     options.SwaggerDoc("v1", new OpenApiInfo
     {
         Version = "v1",
-        Title = "HvZ game API",
-        Description = "An ASP.NET Core Web API for managing HvZ games",
+        Title = "Humans vs Zombies API",
+        Description = "An ASP.NET Core Web API for managing the game of Humans vs Zombies",
+        /*
         TermsOfService = new Uri("https://example.com/terms"),
         Contact = new OpenApiContact
         {
@@ -48,6 +49,7 @@ builder.Services.AddSwaggerGen(options =>
             Name = "License",
             Url = new Uri("https://example.com/license")
         }
+        */
     });
 
 
