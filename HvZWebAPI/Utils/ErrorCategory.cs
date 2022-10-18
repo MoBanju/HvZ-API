@@ -1,16 +1,19 @@
-﻿using HvZWebAPI.Models;
+using HvZWebAPI.Models;
 
 namespace HvZWebAPI.Utils;
 
 public class ErrorCategory
 {
-    public static string INTERNAL {
+    public static string INTERNAL
+    {
         get { return "Oops, internal error try again later"; }
     }
-    public static string INVALID_CHAT_SCOPE {
+    public static string INVALID_CHAT_SCOPE
+    {
         get { return "A chat message can only be zombie, human or global scoped."; }
     }
-    public static string POST_PLAYER_HUMAN_AND_PATIENT_ZERO {
+    public static string POST_PLAYER_HUMAN_AND_PATIENT_ZERO
+    {
         get { return "Cant add new player being human and patient zero simultaneously"; }
     }
     public static string ONLY_A_ZOMBIE_CAN_POST_TO_ZOMBIE_CHAT(int game_id, int player_id)
@@ -51,9 +54,14 @@ public class ErrorCategory
         return $"No player with bitecode {bitecode} found";
     }
 
-    public static string UNIQUE_PLAYER(string keycloak_id)
+    public static string UNIQUE_PLAYER_GAME(string keycloak_id)
     {
         return $"User {keycloak_id} allready has a player in this game, no more are allowed";
+    }
+
+    public static string UNIQUE_PLAYER_WORLD(string bitecode)
+    {
+        return $"The player bitecode {bitecode} is not globally unique, and thus cannot be used";
     }
 
     public static string FAILURE
@@ -63,7 +71,7 @@ public class ErrorCategory
 
     public static string FAILED_TO_CREATE(string entity)
     {
-        return $"Failed to create {entity}"; 
+        return $"Failed to create {entity}";
     }
 
     public static string FAILED_TO_UPDATE(string entity)
@@ -76,6 +84,18 @@ public class ErrorCategory
     {
         return $"No chat with id {chat_id} found in game with id {game_id}";
     }
+
+
+    public static string NO_KEYCLOAK_ID
+    {
+        get { return $"No keycloak-identifier found on the current user token"; }
+    }
+
+    public static string NO_KEYCLOAK_ID_ADMIN
+    {
+        get { return $"A keycloak-identifier must be included in the request"; }
+    }
+
 
     public static string VICTIM_NOT_FOUND_IN_GAME(int game_id, string bitecode)
     {

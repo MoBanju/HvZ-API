@@ -27,7 +27,11 @@ public class PlayerRepository : IPlayerRepository
             if(player.IsHuman && player.IsPatientZero)
                 throw new ArgumentException(ErrorCategory.POST_PLAYER_HUMAN_AND_PATIENT_ZERO);
 
-            await ValidateUniquePlayer(game_id, player.User.KeyCloakId);
+            //Validate the person is unique
+            await ValidatePlayerIsGloballyUnique(player);
+
+
+            await ValidateUniquePlayerInGame(game_id, player.User.KeyCloakId);
 
             player.GameId = game_id;
             var exsistingUser = _context.Users.SingleOrDefault(u => u.KeyCloakId == player.User.KeyCloakId);
@@ -65,11 +69,17 @@ public class PlayerRepository : IPlayerRepository
 
     }
 
-    private async Task ValidateUniquePlayer(int game_id, string keycloak_id)
+    private async Task ValidatePlayerIsGloballyUnique(Player player)
     {
-        var list = await GetAll(game_id);
-        if (list.Any(p => p.User.KeyCloakId == keycloak_id))
-            throw new ArgumentException(ErrorCategory.UNIQUE_PLAYER(keycloak_id));
+        if (await _context.Players.AnyAsync(p => p.BiteCode == player.BiteCode))
+            throw new ArgumentException(ErrorCategory.UNIQUE_PLAYER_WORLD(player.BiteCode));
+    }
+
+    private async Task ValidateUniquePlayerInGame(int game_id, string keycloak_id)
+    {
+        var playersInGame = await GetAll(game_id);
+        if (playersInGame.Any(p => p.User.KeyCloakId == keycloak_id))
+            throw new ArgumentException(ErrorCategory.UNIQUE_PLAYER_GAME(keycloak_id));
     }
 
     public async Task<IEnumerable<Player>> GetAll(int game_id)
