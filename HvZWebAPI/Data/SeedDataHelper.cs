@@ -58,11 +58,11 @@ namespace HvZWebAPI.Data
             List<Kill> kills = new List<Kill>()
             {
                 // Game 2
-                new Kill(){ Id=1, TimeDeath= new DateTime(2022, 10, 13, 13, 37, 69), GameId=2, Description="CAMPER!!", Latitude=58.9839, Longitude=5.615},
-                new Kill(){ Id=2, TimeDeath= new DateTime(2022, 10, 14, 13, 37, 69), GameId=2, Description="GET HIM!", Latitude=58.984173, Longitude=5.615167},
+                new Kill(){ Id=1, TimeDeath= new DateTime(2022, 10, 13, 13, 37, 59), GameId=2, Description="CAMPER!!", Latitude=58.9839, Longitude=5.615},
+                new Kill(){ Id=2, TimeDeath= new DateTime(2022, 10, 14, 13, 37, 59), GameId=2, Description="GET HIM!", Latitude=58.984173, Longitude=5.615167},
                 // Game 3
-                new Kill(){ Id=3, TimeDeath= new DateTime(2022, 10, 13, 13, 37, 69), GameId=3, Description="", Latitude=58.885642, Longitude=5.633585},
-                new Kill(){ Id=4, TimeDeath= new DateTime(2022, 10, 14, 13, 37, 69), GameId=3, Description="", Latitude=58.893353, Longitude=5.637278},
+                new Kill(){ Id=3, TimeDeath= new DateTime(2022, 10, 13, 13, 37, 59), GameId=3, Description="", Latitude=58.885642, Longitude=5.633585},
+                new Kill(){ Id=4, TimeDeath= new DateTime(2022, 10, 14, 13, 37, 59), GameId=3, Description="", Latitude=58.893353, Longitude=5.637278},
             };
             return kills;
         }
