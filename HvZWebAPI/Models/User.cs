@@ -1,4 +1,7 @@
-﻿namespace HvZWebAPI.Models;
+﻿using HvZWebAPI.Utils;
+using System.ComponentModel.DataAnnotations;
+
+namespace HvZWebAPI.Models;
 
 public class User
 {

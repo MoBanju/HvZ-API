@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using HvZWebAPI.Models;
+using HvZWebAPI.Utils;
+
 
 namespace HvZWebAPI.Data
 {
@@ -71,15 +73,18 @@ namespace HvZWebAPI.Data
 
 
             //Add restrictions
-            modelBuilder.Entity<User>().Property(u => u.FirstName).HasMaxLength(50);
-            modelBuilder.Entity<User>().Property(u => u.LastName).HasMaxLength(50);
+            modelBuilder.Entity<User>().Property(u => u.FirstName).HasMaxLength(FValid.USER_FIRSTNAME_MAXLENGTH);
+            modelBuilder.Entity<User>().Property(u => u.LastName).HasMaxLength(FValid.USER_LASTNAME_MAXLENGTH);
+            modelBuilder.Entity<User>().Property(u => u.KeyCloakId).HasMaxLength(FValid.USER_KEYCLOAK_ID_MAXLENGTH);
             
-            modelBuilder.Entity<Player>().Property(p => p.BiteCode).HasMaxLength(50);
+            modelBuilder.Entity<Player>().Property(p => p.BiteCode).HasMaxLength(FValid.PLAYER_BITECODE_MAXLENGTH);
 
-            modelBuilder.Entity<Game>().Property(g => g.Name).HasMaxLength(50);
-            modelBuilder.Entity<Game>().Property(g => g.Description).HasMaxLength(800);
+            modelBuilder.Entity<Game>().Property(g => g.Name).HasMaxLength(FValid.GAME_NAME_MAXLENGTH);
+            modelBuilder.Entity<Game>().Property(g => g.Description).HasMaxLength(FValid.GAME_DESCRIPTION_MAXLENGTH);
 
-            modelBuilder.Entity<Chat>().Property(c => c.Message).HasMaxLength(200);
+            modelBuilder.Entity<Chat>().Property(c => c.Message).HasMaxLength(FValid.CHAT_MESSAGE_MAXLENGTH);
+
+            modelBuilder.Entity<Kill>().Property(k => k.Description).HasMaxLength(FValid.KILL_DESCRIPTION_MAXLENGTH);
 
         }
     }

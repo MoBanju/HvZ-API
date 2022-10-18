@@ -4,32 +4,6 @@ namespace HvZWebAPI.Data
 {
     public class SeedDataHelper
     {
-
-        /*
-         * [
- {
-   firstname: "mordi",
-   lastname: "007",
-   keyCloakId: "f416c45a-2945-4047-b609-06de42279237"
- },
-{
-   firstname: "Øyvind",
-   lastname: "Sande Reitan",
-   keyCloakId: "2e951202-167e-40fd-8fb1-91d2416d0d10"
- },
-{
-   firstname: "Funny",
-   lastname: "Man",
-   keyCloakId: "816cf1b0-c9e5-47b1-92f0-5927695b238a"
- },
-{
-   firstname: "Bertelsen",
-   lastname: "Eivind",
-   keyCloakId: "d2cb4a5b-3bb1-4a36-b3ae-a370c26e9646"
- },
-]
-         */
-
         public static List<User> GetUsers()
         {
             List<User> users = new List<User>()
