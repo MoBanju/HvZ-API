@@ -120,7 +120,7 @@ namespace HvZWebAPI.Controllers
         [Authorize]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         [HttpPost("{game_id}/[controller]")]
         public async Task<ActionResult<KillReadDTO>> PostKill(int game_id, KillCreateDTO killAsDTO)
         {
