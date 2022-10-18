@@ -24,14 +24,14 @@ namespace HvZWebAPI.Data
             List<Player> players = new List<Player>()
             {
                 new Player(){ Id=5, IsHuman=true, BiteCode="Five", IsPatientZero=false, UserId=1, GameId=1},
-                new Player(){ Id=1, IsHuman=false, BiteCode="Street", IsPatientZero=false, UserId=1, GameId=2},
-                new Player(){ Id=8, IsHuman=true, BiteCode="Eight", IsPatientZero=false, UserId=1, GameId=3},
-                new Player(){ Id=4, IsHuman=false, BiteCode="Helloma", IsPatientZero=true, UserId=2, GameId=2},
-                new Player(){ Id=9, IsHuman=true, BiteCode="Nine", IsPatientZero=false, UserId=2, GameId=3},
-                new Player(){ Id=2, IsHuman=false, BiteCode="BooHoo", IsPatientZero=false, UserId=3, GameId=3},
-                new Player(){ Id=6, IsHuman=true, BiteCode="Six", IsPatientZero=false, UserId=3, GameId=1},
-                new Player(){ Id=3, IsHuman=false, BiteCode="Hello", IsPatientZero=true, UserId=4, GameId=3},
                 new Player(){ Id=7, IsHuman=true, BiteCode="Seven", IsPatientZero=false, UserId=4, GameId=1},
+                new Player(){ Id=6, IsHuman=true, BiteCode="Six", IsPatientZero=false, UserId=3, GameId=1},
+                new Player(){ Id=1, IsHuman=false, BiteCode="Street", IsPatientZero=false, UserId=1, GameId=2},
+                new Player(){ Id=4, IsHuman=false, BiteCode="Helloma", IsPatientZero=true, UserId=2, GameId=2},
+                new Player(){ Id=8, IsHuman=true, BiteCode="Eight", IsPatientZero=false, UserId=1, GameId=3},
+                new Player(){ Id=9, IsHuman=true, BiteCode="Nine", IsPatientZero=false, UserId=2, GameId=3},
+                new Player(){ Id=2, IsHuman=true, BiteCode="BooHoo", IsPatientZero=false, UserId=3, GameId=3},
+                new Player(){ Id=3, IsHuman=false, BiteCode="Hello", IsPatientZero=true, UserId=4, GameId=3},
             };
             return players;
         }
@@ -40,10 +40,10 @@ namespace HvZWebAPI.Data
         {
             List<Game> games = new List<Game>()
             {
-                new Game(){ Id=1, Name="Jungle", State=State.Registration, Description="Hosted by George of the Jungle."},
-                new Game(){ Id=2, Name="Island", State=State.Progress, Description="Match happens in Finland."},
-                new Game(){ Id=3, Name="Ocean", State=State.Progress, Description = "Sharks, Bombs and Boats."},
-                new Game(){ Id=4, Name="Space", State=State.Complete, Description = "Armstrong in the building."},
+                new Game(){ Id=1, Name="Jungle", State=State.Registration, Description="Hosted by George of the Jungle.", Sw_lat=60.395123, Sw_lng=5.314687, Ne_lat=60.395528, Ne_lng=5.320989},
+                new Game(){ Id=2, Name="Island", State=State.Progress, Description="Match happens in Finland.",Sw_lat=58.983857, Sw_lng=5.613486, Ne_lat=58.984830, Ne_lng=5.619021},
+                new Game(){ Id=3, Name="Ocean", State=State.Progress, Description = "Sharks, Bombs and Boats.", Sw_lat=58.870288, Sw_lng=5.602136, Ne_lat=58.895002, Ne_lng=5.644981},
+                new Game(){ Id=4, Name="Space", State=State.Complete, Description = "Armstrong in the building.", Sw_lat=58.940605, Sw_lng=5.803512, Ne_lat=58.964327, Ne_lng=5.846468},
             };
             return games;
         }
@@ -52,8 +52,10 @@ namespace HvZWebAPI.Data
         {
             List<Kill> kills = new List<Kill>()
             {
-                new Kill(){ Id=1, TimeDeath= DateTime.UtcNow, GameId=2 },
-                new Kill(){ Id=2, TimeDeath= DateTime.UtcNow, GameId=3 },
+                new Kill(){ Id=1, TimeDeath= DateTime.UtcNow, GameId=2, Description="CAMPER!!", Latitude=58.9839, Longitude=5.615},
+                new Kill(){ Id=2, TimeDeath= DateTime.UtcNow, GameId=2, Description="GET HIM!", Latitude=58.984173, Longitude=5.615167},
+                new Kill(){ Id=3, TimeDeath= DateTime.UtcNow, GameId=3, Description="", Latitude=58.885642, Longitude=5.633585},
+                new Kill(){ Id=4, TimeDeath= DateTime.UtcNow, GameId=3, Description="", Latitude=58.893353, Longitude=5.637278},
             };
             return kills;
         }
@@ -62,10 +64,16 @@ namespace HvZWebAPI.Data
         {
             List<PlayerKill> playerKills = new()
             {
-                new PlayerKill(){ KillId=1, IsVictim = false, PlayerId=1 },
+                // Game 2
                 new PlayerKill(){ KillId=1, IsVictim = true, PlayerId=4 },
+                new PlayerKill(){ KillId=1, IsVictim = false, PlayerId=1 },
                 new PlayerKill(){ KillId=2, IsVictim = true, PlayerId=2 },
                 new PlayerKill(){ KillId=2, IsVictim = false, PlayerId=3 },
+                // Game 3
+                new PlayerKill(){ KillId=3, IsVictim = true, PlayerId=8 },
+                new PlayerKill(){ KillId=3, IsVictim = false, PlayerId=3 },
+                new PlayerKill(){ KillId=4, IsVictim = true, PlayerId=2 },
+                new PlayerKill(){ KillId=4, IsVictim = false, PlayerId=8 },
             };
             return playerKills;
         }
