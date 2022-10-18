@@ -13,6 +13,9 @@ using Newtonsoft.Json;
 using Microsoft.AspNetCore.Authentication;
 using HvZWebAPI.Utils;
 using System.Net;
+using System.Net.WebSockets;
+using HvZWebAPI.SignalRChat.Hubs;
+using Microsoft.AspNetCore.SignalR;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -125,10 +128,20 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-
+builder.Services.AddSignalR();
 
 var app = builder.Build();
-app.UseCors();
+app.UseCors(x => x.SetIsOriginAllowed((host) => true)
+.AllowAnyMethod()
+.AllowAnyHeader()
+.AllowCredentials());
+    
+
+
+//For getting and serving index.html
+app.UseDefaultFiles();
+app.UseStaticFiles();
+
 
 
 // Configure the HTTP request pipeline.
@@ -139,8 +152,40 @@ app.UseSwaggerUI();
 app.UseSwagger();
 
 app.UseAuthentication();
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
 
+//SR websocket
+app.MapHub<ChatHub>("/chatHub");
+
+
+app.Lifetime.ApplicationStarted.Register(() =>
+{
+    var serviceProvider = app.Services;
+    var chatHub = (IHubContext<ChatHub>)serviceProvider.GetService(typeof(IHubContext<ChatHub>));
+
+    var timer = new System.Timers.Timer(1000);
+    timer.Enabled = true;
+    timer.Elapsed += delegate (object sender, System.Timers.ElapsedEventArgs e) {
+        chatHub.Clients.All.SendAsync("setTime", DateTime.Now.ToString("dddd d MMMM yyyy HH:mm:ss"));
+    };
+    timer.Start();
+});
+
+
+
 app.Run();
+
+
+
+
+
+
+
+
+
+
+
+
+
