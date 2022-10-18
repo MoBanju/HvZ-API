@@ -52,4 +52,9 @@ public class GameRepository : IGameRepository
         
         return entity;
     }
+
+    public async Task<IEnumerable<Game>> GetByState(State state)
+    {
+        return await _context.Games.Include(g => g.Players).Where(g => g.State == state).ToListAsync();
+    }
 }
