@@ -23,7 +23,9 @@ public class KillRepository : IKillRepository
 
         if (await KillerVictimSameGame(game_id, killer_id, bitecode) is false) throw new ArgumentException(ErrorCategory.KILLER_VICTIM_NOT_SAME_GAME(game_id, killer_id, bitecode));
 
-        if(!AlreadyZombie(game_id, bitecode)) throw new ArgumentException(ErrorCategory.ALREADY_ZOMBIE(bitecode));
+        if(AlreadyZombie(game_id, bitecode)) throw new ArgumentException(ErrorCategory.ALREADY_ZOMBIE(bitecode));
+
+        if (KillerHuman(game_id, killer_id)) throw new ArgumentException(ErrorCategory.KILLER_HUMAN(killer_id));
         
         Player victim = await _playerRepository.GetByBiteCode(game_id, bitecode);
         victim.IsHuman = false;
@@ -182,8 +184,13 @@ public class KillRepository : IKillRepository
     /// <returns></returns>
     private bool AlreadyZombie(int game_id, string bitecode)
     {
-        return _playerRepository.GetByBiteCode(game_id, bitecode).Result.IsHuman;
+        return !_playerRepository.GetByBiteCode(game_id, bitecode).Result.IsHuman;
 
+    }
+
+    private bool KillerHuman(int game_id, int killer_id)
+    {
+        return _playerRepository.GetById(game_id, killer_id).Result.IsHuman;
     }
     
     /// <summary>
