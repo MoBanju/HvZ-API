@@ -63,7 +63,6 @@ public class KillRepository : IKillRepository
         {
             throw;
         }
-
     }
 
     public async Task<IEnumerable<Kill>> GetAll()
@@ -74,9 +73,6 @@ public class KillRepository : IKillRepository
     public async Task<IEnumerable<Kill>> GetAllByGameId(int game_id)
     {
         if (!GameExists(game_id)) throw new ArgumentException("Game by that id does not exsist");
-
-
-
         return await _context.Kills.Where(k => k.GameId == game_id).Include(k=>k.PlayerKills).ToListAsync();
     }
 
@@ -179,15 +175,21 @@ public class KillRepository : IKillRepository
     /// <summary>
     /// Checks if the victim is alrady a zombie
     /// </summary>
-    /// <param name="game_id"></param>
-    /// <param name="bitecode"></param>
-    /// <returns></returns>
+    /// <param name="game_id">Game Id</param>
+    /// <param name="bitecode">Bitecode to the player</param>
+    /// <returns>Either a zombie or a human</returns>
     private bool AlreadyZombie(int game_id, string bitecode)
     {
         return !_playerRepository.GetByBiteCode(game_id, bitecode).Result.IsHuman;
 
     }
 
+    /// <summary>
+    /// Checks if the killer is human
+    /// </summary>
+    /// <param name="game_id">Gme Id</param>
+    /// <param name="killer_id">Killer Id</param>
+    /// <returns>Either it is human or zombie</returns>
     private bool KillerHuman(int game_id, int killer_id)
     {
         return _playerRepository.GetById(game_id, killer_id).Result.IsHuman;
@@ -196,9 +198,9 @@ public class KillRepository : IKillRepository
     /// <summary>
     /// Checks if the player is in the same game
     /// </summary>
-    /// <param name="player_id"></param>
-    /// <param name="game_id"></param>
-    /// <returns></returns>
+    /// <param name="killer_id">Killer Id</param>
+    /// <param name="game_id">Game Id</param>
+    /// <returns>Same game or different game</returns>
     private async Task<bool> KillerSameGame(int killer_id, int game_id)
     {
         Player killer = await _playerRepository.GetById(game_id, killer_id);
@@ -211,7 +213,7 @@ public class KillRepository : IKillRepository
     /// </summary>
     /// <param name="bitecode">Bitecode</param>
     /// <param name="game_id">Game Id</param>
-    /// <returns></returns>
+    /// <returns>Same game or different game</returns>
     private async Task<bool> VictimSameGame(string bitecode, int game_id)
     {
         Player victim = await _playerRepository.GetByBiteCode(game_id, bitecode);
@@ -227,7 +229,7 @@ public class KillRepository : IKillRepository
     /// <param name="game_id">Game Id</param>
     /// <param name="killer_id">Killer</param>
     /// <param name="bitecode">Victim</param>
-    /// <returns></returns>
+    /// <returns>Either both re in the same game or diferent game</returns>
     private async Task<bool> KillerVictimSameGame(int game_id, int killer_id, string bitecode)
     {
         Player killer = await _playerRepository.GetById(game_id, killer_id);
