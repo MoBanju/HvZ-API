@@ -36,6 +36,11 @@ public class ErrorCategory
         return $"No game with id {game_id} found";
     }
 
+    public static string KILL_NOT_FOUND(int kill_id)
+    {
+        return $"No kill with id {kill_id} found";
+    }
+
     public static string PLAYER_NOT_FOUND(int player_id)
     {
         return $"No player with id {player_id} found";
@@ -67,8 +72,32 @@ public class ErrorCategory
     }
 
 
-        public static string CHAT_NOT_FOUND(int chat_id, int game_id)
+    public static string CHAT_NOT_FOUND(int chat_id, int game_id)
     {
         return $"No chat with id {chat_id} found in game with id {game_id}";
+    }
+
+    public static string VICTIM_NOT_FOUND_IN_GAME(int game_id, string bitecode)
+    {
+        return $"No victim with id {bitecode} found in game with id {game_id}";
+    }
+
+    public static string KILLER_NOT_FOUND_IN_GAME(int game_id, int killer_id)
+    {
+        return $"No killer with id {killer_id} found in game with id {game_id}";
+    }
+
+    public static string KILLER_VICTIM_NOT_SAME_GAME(int game_id, int killer_id, string bitecode)
+    {
+        return $"Killer with id {killer_id} and Victim with bitecode {bitecode} are not found in the same game. They are supposed to be in the game with id {game_id}";
+    }
+
+    public static string ALREADY_ZOMBIE(string bitecode)
+    {
+        return $"The player with bitecode {bitecode} is already a zombie and therefore it cannot be killed!";
+    }
+    public static string KILLER_HUMAN(int killer_id)
+    {
+        return $"The player with Id {killer_id} is a human and therefore cant execute the kill!";
     }
 }

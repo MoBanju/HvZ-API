@@ -1,6 +1,7 @@
 using HvZWebAPI.Data;
 using HvZWebAPI.Interfaces;
 using HvZWebAPI.Models;
+using HvZWebAPI.Utils;
 using Microsoft.EntityFrameworkCore;
 using System.Numerics;
 
@@ -20,9 +21,12 @@ public class KillRepository : IKillRepository
     {
         if (!GameExists(game_id)) throw new ArgumentException("Game by that id does not exsist");
 
+        if (await KillerVictimSameGame(game_id, killer_id, bitecode) is false) throw new ArgumentException(ErrorCategory.KILLER_VICTIM_NOT_SAME_GAME(game_id, killer_id, bitecode));
 
-        // Victim and Killer in the same game
+        if(AlreadyZombie(game_id, bitecode)) throw new ArgumentException(ErrorCategory.ALREADY_ZOMBIE(bitecode));
 
+        if (KillerHuman(game_id, killer_id)) throw new ArgumentException(ErrorCategory.KILLER_HUMAN(killer_id));
+        
         Player victim = await _playerRepository.GetByBiteCode(game_id, bitecode);
         victim.IsHuman = false;
 
@@ -59,7 +63,6 @@ public class KillRepository : IKillRepository
         {
             throw;
         }
-
     }
 
     public async Task<IEnumerable<Kill>> GetAll()
@@ -70,9 +73,6 @@ public class KillRepository : IKillRepository
     public async Task<IEnumerable<Kill>> GetAllByGameId(int game_id)
     {
         if (!GameExists(game_id)) throw new ArgumentException("Game by that id does not exsist");
-
-
-
         return await _context.Kills.Where(k => k.GameId == game_id).Include(k=>k.PlayerKills).ToListAsync();
     }
 
@@ -84,6 +84,12 @@ public class KillRepository : IKillRepository
 
     public async Task Update(int game_id, Kill kill, string bitecode)
     {
+        if (!KillExists(kill.Id)) throw new ArgumentException(ErrorCategory.KILL_NOT_FOUND(kill.Id));
+
+        if (await VictimSameGame(bitecode, game_id) is false) throw new ArgumentException(ErrorCategory.VICTIM_NOT_FOUND_IN_GAME(game_id, bitecode));
+        
+        if (!AlreadyZombie(game_id, bitecode)) throw new ArgumentException(ErrorCategory.ALREADY_ZOMBIE(bitecode));
+
         try
         {
             var onlyKill = await _context.Kills.FindAsync(kill.Id);
@@ -96,7 +102,7 @@ public class KillRepository : IKillRepository
                 Player newVictim = await _playerRepository.GetByBiteCode(game_id, bitecode); //Should be human at this point
                 newVictim.IsHuman = false;
 
-                //Old PK
+                //Old PlayerKill
                 PlayerKill pkVictim = await _context.PlayerKills.Where(pk => pk.KillId == kill.Id && pk.IsVictim == true).FirstAsync(); //Should be Zombie at this point
 
 
@@ -136,7 +142,6 @@ public class KillRepository : IKillRepository
     /// <param name="kill_id">Specific Kill</param>
     /// <returns>A Kill from the context or database</returns>
     /// <exception cref="ArgumentException">When the game or kill does not exist, or the game id from kill is different from the param game_id</exception>
-
     private async Task<Kill> FindKillInGame(int game_id, int kill_id)
     {
         if (!GameExists(game_id)) throw new ArgumentException("There is no game with that id");
@@ -155,32 +160,6 @@ public class KillRepository : IKillRepository
         return kill;
     }
 
-    /*
-    private async Task<PlayerKill> FindVictimInGame(int game_id, int kill_id)
-    {
-        if (!GameExists(game_id)) throw new ArgumentException("There is no game with that id");
-
-        Kill? kill = await _context.Kills.Include(k => k.PlayerKills).Include(k => k.Game).FirstOrDefaultAsync(k => k.Id == kill_id);
-        if (kill == null)
-        {
-            throw new ArgumentException("There is no kill with that id");
-        }
-
-        if (kill.GameId != game_id)
-        {
-            throw new ArgumentException("The kill-id you sent in is not in the game you sent in");
-        }
-
-        foreach (var pk in kill.PlayerKills)
-        {
-            if(pk.IsVictim == true)
-            {
-                PlayerKill victim = pk;
-            }
-        }
-        //return kill.PlayerKills.Where(pk => pk.IsVictim = false);
-    }
-    */
 
     /// <summary>
     /// Checks if the game is tracked in the context
@@ -190,6 +169,74 @@ public class KillRepository : IKillRepository
     private bool GameExists(int game_id)
     {
         return _context.Games.Any(e => e.Id == game_id);
+    }
+
+
+    /// <summary>
+    /// Checks if the victim is alrady a zombie
+    /// </summary>
+    /// <param name="game_id">Game Id</param>
+    /// <param name="bitecode">Bitecode to the player</param>
+    /// <returns>Either a zombie or a human</returns>
+    private bool AlreadyZombie(int game_id, string bitecode)
+    {
+        return !_playerRepository.GetByBiteCode(game_id, bitecode).Result.IsHuman;
+
+    }
+
+    /// <summary>
+    /// Checks if the killer is human
+    /// </summary>
+    /// <param name="game_id">Gme Id</param>
+    /// <param name="killer_id">Killer Id</param>
+    /// <returns>Either it is human or zombie</returns>
+    private bool KillerHuman(int game_id, int killer_id)
+    {
+        return _playerRepository.GetById(game_id, killer_id).Result.IsHuman;
+    }
+    
+    /// <summary>
+    /// Checks if the player is in the same game
+    /// </summary>
+    /// <param name="killer_id">Killer Id</param>
+    /// <param name="game_id">Game Id</param>
+    /// <returns>Same game or different game</returns>
+    private async Task<bool> KillerSameGame(int killer_id, int game_id)
+    {
+        Player killer = await _playerRepository.GetById(game_id, killer_id);
+        return killer.GameId == game_id;
+
+    }
+
+    /// <summary>
+    /// Checks if the player is in the same game
+    /// </summary>
+    /// <param name="bitecode">Bitecode</param>
+    /// <param name="game_id">Game Id</param>
+    /// <returns>Same game or different game</returns>
+    private async Task<bool> VictimSameGame(string bitecode, int game_id)
+    {
+        Player victim = await _playerRepository.GetByBiteCode(game_id, bitecode);
+        return victim.GameId == game_id;
+
+    }
+
+
+
+    /// <summary>
+    /// Checks if the killer is in the same game as the victim
+    /// </summary>
+    /// <param name="game_id">Game Id</param>
+    /// <param name="killer_id">Killer</param>
+    /// <param name="bitecode">Victim</param>
+    /// <returns>Either both re in the same game or diferent game</returns>
+    private async Task<bool> KillerVictimSameGame(int game_id, int killer_id, string bitecode)
+    {
+        Player killer = await _playerRepository.GetById(game_id, killer_id);
+        Player victim = await _playerRepository.GetByBiteCode(game_id, bitecode);
+
+        return killer.GameId == victim.GameId;
+
     }
 
     /// <summary>
