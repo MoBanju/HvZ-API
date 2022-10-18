@@ -9,6 +9,6 @@ public class PlayerReadAdminDTO
     public Boolean? IsPatientZero { get; set; }
     public bool IsHuman { get; set; }
     public string BiteCode { get; set; }
-    public UserCreateDTO User { get; set; }
+    public UserReadAdminDTO User { get; set; }
 
 }

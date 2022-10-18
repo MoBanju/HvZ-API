@@ -51,9 +51,19 @@ public class KillRepository : IKillRepository
     public async Task Delete(int game_id, int kill_id)
     {
         int rowsChanged = 0;
+
+
         try
         {
+            //Includesplayerkills
             var kill = await FindKillInGame(game_id, kill_id);
+            var playerKillVictim = kill.PlayerKills.Where(pk => pk.IsVictim == true).First();
+
+            //Revert the death of the old victim
+            Player exVictim = await _playerRepository.GetById(game_id, playerKillVictim.PlayerId);/*existingVictim.Id*/;
+            exVictim.IsHuman = true;
+
+            _context.Players.Update(exVictim);
 
             _context.Kills.Remove(kill);
 
