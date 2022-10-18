@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authentication;
 using Newtonsoft.Json.Linq;
 using NuGet.ProjectModel;
+using System.Data;
 using System.Diagnostics;
 using System.Security.Claims;
 
@@ -33,7 +34,19 @@ public class ClaimsTransformer : IClaimsTransformation
                     }
                 }
             }
+
+            var sub = claimsIdentity.FindFirst((claim) => claim.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier");
+            if(sub != null){
+
+                claimsIdentity.AddClaim(new Claim(ClaimTypes.NameIdentifier, sub.ToString()));
+
+
+            }
         }
+
+
+
+
 
         return Task.FromResult(principal);
     }

@@ -11,6 +11,8 @@ using HvZWebAPI.DTOs.Player;
 using Newtonsoft.Json.Serialization;
 using HvZWebAPI.Utils;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+using System.Numerics;
 
 namespace HvZWebAPI.Controllers;
 
@@ -44,21 +46,24 @@ public class PlayerController : ControllerBase
     public async Task<ActionResult<Player>> PostPlayer(int game_id, PlayerCreateDTO playerDTO)
     {
         Player player = _mapper.Map<PlayerCreateDTO, Player>(playerDTO);
+        var nameClaims = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).ToList();
 
-        player.GameId = game_id;
         try
         {
+            player.User.KeyCloakId = CheckForKeycloakId(player, playerDTO.user.KeyCloakId);
+            player.GameId = game_id;
 
             Player? savedPlayer = await _repo.Add(game_id, player);
 
             if (savedPlayer == null)
                 return BadRequest(ErrorCategory.FAILED_TO_CREATE("Player"));
-            
+
             PlayerReadAdminDTO mapped = _mapper.Map<Player, PlayerReadAdminDTO>(savedPlayer);
 
             return CreatedAtAction("GetPlayer", new { game_id = game_id, player_id = savedPlayer.Id }, mapped);
 
-        }catch(ArgumentException ex)
+        }
+        catch (ArgumentException ex)
         {
             return BadRequest(ex.Message);
         }
@@ -66,6 +71,35 @@ public class PlayerController : ControllerBase
         {
             Console.WriteLine(ex.Message);
             return StatusCode(StatusCodes.Status500InternalServerError, ErrorCategory.INTERNAL);
+        }
+    }
+
+    /// <summary>
+    /// Validates for keycloakid and returns the appropriate one
+    /// </summary>
+    /// <param name="player"></param>
+    /// <param name="KeyCloakId"></param>
+    /// <exception cref="ArgumentException"></exception>
+    private string CheckForKeycloakId(Player player, string KeyCloakId)
+    {
+        //If you are admin you can set whatever user you want, users simply send their own identity
+        if (!User.IsInRole(ClaimsTransformer.ADMIN_ROLE))
+        {
+            var nameClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            if (nameClaim != null)
+                return nameClaim.Value;
+            else throw new ArgumentException(ErrorCategory.NO_KEYCLOAK_ID);
+        }
+        else
+        {
+            if (KeyCloakId != null)
+            {
+                return KeyCloakId;
+            }
+            else
+            {
+                throw new ArgumentException(ErrorCategory.NO_KEYCLOAK_ID_ADMIN);
+            }
         }
     }
 
@@ -81,7 +115,7 @@ public class PlayerController : ControllerBase
     [HttpGet("{game_id}/[controller]")]
     public async Task<ActionResult<IEnumerable<PlayerReadAdminDTO>>> GetPlayers(int game_id)
     {
-        List<PlayerReadAdminDTO> playersDTO = new ();
+        List<PlayerReadAdminDTO> playersDTO = new();
 
         try
         {
@@ -94,7 +128,8 @@ public class PlayerController : ControllerBase
         catch (ArgumentException ex)
         {
             return BadRequest(ex.Message);
-        }catch(Exception ex)
+        }
+        catch (Exception ex)
         {
             Console.WriteLine($"error: {ex.Message}");
             return StatusCode(StatusCodes.Status500InternalServerError, ErrorCategory.INTERNAL);
@@ -121,10 +156,14 @@ public class PlayerController : ControllerBase
     [HttpGet("{game_id}/[controller]/{player_id}")]
     public async Task<ActionResult<PlayerReadAdminDTO>> GetPlayer(int game_id, int player_id)
     {
-        try { 
-            Player player = await _repo.GetById(game_id,player_id);
-            //TODO: Keycloak, IF Not ADMIN: playerDTO.IsPatientZero = null;
+        try
+        {
+            Player player = await _repo.GetById(game_id, player_id);
             PlayerReadAdminDTO playerDTO = _mapper.Map<Player, PlayerReadAdminDTO>(player);
+            if (!User.IsInRole(ClaimsTransformer.ADMIN_ROLE))
+            {
+                playerDTO.IsPatientZero = null;
+            }
 
             //Is a type of actionresult, remember this does not typecheck
             return new JsonResult(playerDTO, new JsonSerializerSettings()
@@ -198,7 +237,7 @@ public class PlayerController : ControllerBase
     {
         try
         {
-           bool succuess = await _repo.Delete(game_id, player_id);
+            bool succuess = await _repo.Delete(game_id, player_id);
             if (!succuess) return NotFound(ErrorCategory.FAILURE);
         }
         catch (ArgumentException ex)

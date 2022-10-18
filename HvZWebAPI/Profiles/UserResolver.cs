@@ -13,7 +13,7 @@ public class UserResolver : IValueResolver<PlayerCreateDTO, Player, User>
         User tempuser = new User();
         tempuser.FirstName = source.user.FirstName;
         tempuser.LastName = source.user.LastName;
-        tempuser.KeyCloakId = source.user.KeyCloakId;
+        //tempuser.KeyCloakId = source.user.KeyCloakId;
 
 
         return tempuser;

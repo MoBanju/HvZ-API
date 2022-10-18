@@ -14,7 +14,6 @@ public class PlayerCreateDTO
     [MaxLength(FValid.PLAYER_BITECODE_MAXLENGTH)]
     [MinLength(FValid.PLAYER_BITECODE_MINLENGTH)]
     public string BiteCode { get; set; }
-    [Required]
     public UserCreateDTO user { get; set; }
 
 
