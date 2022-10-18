@@ -23,14 +23,19 @@ namespace HvZWebAPI.Data
         {
             List<Player> players = new List<Player>()
             {
+                // Game 1
                 new Player(){ Id=5, IsHuman=true, BiteCode="Five", IsPatientZero=false, UserId=1, GameId=1},
                 new Player(){ Id=7, IsHuman=true, BiteCode="Seven", IsPatientZero=false, UserId=4, GameId=1},
                 new Player(){ Id=6, IsHuman=true, BiteCode="Six", IsPatientZero=false, UserId=3, GameId=1},
+
+                // Game 2
                 new Player(){ Id=1, IsHuman=false, BiteCode="Street", IsPatientZero=false, UserId=1, GameId=2},
                 new Player(){ Id=4, IsHuman=false, BiteCode="Helloma", IsPatientZero=true, UserId=2, GameId=2},
-                new Player(){ Id=8, IsHuman=true, BiteCode="Eight", IsPatientZero=false, UserId=1, GameId=3},
+
+                // Game 3
+                new Player(){ Id=8, IsHuman=false, BiteCode="Eight", IsPatientZero=false, UserId=1, GameId=3},
                 new Player(){ Id=9, IsHuman=true, BiteCode="Nine", IsPatientZero=false, UserId=2, GameId=3},
-                new Player(){ Id=2, IsHuman=true, BiteCode="BooHoo", IsPatientZero=false, UserId=3, GameId=3},
+                new Player(){ Id=2, IsHuman=false, BiteCode="BooHoo", IsPatientZero=false, UserId=3, GameId=3},
                 new Player(){ Id=3, IsHuman=false, BiteCode="Hello", IsPatientZero=true, UserId=4, GameId=3},
             };
             return players;
