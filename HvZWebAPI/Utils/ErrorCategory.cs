@@ -126,9 +126,14 @@ public class ErrorCategory
         return $"The player with Id {killer_id} is a human and therefore cant execute the kill!";
     }
 
-    public static string OUT_GAME_AREA()
+    public static string KILL_OUT_GAME_AREA()
     {
-        return $"The zombie must execute he kill inside of the area game!";
+        return $"The zombie must execute the kill inside of the area game!";
+    }
+
+    public static string MISSION_OUT_GAME_AREA()
+    {
+        return $"The mission must be set inside the gamearea!";
     }
 
     public static string COORDINATES()

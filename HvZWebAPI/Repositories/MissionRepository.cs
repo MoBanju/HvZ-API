@@ -17,15 +17,17 @@ namespace HvZWebAPI.Repositories
 
         public async Task<Mission> Add(int game_id, Mission mission)
         {
-            if (!GameExists(game_id)) throw new ArgumentException("Game by that id does not exist");
-
+            if (!GameExists(game_id)) throw new ArgumentException(ErrorCategory.GAME_NOT_FOUND(game_id));
+            if (await InAreaGame(mission.Latitude, mission.Longitude, game_id) is false)
+                throw new ArgumentException(ErrorCategory.MISSION_OUT_GAME_AREA());
 
             mission.GameId = game_id;
             await _context.Missions.AddAsync(mission);
-            
+
             int rowsAfected = await _context.SaveChangesAsync();
             if (rowsAfected == 0)
-                return null;
+                throw new Exception(ErrorCategory.FAILED_TO_CREATE("Mission"));
+
             return mission;
         }
 
@@ -40,7 +42,7 @@ namespace HvZWebAPI.Repositories
 
                 rowsChanged = await _context.SaveChangesAsync();
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 throw;
             }
@@ -55,7 +57,7 @@ namespace HvZWebAPI.Repositories
 
         public async Task<Mission> GetById(int game_id, int mission_id)
         {
-            Mission mission = await FindMissionInGame(game_id,mission_id);
+            Mission mission = await FindMissionInGame(game_id, mission_id);
             return mission;
         }
 
@@ -63,28 +65,37 @@ namespace HvZWebAPI.Repositories
         {
             try
             {
-                if(!MissionExists(mission.Id)) throw new ArgumentException(ErrorCategory.MISSION_NOT_FOUND(mission.Id));
-                var existingMission = await FindMissionInGame(game_id,mission.Id);
-                if(existingMission != null)
-                {
+                if (!GameExists(game_id)) throw new ArgumentException(ErrorCategory.GAME_NOT_FOUND(game_id));
+                if (!MissionExists(game_id, mission.Id)) throw new ArgumentException(ErrorCategory.MISSION_NOT_FOUND(mission.Id));
+                if (await InAreaGame(mission.Latitude, mission.Longitude, game_id) is false)
+                    throw new ArgumentException(ErrorCategory.MISSION_OUT_GAME_AREA());
+
+                var existingMission = await _context.Missions.FindAsync(mission.Id);
+                if (existingMission != null)
                     _context.Entry(existingMission).State = EntityState.Detached;
-                    await _context.SaveChangesAsync();
-                }
+                else throw new ArgumentException(ErrorCategory.MISSION_NOT_FOUND(mission.Id));
+
+                mission.GameId = game_id;
+                _context.Update(mission);
+
+                await _context.SaveChangesAsync();
             }
-            catch(Exception e)
+            catch (Exception)
             {
                 throw;
             }
-
         }
+
+
 
         private async Task<Mission> FindMissionInGame(int game_id, int mission_id)
         {
             if (!GameExists(game_id)) throw new ArgumentException("There is no game with that id");
 
+
             Mission mission = await _context.Missions.Include(m => m.Game).FirstOrDefaultAsync(m => m.Id == mission_id);
             if (mission == null) throw new ArgumentException(ErrorCategory.MISSION_NOT_FOUND(mission_id));
-            if(mission.GameId != game_id) throw new ArgumentException("The kill-id you sent in is not in the game you sent in");
+            if (mission.GameId != game_id) throw new ArgumentException("The kill-id you sent in is not in the game you sent in");
 
             return mission;
         }
@@ -99,9 +110,34 @@ namespace HvZWebAPI.Repositories
             return _context.Games.Any(e => e.Id == game_id);
         }
 
-        private bool MissionExists(int mission_id)
+        /// <summary>
+        /// Checks both if mission exsists and if it has the gameid supplied
+        /// </summary>
+        /// <param name="game_id"></param>
+        /// <param name="mission_id"></param>
+        /// <returns>true if mission exists with the game id supplied</returns>
+        private bool MissionExists(int game_id, int mission_id)
         {
-            return _context.Missions.Any(e => e.Id == mission_id);
+            var mission = _context.Missions.FirstOrDefault(e => e.Id == mission_id);
+
+            if (mission == null)
+            {
+                return false;
+            }
+            if (mission.GameId != game_id)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        private async Task<bool> InAreaGame(double? mission_lat, double? mission_long, int game_id)
+        {
+            Game? game = await _context.Games.FindAsync(game_id);
+            if (mission_lat < game.Sw_lat || mission_lat > game.Ne_lat || mission_long < game.Sw_lng || mission_long > game.Ne_lng)
+                return false;
+            return true;
         }
     }
 }
