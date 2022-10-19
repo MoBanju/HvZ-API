@@ -76,6 +76,7 @@ namespace HvZWebAPI.Controllers
             }
         }
 
+        [Authorize(Roles = "admin-client-role")]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -104,7 +105,7 @@ namespace HvZWebAPI.Controllers
         }
 
 
-        [Authorize]
+        [Authorize(Roles = "admin-client-role")]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status201Created)]

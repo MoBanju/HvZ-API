@@ -36,5 +36,11 @@ public class FValid
     public const int MISSION_NAME_MINLENGTH = 1;
     
 
+    public const int SQUAD_NAME_MAXLENGTH = 100;
+    public const int SQUAD_NAME_MINLENGTH = 1;
+
+
+    public const int SQUADMEMBER_RANK_MAXLENGTH = 100;
+    public const int SQUADMEMBER_RANK_MINLENGTH = 1;
 
 }

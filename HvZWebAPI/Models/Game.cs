@@ -21,6 +21,11 @@
         public ICollection<Chat> Chats { get; set; }
 
         public ICollection<Mission>? Missions { get; set; }
+
+        public ICollection<Squad>? Squads { get; set; }
+        public ICollection<SquadMember>? Squad_Members { get; set; }
+
+        public ICollection<SquadCheckin>? Squad_Checkins { get; set; }
     }
 
     public enum State
