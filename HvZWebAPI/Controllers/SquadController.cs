@@ -19,14 +19,12 @@ namespace HvZWebAPI.Controllers
     [ApiController]
     public class SquadController : ControllerBase
     {
-        private readonly HvZDbContext _context;
         private readonly ISquadRepository _repo;
         private readonly IMapper _mapper;
 
 
-        public SquadController(HvZDbContext context, ISquadRepository repo, IMapper mapper)
+        public SquadController(ISquadRepository repo, IMapper mapper)
         {
-            _context = context;
             _repo = repo;
             _mapper = mapper;
         }
@@ -144,9 +142,5 @@ namespace HvZWebAPI.Controllers
             return NoContent();
         }
 
-        private bool SquadExists(int id)
-        {
-            return _context.Squads.Any(e => e.Id == id);
-        }
     }
 }
