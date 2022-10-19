@@ -4,6 +4,7 @@ using HvZWebAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HvZWebAPI.Migrations
 {
     [DbContext(typeof(HvZDbContext))]
-    partial class HvZDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221019061212_mission")]
+    partial class mission
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -62,7 +64,7 @@ namespace HvZWebAPI.Migrations
                         new
                         {
                             Id = 1,
-                            ChatTime = new DateTime(2022, 10, 18, 12, 54, 3, 435, DateTimeKind.Utc).AddTicks(8156),
+                            ChatTime = new DateTime(2022, 10, 19, 6, 12, 11, 682, DateTimeKind.Utc).AddTicks(901),
                             GameId = 3,
                             IsHumanGlobal = false,
                             IsZombieGlobal = true,
@@ -72,7 +74,7 @@ namespace HvZWebAPI.Migrations
                         new
                         {
                             Id = 2,
-                            ChatTime = new DateTime(2022, 10, 18, 12, 54, 3, 435, DateTimeKind.Utc).AddTicks(8162),
+                            ChatTime = new DateTime(2022, 10, 19, 6, 12, 11, 682, DateTimeKind.Utc).AddTicks(908),
                             GameId = 2,
                             IsHumanGlobal = false,
                             IsZombieGlobal = false,
@@ -82,7 +84,7 @@ namespace HvZWebAPI.Migrations
                         new
                         {
                             Id = 3,
-                            ChatTime = new DateTime(2022, 10, 18, 12, 54, 3, 435, DateTimeKind.Utc).AddTicks(8163),
+                            ChatTime = new DateTime(2022, 10, 19, 6, 12, 11, 682, DateTimeKind.Utc).AddTicks(911),
                             GameId = 1,
                             IsHumanGlobal = true,
                             IsZombieGlobal = false,
@@ -139,53 +141,53 @@ namespace HvZWebAPI.Migrations
                         {
                             Id = 1,
                             Description = "Hosted by George of the Jungle.",
-                            EndTime = new DateTime(2022, 10, 26, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Jungle",
-                            Ne_lat = 60.395527999999999,
-                            Ne_lng = 5.320989,
-                            StartTime = new DateTime(2022, 10, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Ne_lat = 0.0,
+                            Ne_lng = 0.0,
+                            StartTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             State = 0,
-                            Sw_lat = 60.395122999999998,
-                            Sw_lng = 5.3146870000000002
+                            Sw_lat = 0.0,
+                            Sw_lng = 0.0
                         },
                         new
                         {
                             Id = 2,
                             Description = "Match happens in Finland.",
-                            EndTime = new DateTime(2022, 10, 26, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Island",
-                            Ne_lat = 58.984830000000002,
-                            Ne_lng = 5.619021,
-                            StartTime = new DateTime(2022, 10, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Ne_lat = 0.0,
+                            Ne_lng = 0.0,
+                            StartTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             State = 1,
-                            Sw_lat = 58.983857,
-                            Sw_lng = 5.613486
+                            Sw_lat = 0.0,
+                            Sw_lng = 0.0
                         },
                         new
                         {
                             Id = 3,
                             Description = "Sharks, Bombs and Boats.",
-                            EndTime = new DateTime(2022, 10, 26, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Ocean",
-                            Ne_lat = 58.895001999999998,
-                            Ne_lng = 5.6449809999999996,
-                            StartTime = new DateTime(2022, 10, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Ne_lat = 0.0,
+                            Ne_lng = 0.0,
+                            StartTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             State = 1,
-                            Sw_lat = 58.870288000000002,
-                            Sw_lng = 5.6021359999999998
+                            Sw_lat = 0.0,
+                            Sw_lng = 0.0
                         },
                         new
                         {
                             Id = 4,
                             Description = "Armstrong in the building.",
-                            EndTime = new DateTime(2022, 10, 26, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Space",
-                            Ne_lat = 58.964326999999997,
-                            Ne_lng = 5.8464679999999998,
-                            StartTime = new DateTime(2022, 10, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Ne_lat = 0.0,
+                            Ne_lng = 0.0,
+                            StartTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             State = 2,
-                            Sw_lat = 58.940604999999998,
-                            Sw_lng = 5.8035119999999996
+                            Sw_lat = 0.0,
+                            Sw_lng = 0.0
                         });
                 });
 
@@ -223,38 +225,14 @@ namespace HvZWebAPI.Migrations
                         new
                         {
                             Id = 1,
-                            Description = "CAMPER!!",
                             GameId = 2,
-                            Latitude = 58.983899999999998,
-                            Longitude = 5.6150000000000002,
-                            TimeDeath = new DateTime(2022, 10, 13, 13, 37, 59, 0, DateTimeKind.Unspecified)
+                            TimeDeath = new DateTime(2022, 10, 19, 6, 12, 11, 682, DateTimeKind.Utc).AddTicks(851)
                         },
                         new
                         {
                             Id = 2,
-                            Description = "GET HIM!",
-                            GameId = 2,
-                            Latitude = 58.984172999999998,
-                            Longitude = 5.6151669999999996,
-                            TimeDeath = new DateTime(2022, 10, 14, 13, 37, 59, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Description = "",
                             GameId = 3,
-                            Latitude = 58.885641999999997,
-                            Longitude = 5.6335850000000001,
-                            TimeDeath = new DateTime(2022, 10, 13, 13, 37, 59, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Description = "",
-                            GameId = 3,
-                            Latitude = 58.893352999999998,
-                            Longitude = 5.6372780000000002,
-                            TimeDeath = new DateTime(2022, 10, 14, 13, 37, 59, 0, DateTimeKind.Unspecified)
+                            TimeDeath = new DateTime(2022, 10, 19, 6, 12, 11, 682, DateTimeKind.Utc).AddTicks(858)
                         });
                 });
 
@@ -346,28 +324,19 @@ namespace HvZWebAPI.Migrations
                         },
                         new
                         {
-                            Id = 7,
-                            BiteCode = "Seven",
-                            GameId = 1,
-                            IsHuman = true,
-                            IsPatientZero = false,
-                            UserId = 4
-                        },
-                        new
-                        {
-                            Id = 6,
-                            BiteCode = "Six",
-                            GameId = 1,
-                            IsHuman = true,
-                            IsPatientZero = false,
-                            UserId = 3
-                        },
-                        new
-                        {
                             Id = 1,
                             BiteCode = "Street",
                             GameId = 2,
                             IsHuman = false,
+                            IsPatientZero = false,
+                            UserId = 1
+                        },
+                        new
+                        {
+                            Id = 8,
+                            BiteCode = "Eight",
+                            GameId = 3,
+                            IsHuman = true,
                             IsPatientZero = false,
                             UserId = 1
                         },
@@ -379,15 +348,6 @@ namespace HvZWebAPI.Migrations
                             IsHuman = false,
                             IsPatientZero = true,
                             UserId = 2
-                        },
-                        new
-                        {
-                            Id = 8,
-                            BiteCode = "Eight",
-                            GameId = 3,
-                            IsHuman = false,
-                            IsPatientZero = false,
-                            UserId = 1
                         },
                         new
                         {
@@ -409,11 +369,29 @@ namespace HvZWebAPI.Migrations
                         },
                         new
                         {
+                            Id = 6,
+                            BiteCode = "Six",
+                            GameId = 1,
+                            IsHuman = true,
+                            IsPatientZero = false,
+                            UserId = 3
+                        },
+                        new
+                        {
                             Id = 3,
                             BiteCode = "Hello",
                             GameId = 3,
                             IsHuman = false,
                             IsPatientZero = true,
+                            UserId = 4
+                        },
+                        new
+                        {
+                            Id = 7,
+                            BiteCode = "Seven",
+                            GameId = 1,
+                            IsHuman = true,
+                            IsPatientZero = false,
                             UserId = 4
                         });
                 });
@@ -438,18 +416,18 @@ namespace HvZWebAPI.Migrations
                     b.HasData(
                         new
                         {
-                            PlayerId = 4,
-                            KillId = 1,
-                            IsVictim = true
-                        },
-                        new
-                        {
                             PlayerId = 1,
                             KillId = 1,
                             IsVictim = false
                         },
                         new
                         {
+                            PlayerId = 4,
+                            KillId = 1,
+                            IsVictim = true
+                        },
+                        new
+                        {
                             PlayerId = 2,
                             KillId = 2,
                             IsVictim = true
@@ -458,30 +436,6 @@ namespace HvZWebAPI.Migrations
                         {
                             PlayerId = 3,
                             KillId = 2,
-                            IsVictim = false
-                        },
-                        new
-                        {
-                            PlayerId = 8,
-                            KillId = 3,
-                            IsVictim = true
-                        },
-                        new
-                        {
-                            PlayerId = 3,
-                            KillId = 3,
-                            IsVictim = false
-                        },
-                        new
-                        {
-                            PlayerId = 2,
-                            KillId = 4,
-                            IsVictim = true
-                        },
-                        new
-                        {
-                            PlayerId = 8,
-                            KillId = 4,
                             IsVictim = false
                         });
                 });

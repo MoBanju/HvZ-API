@@ -11,22 +11,26 @@ public class KillRepository : IKillRepository
 {
     private readonly HvZDbContext _context;
     private readonly IPlayerRepository _playerRepository;
+    private readonly IGameRepository _gameRepository;
 
-    public KillRepository(HvZDbContext context, IPlayerRepository playerRepository)
+    public KillRepository(HvZDbContext context, IPlayerRepository playerRepository, IGameRepository gameRepository)
     {
         _context = context;
         _playerRepository = playerRepository;
+        _gameRepository = gameRepository;
     }
     public async Task<Kill?> Add(int game_id, Kill kill, string bitecode, int killer_id)
     {
-        if (!GameExists(game_id)) throw new ArgumentException("Game by that id does not exsist");
+        if (!GameExists(game_id)) throw new ArgumentException("Game by that id does not exist");
 
         if (await KillerVictimSameGame(game_id, killer_id, bitecode) is false) throw new ArgumentException(ErrorCategory.KILLER_VICTIM_NOT_SAME_GAME(game_id, killer_id, bitecode));
 
-        if(AlreadyZombie(game_id, bitecode)) throw new ArgumentException(ErrorCategory.ALREADY_ZOMBIE(bitecode));
+        if (await AlreadyZombie(game_id, bitecode) is true) throw new ArgumentException(ErrorCategory.ALREADY_ZOMBIE(bitecode));
 
-        if (KillerHuman(game_id, killer_id)) throw new ArgumentException(ErrorCategory.KILLER_HUMAN(killer_id));
-        
+        if (await KillerHuman(game_id, killer_id) is true) throw new ArgumentException(ErrorCategory.KILLER_HUMAN(killer_id));
+
+        if (await InAreaGame(kill.Latitude, kill.Longitude, game_id) is false) throw new ArgumentException(ErrorCategory.OUT_GAME_AREA());
+
         Player victim = await _playerRepository.GetByBiteCode(game_id, bitecode);
         victim.IsHuman = false;
 
@@ -98,7 +102,7 @@ public class KillRepository : IKillRepository
 
         if (await VictimSameGame(bitecode, game_id) is false) throw new ArgumentException(ErrorCategory.VICTIM_NOT_FOUND_IN_GAME(game_id, bitecode));
         
-        if (!AlreadyZombie(game_id, bitecode)) throw new ArgumentException(ErrorCategory.ALREADY_ZOMBIE(bitecode));
+        if (await AlreadyZombie(game_id, bitecode) is true) throw new ArgumentException(ErrorCategory.ALREADY_ZOMBIE(bitecode));
 
         try
         {
@@ -188,9 +192,10 @@ public class KillRepository : IKillRepository
     /// <param name="game_id">Game Id</param>
     /// <param name="bitecode">Bitecode to the player</param>
     /// <returns>Either a zombie or a human</returns>
-    private bool AlreadyZombie(int game_id, string bitecode)
+    private async Task<bool> AlreadyZombie(int game_id, string bitecode)
     {
-        return !_playerRepository.GetByBiteCode(game_id, bitecode).Result.IsHuman;
+        Player victim = await _playerRepository.GetByBiteCode(game_id, bitecode);
+        return !victim.IsHuman;
 
     }
 
@@ -200,10 +205,12 @@ public class KillRepository : IKillRepository
     /// <param name="game_id">Gme Id</param>
     /// <param name="killer_id">Killer Id</param>
     /// <returns>Either it is human or zombie</returns>
-    private bool KillerHuman(int game_id, int killer_id)
+    private async Task<bool> KillerHuman(int game_id, int killer_id)
     {
-        return _playerRepository.GetById(game_id, killer_id).Result.IsHuman;
+        Player killer = await _playerRepository.GetById(game_id, killer_id);
+        return killer.IsHuman;
     }
+
     
     /// <summary>
     /// Checks if the player is in the same game
@@ -247,6 +254,23 @@ public class KillRepository : IKillRepository
 
         return killer.GameId == victim.GameId;
 
+    }
+
+    /// <summary>
+    /// Checks if the kill happened inside the area
+    /// </summary>
+    /// <param name="kill_lat">Kill Latitude</param>
+    /// <param name="kill_long">Kill Longitude</param>
+    /// <param name="game_id">Game Id</param>
+    /// <returns>Either inside or outside of the area</returns>
+    /// <exception cref="ArgumentException"></exception>
+    private async Task<bool> InAreaGame(double? kill_lat, double? kill_long, int game_id)
+    {
+        if (!GameExists(game_id)) throw new ArgumentException("There is no game with that id");
+        Game? game = await _gameRepository.GetById(game_id);
+        if (kill_lat < game.Sw_lat || kill_lat > game.Ne_lat || kill_long < game.Sw_lng || kill_long > game.Ne_lng)
+            return false;
+        return true;
     }
 
     /// <summary>

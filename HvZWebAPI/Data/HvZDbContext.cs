@@ -16,6 +16,8 @@ namespace HvZWebAPI.Data
         public DbSet<Chat> Chats { get; set; }
         public DbSet<PlayerKill> PlayerKills { get; set; }
 
+        public DbSet<Mission> Missions { get; set; }
+
         // 
         public HvZDbContext(DbContextOptions options) : base(options)
         {
@@ -54,14 +56,19 @@ namespace HvZWebAPI.Data
 
             // Game
             modelBuilder.Entity<Game>().HasMany<Chat>(g => g.Chats).WithOne(c => c.Game);
+            modelBuilder.Entity<Game>().HasMany<Mission>(g => g.Missions).WithOne(m => m.Game);
 
   
             modelBuilder.Entity<Game>().HasMany<Player>(g => g.Players).WithOne(p => p.Game).OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<Player>().HasOne<Game>(p => p.Game).WithMany(g => g.Players).OnDelete(DeleteBehavior.NoAction);
             modelBuilder.Entity<Game>().HasMany<Kill>(g => g.Kills).WithOne(k => k.Game);
 
+
+
+
             // Constraint
             modelBuilder.Entity<Player>().HasIndex(player => player.BiteCode).IsUnique();
+
 
             // Set the Data
             modelBuilder.Entity<User>().HasData(SeedDataHelper.GetUsers());
@@ -85,6 +92,10 @@ namespace HvZWebAPI.Data
             modelBuilder.Entity<Chat>().Property(c => c.Message).HasMaxLength(FValid.CHAT_MESSAGE_MAXLENGTH);
 
             modelBuilder.Entity<Kill>().Property(k => k.Description).HasMaxLength(FValid.KILL_DESCRIPTION_MAXLENGTH);
+
+
+            modelBuilder.Entity<Mission>().Property(m => m.Description).HasMaxLength(FValid.MISSION_DESCRIPTION_MAXLENGTH);
+            modelBuilder.Entity<Mission>().Property(m => m.Name).HasMaxLength(FValid.MISSION_NAME_MAXLENGTH);
 
         }
     }

@@ -83,17 +83,6 @@ public class GameController : ControllerBase
         }
     }
 
-    private void addPlayerCounts(GameReadDTO[] gamesAsDTOs, IEnumerable<Game> games)
-    {
-        int count = 0;
-        foreach (var g in games)
-        {
-            if (g.Players != null)
-                gamesAsDTOs[count].PlayerCount = g.Players.Count();
-            count++;
-        }
-    }
-
     /// <summary>
     /// Returns a specific game object
     /// </summary>
@@ -110,13 +99,13 @@ public class GameController : ControllerBase
 
         User.HasClaim((c) => {
 
-            if(c.Type == ClaimTypes.Role)
-             Debug.WriteLine("Roleclaim " + c);
+            if (c.Type == ClaimTypes.Role)
+                Debug.WriteLine("Roleclaim " + c);
             return c.Value == ClaimTypes.Role;
         });
 
 
-        var roles = User.Claims.Where(c=> c.Type == ClaimTypes.Role).Select(c=>c.Value);
+        var roles = User.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value);
 
         var roles3 = User.IsInRole(ClaimsTransformer.ADMIN_ROLE);
 
@@ -138,6 +127,92 @@ public class GameController : ControllerBase
 
     }
 
+
+    /// <summary>
+    /// List of all games that are in registration
+    /// </summary>
+    /// <returns></returns>
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [HttpGet("State/Registration")]
+    public async Task<ActionResult<GameReadDTO[]>> GetGamesRegistration()
+    {
+        try
+        {
+            IEnumerable<Game> games = await _repo.GetByState(State.Registration);
+            GameReadDTO[] gamesAsDTOs = games.Select(game => _mapper.Map<GameReadDTO>(game)).ToArray();
+            addPlayerCounts(gamesAsDTOs, games);
+            return gamesAsDTOs;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            return StatusCode(StatusCodes.Status500InternalServerError, ErrorCategory.INTERNAL);
+        }
+    }
+
+    /// <summary>
+    /// List of all games that are in progress
+    /// </summary>
+    /// <returns></returns>
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [HttpGet("State/Progress")]
+    public async Task<ActionResult<GameReadDTO[]>> GetGamesInProgress()
+    {
+        try
+        {
+            IEnumerable<Game> games = await _repo.GetByState(State.Progress);
+            GameReadDTO[] gamesAsDTOs = games.Select(game => _mapper.Map<GameReadDTO>(game)).ToArray();
+            addPlayerCounts(gamesAsDTOs, games);
+            return gamesAsDTOs;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            return StatusCode(StatusCodes.Status500InternalServerError, ErrorCategory.INTERNAL);
+        }
+    }
+
+
+
+    /// <summary>
+    /// List of all games that are completed
+    /// </summary>
+    /// <returns></returns>
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [HttpGet("State/Completed")]
+    public async Task<ActionResult<GameReadDTO[]>> GetGamesCompleted()
+    {
+        try
+        {
+            IEnumerable<Game> games = await _repo.GetByState(State.Complete);
+            GameReadDTO[] gamesAsDTOs = games.Select(game => _mapper.Map<GameReadDTO>(game)).ToArray();
+            addPlayerCounts(gamesAsDTOs, games);
+            return gamesAsDTOs;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            return StatusCode(StatusCodes.Status500InternalServerError, ErrorCategory.INTERNAL);
+        }
+    }
+
+    private void addPlayerCounts(GameReadDTO[] gamesAsDTOs, IEnumerable<Game> games)
+    {
+        int count = 0;
+        foreach (var g in games)
+        {
+            if (g.Players != null)
+                gamesAsDTOs[count].PlayerCount = g.Players.Count();
+            count++;
+        }
+    }
+
+
+
+    
     /// <summary>
     /// Updates a game, Admin only
     /// </summary>

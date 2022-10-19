@@ -1,6 +1,7 @@
 using HvZWebAPI.Data;
 using HvZWebAPI.Interfaces;
 using HvZWebAPI.Models;
+using HvZWebAPI.Utils;
 using Microsoft.EntityFrameworkCore;
 
 namespace HvZWebAPI.Repositories;
@@ -17,6 +18,7 @@ public class GameRepository : IGameRepository
 
     public async Task<bool> Update(Game entity)
     {
+        if (CheckCoord(entity)) throw new ArgumentException(ErrorCategory.COORDINATES());
         _context.Entry(entity).State = EntityState.Modified;
         return await _context.SaveChangesAsync() > 0;
     }
@@ -45,11 +47,22 @@ public class GameRepository : IGameRepository
 
     async Task<Game?>  IRepository<Game>.Add(Game entity)
     {
+        if (CheckCoord(entity)) throw new ArgumentException(ErrorCategory.COORDINATES());
         _context.Games.Add(entity);
         int rowsAffected = await _context.SaveChangesAsync();
 
         if (rowsAffected == 0) return null;
         
         return entity;
+    }
+
+    public async Task<IEnumerable<Game>> GetByState(State state)
+    {
+        return await _context.Games.Include(g => g.Players).Where(g => g.State == state).ToListAsync();
+    }
+
+    private bool CheckCoord(Game entity)
+    {
+        return entity.Ne_lat <= entity.Sw_lat || entity.Ne_lng <= entity.Sw_lng;
     }
 }

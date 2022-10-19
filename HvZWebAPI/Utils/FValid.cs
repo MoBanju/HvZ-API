@@ -29,6 +29,9 @@ public class FValid
     public const int USER_KEYCLOAK_ID_MAXLENGTH = 50;
     public const int USER_KEYCLOAK_ID_MINLENGTH = 1;
 
+
+    public const int MISSION_DESCRIPTION_MAXLENGTH = 2000;
+    public const int MISSION_NAME_MAXLENGTH = 100;
     
 
 }
