@@ -39,9 +39,9 @@ public class ErrorCategory
         return $"No game with id {game_id} found";
     }
 
-    public static string KILL_NOT_FOUND(int kill_id)
+    public static string KILL_NOT_FOUND(int kill_id, int game_id)
     {
-        return $"No kill with id {kill_id} found";
+        return $"No kill with id {kill_id} found, atleast not in game {game_id}";
     }
 
     public static string PLAYER_NOT_FOUND(int player_id)
