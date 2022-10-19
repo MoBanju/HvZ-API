@@ -33,7 +33,7 @@ namespace HvZWebAPI.Interfaces
         /// <param name="game_id"></param>
         /// <param name="mission"></param>
         /// <returns></returns>
-        public Task<Mission> Update(int game_id, Mission mission);
+        public Task Update(int game_id, Mission mission);
 
         /// <summary>
         /// 
