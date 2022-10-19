@@ -101,18 +101,19 @@ namespace HvZWebAPI.Data
 
         public static List<Mission> GetMissions()
         {
-            List<Mission> chats = new List<Mission>()
+            List<Mission> missions = new List<Mission>()
             {
                 new Mission(){ Id=1, Description="Touch your head!", Is_zombie_visible=false, Is_human_visible=true,
-                    GameId=3, Start_time=DateTime.UtcNow, End_time=DateTime.UtcNow.AddHours(2)},
+                    GameId=3, Start_time=DateTime.UtcNow, End_time=DateTime.UtcNow.AddHours(2)
+                , Latitude=58.88, Longitude=5.61, Name = "Head here"},
                 new Mission(){ Id=2, Description="Touch your toes!", Is_zombie_visible=false, Is_human_visible=true,
-                    GameId=2, Start_time=DateTime.UtcNow, End_time=DateTime.UtcNow.AddHours(1)},
+                    GameId=2, Start_time=DateTime.UtcNow, End_time=DateTime.UtcNow.AddHours(1)
+                    , Latitude=58.9839, Longitude=5.614, Name = "Take a trip"},
                 new Mission(){ Id=3, Description="Jump up on the table and do a zombie dance!", Is_zombie_visible=true, Is_human_visible=false,
-                    GameId=2, Start_time=DateTime.UtcNow, End_time=DateTime.UtcNow.AddHours(4)},
-
-                
+                    GameId=2, Start_time=DateTime.UtcNow, End_time=DateTime.UtcNow.AddHours(4)
+                    , Latitude=58.98398, Longitude=5.617, Name = "JigglyBrains" }
             };
-            return chats;
+            return missions;
         }
     }
 }

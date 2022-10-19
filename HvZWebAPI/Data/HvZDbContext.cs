@@ -77,6 +77,7 @@ namespace HvZWebAPI.Data
             modelBuilder.Entity<Kill>().HasData(SeedDataHelper.GetKills());
             modelBuilder.Entity<Chat>().HasData(SeedDataHelper.GetChats());
             modelBuilder.Entity<PlayerKill>().HasData(SeedDataHelper.GetPlayerKills());
+            modelBuilder.Entity<Mission>().HasData(SeedDataHelper.GetMissions());
 
 
             //Add restrictions
