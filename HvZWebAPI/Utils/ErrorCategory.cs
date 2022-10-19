@@ -125,4 +125,9 @@ public class ErrorCategory
     {
         return $"The zombie must execute he kill inside of the area game!";
     }
+
+    public static string COORDINATES()
+    {
+        return $"The cordinates from North East must be bigger than South West";
+    }
 }
