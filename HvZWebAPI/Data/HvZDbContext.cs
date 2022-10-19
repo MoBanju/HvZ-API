@@ -15,10 +15,13 @@ namespace HvZWebAPI.Data
         public DbSet<Kill> Kills { get; set; }
         public DbSet<Chat> Chats { get; set; }
         public DbSet<PlayerKill> PlayerKills { get; set; }
-
         public DbSet<Mission> Missions { get; set; }
+        public DbSet<Squad> Squads { get; set; }
+        public DbSet<SquadMember> Squad_Members { get; set; }
+        public DbSet<SquadCheckin> Squad_Checkins { get; set; }
 
-        // 
+
+
         public HvZDbContext(DbContextOptions options) : base(options)
         {
         }
@@ -64,6 +67,20 @@ namespace HvZWebAPI.Data
             modelBuilder.Entity<Game>().HasMany<Kill>(g => g.Kills).WithOne(k => k.Game);
 
 
+            modelBuilder.Entity<SquadCheckin>().HasOne<SquadMember>(sc => sc.Squad_Member).WithMany(sm => sm.Squad_Checkins).OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<SquadCheckin>().HasOne<Squad>(sc => sc.Squad).WithMany(sq => sq.Squad_Checkins).OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<SquadCheckin>().HasOne<Game>(sc => sc.Game).WithMany(g=>g.Squad_Checkins);
+
+            modelBuilder.Entity<Squad>().HasOne<Game>(s => s.Game).WithMany(g => g.Squads);
+            modelBuilder.Entity<Squad>().HasMany<Chat>(s => s.Chats).WithOne(c => c.Squad);
+            
+            
+            modelBuilder.Entity<SquadMember>().HasOne<Game>(s => s.Game).WithMany(g => g.Squad_Members);
+
+
+            //modelBuilder.Entity<Squad_Member>().HasOne<Squad>(s => s.Squad).WithMany(sq => sq.Squad_Members);
+            modelBuilder.Entity<Squad>().HasMany<SquadMember>(s => s.Squad_Members).WithOne(sq => sq.Squad).OnDelete(DeleteBehavior.NoAction);
+
 
 
             // Constraint
@@ -78,7 +95,9 @@ namespace HvZWebAPI.Data
             modelBuilder.Entity<Chat>().HasData(SeedDataHelper.GetChats());
             modelBuilder.Entity<PlayerKill>().HasData(SeedDataHelper.GetPlayerKills());
             modelBuilder.Entity<Mission>().HasData(SeedDataHelper.GetMissions());
-
+            modelBuilder.Entity<Squad>().HasData(SeedDataHelper.GetSquads());
+            modelBuilder.Entity<SquadMember>().HasData(SeedDataHelper.GetSquadMembers());
+            modelBuilder.Entity<SquadCheckin>().HasData(SeedDataHelper.GetSquadCheckins());
 
             //Add restrictions
             modelBuilder.Entity<User>().Property(u => u.FirstName).HasMaxLength(FValid.USER_FIRSTNAME_MAXLENGTH);
@@ -94,9 +113,12 @@ namespace HvZWebAPI.Data
 
             modelBuilder.Entity<Kill>().Property(k => k.Description).HasMaxLength(FValid.KILL_DESCRIPTION_MAXLENGTH);
 
-
             modelBuilder.Entity<Mission>().Property(m => m.Description).HasMaxLength(FValid.MISSION_DESCRIPTION_MAXLENGTH);
             modelBuilder.Entity<Mission>().Property(m => m.Name).HasMaxLength(FValid.MISSION_NAME_MAXLENGTH);
+
+            modelBuilder.Entity<Squad>().Property(s => s.Name).HasMaxLength(FValid.SQUAD_NAME_MAXLENGTH);
+
+            modelBuilder.Entity<SquadMember>().Property(sm => sm.Rank).HasMaxLength(FValid.SQUADMEMBER_RANK_MAXLENGTH);
 
         }
     }
