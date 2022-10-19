@@ -21,6 +21,7 @@ public interface IChatRepository
     /// <returns>A list of Chat messages beloning to given game</returns>
     public Task<IEnumerable<Chat>> GetChats(int gameId);
 
+   
     /// <summary>
     /// Gets a chat in the given game with the given chat id
     /// </summary>
@@ -29,4 +30,6 @@ public interface IChatRepository
     /// <exception cref="ArgumentException">When game is not found</exception>
     /// <returns>chat object or null if the chat was not in the game specified</returns>
     public Task<Chat?> GetChat(int gameId, int chat_id);
+
+
 }

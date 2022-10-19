@@ -34,8 +34,8 @@
   <ItemGroup>
     <Folder Include="DTOs\Game\" />
     <Folder Include="DTOs\Chat\" />
+    <Folder Include="DTOs\SquadCheckin\" />
     <Folder Include="DTOs\Player\" />
-    <Folder Include="Repositories\" />
   </ItemGroup>
 
 </Project>

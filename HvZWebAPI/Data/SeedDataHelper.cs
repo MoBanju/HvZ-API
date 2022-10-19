@@ -134,14 +134,14 @@ namespace HvZWebAPI.Data
         {
             List<Squad> squads = new List<Squad>()
             {
-                new Squad(){ Id=1, is_human = true, Name = "ForeverYoung", GameId = 1},
+                new Squad(){ Id=1, Is_human = true, Name = "ForeverYoung", GameId = 1},
 
-                new Squad(){ Id=2, is_human = false, Name = "DeadManWalking", GameId = 2},
+                new Squad(){ Id=2, Is_human = false, Name = "DeadManWalking", GameId = 2},
 
-                new Squad(){ Id=3, is_human = true, Name = "StayinAlive", GameId = 3},
-                new Squad(){ Id=4, is_human = false, Name = "StayinDead", GameId = 3},
+                new Squad(){ Id=3, Is_human = true, Name = "StayinAlive", GameId = 3},
+                new Squad(){ Id=4, Is_human = false, Name = "StayinDead", GameId = 3},
 
-                new Squad(){ Id=5, is_human = true, Name = "SquadsGalore", GameId = 4},
+                new Squad(){ Id=5, Is_human = true, Name = "SquadsGalore", GameId = 4},
             };
             return squads;
         }

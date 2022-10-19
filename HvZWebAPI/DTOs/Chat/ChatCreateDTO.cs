@@ -17,5 +17,6 @@ public class ChatCreateDTO
     public bool? IsZombieGlobal { get; set; }
     [Required]
     public int? PlayerId { get; set; }
+    public int? SquadId { get; set; }
 
 }

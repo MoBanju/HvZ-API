@@ -134,7 +134,6 @@ public class PlayerController : ControllerBase
             Console.WriteLine($"error: {ex.Message}");
             return StatusCode(StatusCodes.Status500InternalServerError, ErrorCategory.INTERNAL);
         }
-        //TODO: Keycloak, if Not ADMIN Null out the IsPatientZeroField and add JSONresult
         return new JsonResult(playersDTO, new JsonSerializerSettings()
         {
             NullValueHandling = NullValueHandling.Ignore,

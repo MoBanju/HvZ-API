@@ -6,13 +6,13 @@ public class Squad
 
     public string Name { get; set; }
 
-    public bool is_human { get; set; }
+    public bool Is_human { get; set; }
 
     //Nav properties
     public Game Game { get; set; }
     public int GameId { get; set; }
 
-    public ICollection<SquadMember>? Squad_Members{ get; set; }
+    public ICollection<SquadMember> Squad_Members{ get; set; }
 
     public ICollection<SquadCheckin>? Squad_Checkins { get; set; }
 

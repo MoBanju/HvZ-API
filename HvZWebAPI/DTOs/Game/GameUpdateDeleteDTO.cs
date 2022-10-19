@@ -6,14 +6,14 @@ namespace HvZWebAPI.DTOs.Game;
 
 public class GameUpdateDeleteDTO
 {
-    [Required]
+    [Required(ErrorMessage = "Game Id is required")]
     public int? Id { get; set; }
 
-    [Required]
+    [Required(ErrorMessage = "Game name is required")]
     [MaxLength(FValid.GAME_NAME_MAXLENGTH), MinLength(FValid.GAME_NAME_MINLENGTH)]
     public string Name { get; set; }
 
-    [Required]
+    [Required(ErrorMessage = "Game description is required")]
     [MaxLength(FValid.GAME_DESCRIPTION_MAXLENGTH)]
     public string Description { get; set; }
     

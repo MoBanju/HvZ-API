@@ -92,6 +92,7 @@ builder.Services.AddScoped<IChatRepository, ChatRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IKillRepository, KillRepository>();
 builder.Services.AddScoped<IMissionRepository, MissionRepository>();
+builder.Services.AddScoped<ISquadRepository, SquadRepository>();
 builder.Services.AddTransient<IClaimsTransformation, ClaimsTransformer>();
 
 builder.Services.AddAutoMapper(typeof(Program).Assembly);

@@ -6,6 +6,9 @@ using HvZWebAPI.Interfaces;
 using HvZWebAPI.DTOs.Player;
 using HvZWebAPI.Utils;
 using Microsoft.AspNetCore.Authorization;
+using Newtonsoft.Json.Serialization;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace HvZWebAPI.Controllers;
 
@@ -43,11 +46,19 @@ public class ChatController : ControllerBase
             Chat chat = _mapper.Map<Chat>(chatAsDTO);
             var chatDTO = _mapper.Map<Chat, ChatReadDTO>(await _repo.PostChat(game_id, chat));
 
-
             if (chatDTO == null)
                 return BadRequest(ErrorCategory.FAILED_TO_CREATE("Chat"));
 
-            return CreatedAtAction("GetGameChat", new { game_id = game_id, chat_id = chat.Id }, chatDTO);
+            //Set null as default
+
+            var nullIgnorer = JsonConvert.SerializeObject(chatDTO, new JsonSerializerSettings()
+            {
+                NullValueHandling = NullValueHandling.Ignore,
+                ContractResolver = new CamelCasePropertyNamesContractResolver(),
+            });
+            JObject nullIgnoredObject = JObject.Parse(nullIgnorer);
+
+            return CreatedAtAction("GetGameChat", new { game_id = game_id, chat_id = chat.Id }, nullIgnoredObject);
         }
         catch (ArgumentException e)
         {
@@ -76,8 +87,12 @@ public class ChatController : ControllerBase
         {
             var chat = await _repo.GetChats(game_id);
             var chatAsDTO = chat.Select(chat => _mapper.Map<ChatReadDTO>(chat));
-            return Ok(chatAsDTO);
 
+            return new JsonResult(chatAsDTO, new JsonSerializerSettings()
+            {
+                NullValueHandling = NullValueHandling.Ignore,
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
+            });
         }
         catch (Exception ex)
         {
@@ -105,7 +120,11 @@ public class ChatController : ControllerBase
 
             if (chat == null) return NotFound(ErrorCategory.CHAT_NOT_FOUND(chat_id, game_id));
             var chatAsDTO = _mapper.Map<ChatReadDTO>(chat);
-            return Ok(chatAsDTO);
+            return new JsonResult(chatAsDTO, new JsonSerializerSettings()
+            {
+                NullValueHandling = NullValueHandling.Ignore,
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
+            });
         }
         catch (Exception ex)
         {

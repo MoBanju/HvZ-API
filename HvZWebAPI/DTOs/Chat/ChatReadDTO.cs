@@ -7,6 +7,6 @@ public class ChatReadDTO
         public DateTime ChatTime { get; set; }
         public bool IsHumanGlobal { get; set; }
         public bool IsZombieGlobal { get; set; }
-        public int PlayerId { get; set; }
-
+        public int? PlayerId { get; set; }
+        public int? SquadId { get; set; }
 }
