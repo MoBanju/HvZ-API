@@ -54,6 +54,11 @@ public class ErrorCategory
         return $"No player with bitecode {bitecode} found";
     }
 
+    public static string MISSION_NOT_FOUND(int mission_id)
+    {
+        return $"No kill with id {mission_id} found";
+    }
+
     public static string UNIQUE_PLAYER_GAME(string keycloak_id)
     {
         return $"User {keycloak_id} allready has a player in this game, no more are allowed";
