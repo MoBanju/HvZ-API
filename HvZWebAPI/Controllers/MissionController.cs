@@ -9,10 +9,9 @@ using HvZWebAPI.Data;
 using HvZWebAPI.Models;
 using HvZWebAPI.DTOs.Mission;
 using AutoMapper;
-using HvZWebAPI.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using HvZWebAPI.DTOs.Kill;
 using HvZWebAPI.Utils;
+using HvZWebAPI.Interfaces;
 
 namespace HvZWebAPI.Controllers
 {
@@ -106,43 +105,32 @@ namespace HvZWebAPI.Controllers
         }
 
 
-    [Authorize]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status201Created)]
-    [HttpPost("{game_id}/[controller]")]
-    public async Task<ActionResult<MissionReadDTO>> PostMission(int game_id, MissionCreateDTO missionAsDTO)
-    {
-
-        Mission mission = _mapper.Map<MissionCreateDTO, Mission>(missionAsDTO);
-
-        mission.GameId = game_id;
-        try
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [HttpPost("{game_id}/[controller]")]
+        public async Task<ActionResult<MissionReadDTO>> PostMission(int game_id, MissionCreateDTO missionAsDTO)
         {
-            //MissionerId will never be null as it is tagged as required
-            Mission? savedMission = await _repo.Add(game_id, mission);
 
-            if (savedMission == null)
+            Mission mission = _mapper.Map<MissionCreateDTO, Mission>(missionAsDTO);
+
+            mission.GameId = game_id;
+
+            try
             {
-                return BadRequest(ErrorCategory.FAILED_TO_CREATE("Mission"));
+                var missionReadDTO = _mapper.Map<Mission, MissionReadDTO>(await _repo.Add(game_id, mission));
+                return CreatedAtAction("GetMission", new { id = missionReadDTO.Id }, missionReadDTO);
             }
-
-            MissionReadDTO mapped = _mapper.Map<Mission, MissionReadDTO>(savedMission);
-
-            //if()
-            return CreatedAtAction("GetMission", new { game_id = game_id, mission_id = savedMission.Id }, mapped);
-
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ErrorCategory.INTERNAL);
+            }
         }
-        catch (ArgumentException ex)
-        {
-            return BadRequest(ex.Message);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex);
-            return StatusCode(StatusCodes.Status500InternalServerError, ErrorCategory.INTERNAL);
-    }
-}
 
         [Authorize(Roles = "admin-client-role")]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
