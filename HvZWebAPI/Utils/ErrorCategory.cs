@@ -120,4 +120,14 @@ public class ErrorCategory
     {
         return $"The player with Id {killer_id} is a human and therefore cant execute the kill!";
     }
+
+    public static string OUT_GAME_AREA()
+    {
+        return $"The zombie must execute he kill inside of the area game!";
+    }
+
+    public static string COORDINATES()
+    {
+        return $"The cordinates from North East must be bigger than South West";
+    }
 }
