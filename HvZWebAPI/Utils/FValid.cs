@@ -31,7 +31,10 @@ public class FValid
 
 
     public const int MISSION_DESCRIPTION_MAXLENGTH = 2000;
+    public const int MISSION_DESCRIPTION_MINLENGTH = 1;
     public const int MISSION_NAME_MAXLENGTH = 100;
+    public const int MISSION_NAME_MINLENGTH = 1;
     
+
 
 }

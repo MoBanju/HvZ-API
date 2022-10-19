@@ -7,18 +7,23 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using HvZWebAPI.Data;
 using HvZWebAPI.Models;
+using HvZWebAPI.DTOs.Mission;
+using AutoMapper;
 
 namespace HvZWebAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("game/[controller]")]
     [ApiController]
-    public class MissionsController : ControllerBase
+    public class MissionController : ControllerBase
     {
         private readonly HvZDbContext _context;
+        private readonly IMapper _mapper;
 
-        public MissionsController(HvZDbContext context)
+
+        public MissionController(HvZDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         // GET: api/Missions
@@ -76,12 +81,16 @@ namespace HvZWebAPI.Controllers
         // POST: api/Missions
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Mission>> PostMission(Mission mission)
+        public async Task<ActionResult<MissionReadDTO>> PostMission(MissionCreateDTO missionDTO)
         {
+
+            var mission = _mapper.Map<MissionCreateDTO, Mission>(missionDTO);
+
             _context.Missions.Add(mission);
+
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetMission", new { id = mission.Id }, mission);
+            return CreatedAtAction("GetMission", new { id = mission.Id }, missionDTO);
         }
 
         // DELETE: api/Missions/5
