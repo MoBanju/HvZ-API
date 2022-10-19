@@ -9,6 +9,9 @@ using HvZWebAPI.Data;
 using HvZWebAPI.Models;
 using HvZWebAPI.DTOs.Mission;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using HvZWebAPI.Utils;
+using HvZWebAPI.Interfaces;
 
 namespace HvZWebAPI.Controllers
 {
@@ -102,23 +105,18 @@ namespace HvZWebAPI.Controllers
         }
 
 
-    [Authorize]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status201Created)]
-    [HttpPost("{game_id}/[controller]")]
-    public async Task<ActionResult<MissionReadDTO>> PostMission(int game_id, MissionCreateDTO missionAsDTO)
-    {
-
-        Mission mission = _mapper.Map<MissionCreateDTO, Mission>(missionAsDTO);
-
-        mission.GameId = game_id;
-        try
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [HttpPost("{game_id}/[controller]")]
+        public async Task<ActionResult<MissionReadDTO>> PostMission(int game_id, MissionCreateDTO missionAsDTO)
         {
-            //MissionerId will never be null as it is tagged as required
-            Mission? savedMission = await _repo.Add(game_id, mission);
 
-            var mission = _mapper.Map<MissionCreateDTO, Mission>(missionCreateDTO);
+            Mission mission = _mapper.Map<MissionCreateDTO, Mission>(missionAsDTO);
+
+            mission.GameId = game_id;
+
             try
             {
                 var missionReadDTO = _mapper.Map<Mission, MissionReadDTO>(await _repo.Add(game_id, mission));
@@ -128,7 +126,7 @@ namespace HvZWebAPI.Controllers
             {
                 return BadRequest(ex.Message);
             }
-            catch(Exception)
+            catch (Exception)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, ErrorCategory.INTERNAL);
             }
