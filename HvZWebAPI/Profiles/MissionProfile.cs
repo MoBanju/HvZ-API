@@ -13,7 +13,7 @@ public class MissionProfile : Profile
     {
         CreateMap<MissionCreateDTO, Mission>();
         CreateMap<Mission, MissionReadDTO>().ReverseMap();
-
+        CreateMap<MissionUpdateDTO, Mission>();
 
     }
 

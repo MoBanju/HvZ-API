@@ -9,109 +9,163 @@ using HvZWebAPI.Data;
 using HvZWebAPI.Models;
 using HvZWebAPI.DTOs.Mission;
 using AutoMapper;
+using HvZWebAPI.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using HvZWebAPI.DTOs.Kill;
+using HvZWebAPI.Utils;
 
 namespace HvZWebAPI.Controllers
 {
-    [Route("game/[controller]")]
+    [Route("game/")]
     [ApiController]
+    [Produces("application/json")]
+    [Consumes("application/json")]
     public class MissionController : ControllerBase
     {
-        private readonly HvZDbContext _context;
+        private readonly IMissionRepository _repo;
         private readonly IMapper _mapper;
 
 
-        public MissionController(HvZDbContext context, IMapper mapper)
+        public MissionController(IMapper mapper, IMissionRepository repo)
         {
-            _context = context;
             _mapper = mapper;
+            _repo = repo;
         }
 
-        // GET: api/Missions
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Mission>>> GetMissions()
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="game_id"></param>
+        /// <returns></returns>
+        [Authorize]
+        [HttpGet("{game_id}/[controller]")]
+        public async Task<ActionResult<MissionReadDTO[]>> GetMissions(int game_id)
         {
-            return await _context.Missions.ToListAsync();
+            IEnumerable<Mission> missions = await _repo.GetAll(game_id);
+            MissionReadDTO[] missionsAsDTOs = missions.Select(mission => _mapper.Map<MissionReadDTO>(mission)).ToArray();
+            return missionsAsDTOs;
         }
 
-        // GET: api/Missions/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Mission>> GetMission(int id)
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [HttpGet("{game_id}/[controller]/{mission_id}")]
+        public async Task<ActionResult<MissionReadDTO>> GetMission(int game_id, int mission_id)
         {
-            var mission = await _context.Missions.FindAsync(id);
-
-            if (mission == null)
+            try
             {
-                return NotFound();
-            }
+                Mission? mission = await _repo.GetById(game_id, mission_id);
+                if (mission is null)
+                {
+                    return NotFound(ErrorCategory.FAILURE);
+                }
+                MissionReadDTO missionAsDTO = _mapper.Map<MissionReadDTO>(mission);
+                return missionAsDTO;
 
-            return mission;
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine($"error: {ex.Message}");
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"error: {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, ErrorCategory.INTERNAL);
+            }
         }
 
-        // PUT: api/Missions/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [HttpPut("{game_id}/[controller]/{mission_id}")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutMission(int id, Mission mission)
+        public async Task<IActionResult> PutMission(int game_id, int mission_id, MissionUpdateDTO missionAsDTO)
         {
-            if (id != mission.Id)
+            if (mission_id != missionAsDTO.Id)
             {
-                return BadRequest();
+                return BadRequest("Id in body and url doesn't match");
             }
-
-            _context.Entry(mission).State = EntityState.Modified;
 
             try
             {
-                await _context.SaveChangesAsync();
+                await _repo.Update(game_id, _mapper.Map<MissionUpdateDTO, Mission>(missionAsDTO));
             }
-            catch (DbUpdateConcurrencyException)
+            catch (ArgumentException ex)
             {
-                if (!MissionExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return BadRequest(ex.Message);
             }
-
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ErrorCategory.INTERNAL);
+            }
             return NoContent();
         }
 
-        // POST: api/Missions
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<MissionReadDTO>> PostMission(MissionCreateDTO missionDTO)
+
+    [Authorize]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [HttpPost("{game_id}/[controller]")]
+    public async Task<ActionResult<MissionReadDTO>> PostMission(int game_id, MissionCreateDTO missionAsDTO)
+    {
+
+        Mission mission = _mapper.Map<MissionCreateDTO, Mission>(missionAsDTO);
+
+        mission.GameId = game_id;
+        try
         {
+            //MissionerId will never be null as it is tagged as required
+            Mission? savedMission = await _repo.Add(game_id, mission);
 
-            var mission = _mapper.Map<MissionCreateDTO, Mission>(missionDTO);
-
-            _context.Missions.Add(mission);
-
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetMission", new { id = mission.Id }, missionDTO);
-        }
-
-        // DELETE: api/Missions/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteMission(int id)
-        {
-            var mission = await _context.Missions.FindAsync(id);
-            if (mission == null)
+            if (savedMission == null)
             {
-                return NotFound();
+                return BadRequest(ErrorCategory.FAILED_TO_CREATE("Mission"));
             }
 
-            _context.Missions.Remove(mission);
-            await _context.SaveChangesAsync();
+            MissionReadDTO mapped = _mapper.Map<Mission, MissionReadDTO>(savedMission);
 
+            //if()
+            return CreatedAtAction("GetMission", new { game_id = game_id, mission_id = savedMission.Id }, mapped);
+
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            return StatusCode(StatusCodes.Status500InternalServerError, ErrorCategory.INTERNAL);
+    }
+}
+
+        [Authorize(Roles = "admin-client-role")]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [HttpDelete("{game_id}/[controller]/{kill_id}")]
+        public async Task<IActionResult> DeleteMission(int game_id, int mission_id)
+        {
+            try
+            {
+                await _repo.Delete(game_id, mission_id);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ErrorCategory.INTERNAL);
+            }
             return NoContent();
         }
 
-        private bool MissionExists(int id)
-        {
-            return _context.Missions.Any(e => e.Id == id);
-        }
     }
 }
