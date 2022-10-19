@@ -87,7 +87,7 @@ public class KillRepository : IKillRepository
     public async Task<IEnumerable<Kill>> GetAllByGameId(int game_id)
     {
         if (!GameExists(game_id)) throw new ArgumentException("Game by that id does not exsist");
-        return await _context.Kills.Where(k => k.GameId == game_id).Include(k=>k.PlayerKills).ToListAsync();
+        return await _context.Kills.Where(k => k.GameId == game_id).Include(k => k.PlayerKills).ToListAsync();
     }
 
     public async Task<Kill> GetById(int game_id, int kill_id)
@@ -96,16 +96,21 @@ public class KillRepository : IKillRepository
         return kill;
     }
 
-    public async Task Update(int game_id, Kill kill, string bitecode)
+    public async Task Update(int game_id, Kill kill, string? bitecode)
     {
-        if (!KillExists(kill.Id)) throw new ArgumentException(ErrorCategory.KILL_NOT_FOUND(kill.Id));
+        //If the bitecode didn't change
 
-        if (await VictimSameGame(bitecode, game_id) is false) throw new ArgumentException(ErrorCategory.VICTIM_NOT_FOUND_IN_GAME(game_id, bitecode));
-        
-        if (await AlreadyZombie(game_id, bitecode) is true) throw new ArgumentException(ErrorCategory.ALREADY_ZOMBIE(bitecode));
+        if(!GameExists(game_id)) throw new ArgumentException(ErrorCategory.GAME_NOT_FOUND(game_id));
+        if (!KillExists(kill.Id, game_id)) throw new ArgumentException(ErrorCategory.KILL_NOT_FOUND(kill.Id, game_id));
+        if(await InAreaGame(kill.Latitude, kill.Longitude, game_id) is false) throw new ArgumentException(ErrorCategory.OUT_GAME_AREA());
 
-        try
+
+        //If they input a new bitecode checks must be made
+        if (bitecode != null)
         {
+            if (await VictimSameGame(bitecode, game_id) is false) throw new ArgumentException(ErrorCategory.VICTIM_NOT_FOUND_IN_GAME(game_id, bitecode));
+            if (await AlreadyZombie(game_id, bitecode) is true) throw new ArgumentException(ErrorCategory.ALREADY_ZOMBIE(bitecode));
+
             var onlyKill = await _context.Kills.FindAsync(kill.Id);
             if (onlyKill != null)
             {
@@ -139,13 +144,22 @@ public class KillRepository : IKillRepository
                 _context.Entry(exVictim).State = EntityState.Modified;
 
                 await _context.SaveChangesAsync();
+
             }
         }
-        catch (Exception)
+        else
         {
-            throw;
-        }
+            var onlyKill = await _context.Kills.FindAsync(kill.Id);
+            if (onlyKill != null)
+            {
+                //This sets the foreign keys
+                _context.Entry(onlyKill).State = EntityState.Detached;
+                kill.GameId = onlyKill.GameId;
 
+            }
+            _context.Update(kill);
+            await _context.SaveChangesAsync();
+        }
     }
 
     /// <summary>
@@ -211,7 +225,7 @@ public class KillRepository : IKillRepository
         return killer.IsHuman;
     }
 
-    
+
     /// <summary>
     /// Checks if the player is in the same game
     /// </summary>
@@ -278,9 +292,20 @@ public class KillRepository : IKillRepository
     /// </summary>
     /// <param name="kill_id">Kill Id</param>
     /// <returns>Returns the existent kill</returns>
-    private bool KillExists(int kill_id)
+    private bool KillExists(int kill_id, int game_id)
     {
-        return _context.Kills.Any(e => e.Id == kill_id);
+        var kill = _context.Kills.FirstOrDefault(e => e.Id == kill_id);
+
+        if (kill == null)
+        {
+            return false;
+        }
+        if(kill.GameId != game_id)
+        {
+            return false;
+        }
+
+        return true;
     }
 
 
