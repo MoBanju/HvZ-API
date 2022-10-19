@@ -83,5 +83,21 @@ namespace HvZWebAPI.Data
             };
             return chats;
         }
+
+        public static List<Mission> GetMissions()
+        {
+            List<Mission> chats = new List<Mission>()
+            {
+                new Mission(){ Id=1, Description="Touch your head!", Is_zombie_visible=false, Is_human_visible=true,
+                    GameId=3, Start_time=DateTime.UtcNow, End_time=DateTime.UtcNow.AddHours(2)},
+                new Mission(){ Id=2, Description="Touch your toes!", Is_zombie_visible=false, Is_human_visible=true,
+                    GameId=2, Start_time=DateTime.UtcNow, End_time=DateTime.UtcNow.AddHours(1)},
+                new Mission(){ Id=3, Description="Jump up on the table and do a zombie dance!", Is_zombie_visible=true, Is_human_visible=false,
+                    GameId=2, Start_time=DateTime.UtcNow, End_time=DateTime.UtcNow.AddHours(4)},
+
+                
+            };
+            return chats;
+        }
     }
 }
