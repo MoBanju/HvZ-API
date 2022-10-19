@@ -19,6 +19,8 @@
         public ICollection<Player>? Players { get; set; }
 
         public ICollection<Chat> Chats { get; set; }
+
+        public ICollection<Mission>? Missions { get; set; }
     }
 
     public enum State
