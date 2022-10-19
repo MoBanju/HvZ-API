@@ -136,7 +136,7 @@ namespace HvZWebAPI.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [HttpDelete("{game_id}/[controller]/{kill_id}")]
+        [HttpDelete("{game_id}/[controller]/{mission_id}")]
         public async Task<IActionResult> DeleteMission(int game_id, int mission_id)
         {
             try
