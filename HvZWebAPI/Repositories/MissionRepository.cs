@@ -19,6 +19,7 @@ namespace HvZWebAPI.Repositories
         {
             if (!GameExists(game_id)) throw new ArgumentException("Game by that id does not exist");
 
+
             mission.GameId = game_id;
             await _context.Missions.AddAsync(mission);
             
