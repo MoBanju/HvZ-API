@@ -4,6 +4,7 @@ using HvZWebAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HvZWebAPI.Migrations
 {
     [DbContext(typeof(HvZDbContext))]
-    partial class HvZDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221018125403_seed_added_coordinates_more")]
+    partial class seed_added_coordinates_more
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -256,46 +258,6 @@ namespace HvZWebAPI.Migrations
                             Longitude = 5.6372780000000002,
                             TimeDeath = new DateTime(2022, 10, 14, 13, 37, 59, 0, DateTimeKind.Unspecified)
                         });
-                });
-
-            modelBuilder.Entity("HvZWebAPI.Models.Mission", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)");
-
-                    b.Property<DateTime>("End_time")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("GameId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("Is_human_visible")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("Is_zombie_visible")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<DateTime>("Start_time")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("GameId");
-
-                    b.ToTable("Missions");
                 });
 
             modelBuilder.Entity("HvZWebAPI.Models.Player", b =>
@@ -598,17 +560,6 @@ namespace HvZWebAPI.Migrations
                     b.Navigation("Game");
                 });
 
-            modelBuilder.Entity("HvZWebAPI.Models.Mission", b =>
-                {
-                    b.HasOne("HvZWebAPI.Models.Game", "Game")
-                        .WithMany("Missions")
-                        .HasForeignKey("GameId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Game");
-                });
-
             modelBuilder.Entity("HvZWebAPI.Models.Player", b =>
                 {
                     b.HasOne("HvZWebAPI.Models.Game", "Game")
@@ -652,8 +603,6 @@ namespace HvZWebAPI.Migrations
                     b.Navigation("Chats");
 
                     b.Navigation("Kills");
-
-                    b.Navigation("Missions");
 
                     b.Navigation("Players");
                 });

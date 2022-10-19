@@ -26,7 +26,7 @@ namespace HvZWebAPI.Migrations
             migrationBuilder.UpdateData(
                 table: "Chats",
                 keyColumn: "Id",
-                keyValue: 3,    
+                keyValue: 3,
                 column: "ChatTime",
                 value: new DateTime(2022, 10, 18, 12, 54, 3, 435, DateTimeKind.Utc).AddTicks(8163));
 
