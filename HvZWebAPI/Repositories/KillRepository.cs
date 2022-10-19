@@ -29,7 +29,7 @@ public class KillRepository : IKillRepository
 
         if (await KillerHuman(game_id, killer_id) is true) throw new ArgumentException(ErrorCategory.KILLER_HUMAN(killer_id));
 
-        if (await InAreaGame(kill.Latitude, kill.Longitude, game_id) is false) throw new ArgumentException(ErrorCategory.OUT_GAME_AREA());
+        if (await InAreaGame(kill.Latitude, kill.Longitude, game_id) is false) throw new ArgumentException(ErrorCategory.KILL_OUT_GAME_AREA());
 
         Player victim = await _playerRepository.GetByBiteCode(game_id, bitecode);
         victim.IsHuman = false;
@@ -102,7 +102,7 @@ public class KillRepository : IKillRepository
 
         if(!GameExists(game_id)) throw new ArgumentException(ErrorCategory.GAME_NOT_FOUND(game_id));
         if (!KillExists(kill.Id, game_id)) throw new ArgumentException(ErrorCategory.KILL_NOT_FOUND(kill.Id, game_id));
-        if(await InAreaGame(kill.Latitude, kill.Longitude, game_id) is false) throw new ArgumentException(ErrorCategory.OUT_GAME_AREA());
+        if(await InAreaGame(kill.Latitude, kill.Longitude, game_id) is false) throw new ArgumentException(ErrorCategory.KILL_OUT_GAME_AREA());
 
 
         //If they input a new bitecode checks must be made
@@ -291,7 +291,7 @@ public class KillRepository : IKillRepository
     /// Checks if the kill is tracked in context
     /// </summary>
     /// <param name="kill_id">Kill Id</param>
-    /// <returns>Returns the existent kill</returns>
+    /// <returns>Returns a boolean telling if kill exsists</returns>
     private bool KillExists(int kill_id, int game_id)
     {
         var kill = _context.Kills.FirstOrDefault(e => e.Id == kill_id);

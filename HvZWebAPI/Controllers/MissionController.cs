@@ -80,7 +80,6 @@ namespace HvZWebAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [HttpPut("{game_id}/[controller]/{mission_id}")]
-        [HttpPut("{id}")]
         public async Task<IActionResult> PutMission(int game_id, int mission_id, MissionUpdateDTO missionAsDTO)
         {
             if (mission_id != missionAsDTO.Id)
@@ -120,7 +119,7 @@ namespace HvZWebAPI.Controllers
             try
             {
                 var missionReadDTO = _mapper.Map<Mission, MissionReadDTO>(await _repo.Add(game_id, mission));
-                return CreatedAtAction("GetMission", new { id = missionReadDTO.Id }, missionReadDTO);
+                return CreatedAtAction("GetMission", new { game_id=game_id, mission_id = missionReadDTO.Id }, missionReadDTO);
             }
             catch (ArgumentException ex)
             {
