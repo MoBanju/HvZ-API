@@ -12,6 +12,8 @@ using HvZWebAPI.DTOs.Squad;
 using AutoMapper;
 using HvZWebAPI.DTOs.Player;
 using HvZWebAPI.Utils;
+using HvZWebAPI.DTOs.SquadMember;
+using HvZWebAPI.Migrations;
 
 namespace HvZWebAPI.Controllers
 {
@@ -52,6 +54,58 @@ namespace HvZWebAPI.Controllers
 
             return CreatedAtAction("GetSquad", new { game_id = game_id, squad_id = squad.Id }, readDTO);
         }
+
+        [HttpPost("{game_id}/[controller]/{squad_id}/join")]
+        public async Task<ActionResult<SquadMemberReadDTO>> PostSquadMember(int game_id, int squad_id, SquadMemberCreateDTO squadMemberDTO)
+        {
+            SquadMember squadMember = _mapper.Map<SquadMemberCreateDTO, SquadMember>(squadMemberDTO);
+
+            try
+            {
+                var squadMemberSaved = await _repo.AddMember(game_id, squadMember, squad_id);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ErrorCategory.INTERNAL);
+            }
+
+            SquadMemberReadDTO mapped = _mapper.Map<SquadMember, SquadMemberReadDTO>(squadMember);
+
+
+            return CreatedAtAction("GetSquadMember", new { game_id = game_id, squad_id = squad_id, squad_member_id = mapped.Id }, mapped);
+        }
+
+        [HttpGet("{game_id}/[controller]/{squad_id}/{squad_member_id}")]
+        public async Task<ActionResult<SquadMemberReadDTO>> GetSquadMember(int game_id, int squad_id, int squad_member_id)
+        {
+            try
+            {
+
+                SquadMember? sm = await _repo.GetMemberById(game_id, squad_id, squad_member_id);
+                if (sm == null)
+                {
+                    return NotFound();
+                }
+                return _mapper.Map<SquadMember, SquadMemberReadDTO>(sm);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ErrorCategory.INTERNAL);
+            }
+        }
+
+
+
         // GET: api/Squad
         [HttpGet("{game_id}/[controller]")]
         public async Task<ActionResult<IEnumerable<SquadReadDTO>>> GetSquads(int game_id)

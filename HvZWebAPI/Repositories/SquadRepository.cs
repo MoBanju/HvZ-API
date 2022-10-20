@@ -38,6 +38,18 @@ public class SquadRepository : ISquadRepository
 
         return squad;
     }
+    public async Task<SquadMember> AddMember(int game_id, SquadMember squad, int squad_id)
+    {
+        await SquadExistsInGame(game_id, squad_id);
+
+        squad.SquadId = squad_id;
+        squad.GameId = game_id;
+
+        _context.Squad_Members.Add(squad);
+        await _context.SaveChangesAsync();
+        
+        return squad;
+    }
 
     /// <summary>
     /// Returns if is human
@@ -89,7 +101,7 @@ public class SquadRepository : ISquadRepository
     {
         await GameExists(game_id);
 
-        return await _context.Squads.ToListAsync();
+        return await _context.Squads.Include(s => s.Squad_Members).ToListAsync();
 
     }
 
@@ -97,8 +109,22 @@ public class SquadRepository : ISquadRepository
     {
         await SquadExistsInGame(game_id, squad_id);
 
-        return  await _context.Squads.FindAsync(squad_id);
+
+        return await _context.Squads.Include(s => s.Squad_Members).FirstOrDefaultAsync(s => s.Id == squad_id);
     }
+
+    public async Task<SquadMember?> GetMemberById(int game_id, int squad_id, int squadMember_id)
+    {
+        await SquadExistsInGame(game_id, squad_id);
+        //Use squad id to check if squadmember has same
+        var squadmember = await _context.Squad_Members.FindAsync(squadMember_id);
+        if(squadmember==null) throw new ArgumentException(ErrorCategory.SQUADMEMBER_NOT_FOUND(squadMember_id));
+        if (squadmember.SquadId != squad_id) throw new ArgumentException(ErrorCategory.NOT_MEMBER_OF_SQUAD(squadMember_id, squad_id));
+
+        return squadmember;
+    }
+
+
     public async Task<bool> Update(int game_id, Squad squad)
     {
         await SquadExistsInGame(game_id, squad.Id);
@@ -124,4 +150,5 @@ public class SquadRepository : ISquadRepository
 
         return await _context.SaveChangesAsync() > 0;
     }
+
 }

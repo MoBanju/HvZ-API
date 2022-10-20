@@ -151,4 +151,15 @@ public class ErrorCategory
     {
         return $"No squad with id {squad_id} found in that game {game_id}";
     }
+
+    public static string NOT_MEMBER_OF_SQUAD(int squad_member_id, int squad_id)
+    {
+        return $"No squadmember with id {squad_member_id} found in that squad {squad_id}";
+    }
+
+    public static string SQUADMEMBER_NOT_FOUND(int squad_member_id)
+    {
+        return $"No squad with id {squad_member_id} found";
+    }
+
 }
