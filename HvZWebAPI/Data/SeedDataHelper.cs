@@ -123,13 +123,15 @@ namespace HvZWebAPI.Data
                     , Latitude=58.9839, Longitude=5.614, Name = "Take a trip"},
                 new Mission(){ Id=3, Description="Jump up on the table and do a zombie dance!", Is_zombie_visible=true, Is_human_visible=false,
                     GameId=2, Start_time=DateTime.UtcNow, End_time=DateTime.UtcNow.AddHours(4)
-                    , Latitude=58.98398, Longitude=5.617, Name = "JigglyBrains" }
+                    , Latitude=58.98398, Longitude=5.617, Name = "JigglyBrains" },
+                new Mission(){ Id=4, Description="Bring a pencil!", Is_zombie_visible=false, Is_human_visible=true,
+                    GameId=1, Start_time=DateTime.UtcNow, End_time=DateTime.UtcNow.AddHours(4)
+                    , Latitude=60.3952, Longitude=5.32, Name = "Crossword" }
             };
             return missions;
         }
 
 
-  
         public static List<Squad> GetSquads()
         {
             List<Squad> squads = new List<Squad>()
@@ -137,6 +139,7 @@ namespace HvZWebAPI.Data
                 new Squad(){ Id=1, Is_human = true, Name = "ForeverYoung", GameId = 1},
 
                 new Squad(){ Id=2, Is_human = false, Name = "DeadManWalking", GameId = 2},
+                new Squad(){ Id=6, Is_human = true, Name = "IOnceLived", GameId = 2},
 
                 new Squad(){ Id=3, Is_human = true, Name = "StayinAlive", GameId = 3},
                 new Squad(){ Id=4, Is_human = false, Name = "StayinDead", GameId = 3},
@@ -150,18 +153,20 @@ namespace HvZWebAPI.Data
         {
             List<SquadMember> squadMembers = new List<SquadMember>()
             {
-                new SquadMember(){ Id=1, Rank = "Silver", SquadId=1, PlayerId=5, GameId = 1},
-                new SquadMember(){ Id=2, Rank = "Gold", SquadId=1, PlayerId=7, GameId = 1},
+                new SquadMember(){ Id=1, Rank = "Boss", SquadId=1, PlayerId=5, GameId = 1},
+                new SquadMember(){ Id=2, Rank = "Goon", SquadId=1, PlayerId=7, GameId = 1},
 
-                new SquadMember(){ Id=3, Rank = "GrandMaster", SquadId=2, PlayerId=1, GameId = 2},
-                new SquadMember(){ Id=4, Rank = "Bronze", SquadId=2, PlayerId=4, GameId = 2},
+                new SquadMember(){ Id=3, Rank = "Boss", SquadId=2, PlayerId=1, GameId = 2},
+                new SquadMember(){ Id=4, Rank = "Goon", SquadId=2, PlayerId=4, GameId = 2},
+                new SquadMember(){ Id=10, Rank = "Boss", SquadId=6, PlayerId=13, GameId = 2},
+                new SquadMember(){ Id=11, Rank = "Goon", SquadId=6, PlayerId=4, GameId = 2},
 
-                new SquadMember(){ Id=5, Rank = "GrandWizard", SquadId=3, PlayerId=9, GameId = 3},
-                new SquadMember(){ Id=6, Rank = "Boss-brain-specialist", SquadId=4, PlayerId=8, GameId = 3},
-                new SquadMember(){ Id=7, Rank = "Hobo-eater", SquadId=4, PlayerId=2, GameId = 3},
-                new SquadMember(){ Id=8, Rank = "OG", SquadId=4, PlayerId=3, GameId = 3},
+                new SquadMember(){ Id=5, Rank = "Boss", SquadId=3, PlayerId=9, GameId = 3},
+                new SquadMember(){ Id=6, Rank = "Goon", SquadId=4, PlayerId=8, GameId = 3},
+                new SquadMember(){ Id=7, Rank = "Goon", SquadId=4, PlayerId=2, GameId = 3},
+                new SquadMember(){ Id=8, Rank = "Boss", SquadId=4, PlayerId=3, GameId = 3},
 
-                new SquadMember(){ Id=9, Rank = "AllAlone", SquadId=5, PlayerId=10, GameId = 4},
+                new SquadMember(){ Id=9, Rank = "Boss", SquadId=5, PlayerId=10, GameId = 4},
             };
             return squadMembers;
         }

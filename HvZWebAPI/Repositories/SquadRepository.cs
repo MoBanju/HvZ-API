@@ -28,10 +28,11 @@ public class SquadRepository : ISquadRepository
 
         //Should automatically try to register a member
         squad.GameId = game_id;
-        SquadMember sm = new SquadMember() { PlayerId = player_id, GameId = game_id, Rank = "Boss"};
+        SquadMember sm = new SquadMember() { PlayerId = player_id, GameId = game_id, Rank = ErrorCategory.TOPRANK};
         squad.Squad_Members = new List<SquadMember>();
         squad.Squad_Members.Add(sm);
 
+        
         _context.Squads.Add(squad);
 
         await _context.SaveChangesAsync();
@@ -42,6 +43,7 @@ public class SquadRepository : ISquadRepository
     {
         await SquadExistsInGame(game_id, squad_id);
 
+        if(squad.Rank == ErrorCategory.TOPRANK) throw new ArgumentException(ErrorCategory.TOPRANK_IS_RESERVED);
         squad.SquadId = squad_id;
         squad.GameId = game_id;
 
@@ -50,6 +52,20 @@ public class SquadRepository : ISquadRepository
         
         return squad;
     }
+
+    public async Task<SquadCheckin> AddCheckin(int game_id, SquadCheckin squadCheckin, int squad_id)
+    {
+        await SquadExistsInGame(game_id, squad_id);
+
+        squadCheckin.SquadId = squad_id;
+        squadCheckin.GameId = game_id;
+
+        _context.Squad_Checkins.Add(squadCheckin);
+        await _context.SaveChangesAsync();
+
+        return squadCheckin;
+    }
+
 
     /// <summary>
     /// Returns if is human
@@ -97,12 +113,20 @@ public class SquadRepository : ISquadRepository
         return squad;
     }
 
+
+
     public async Task<IEnumerable<Squad>> GetAll(int game_id)
     {
         await GameExists(game_id);
 
-        return await _context.Squads.Include(s => s.Squad_Members).Where(s => s.GameId == game_id).ToListAsync();
+        return await _context.Squads.Include(s => s.Squad_Members).ThenInclude(sm => sm.Player).Where(s => s.GameId == game_id).ToListAsync();
 
+    }
+
+    public async Task<IEnumerable<SquadCheckin>> GetAllCheckins(int game_id, int squad_id)
+    {
+        await SquadExistsInGame(game_id, squad_id);
+        return await _context.Squad_Checkins.Where(sc => sc.SquadId == squad_id).ToListAsync();
     }
 
     public async Task<Squad?> GetById(int game_id, int squad_id)
@@ -124,6 +148,19 @@ public class SquadRepository : ISquadRepository
         return squadmember;
     }
 
+    /// Should only find markers of the same faction
+    public async Task<SquadCheckin> GetCheckinById(int game_id, int squad_id, int squadCheckin_id)
+    {
+        await SquadExistsInGame(game_id, squad_id);
+
+        var squadCheckin = await _context.Squad_Checkins.FindAsync(squadCheckin_id);
+        if (squadCheckin == null) throw new ArgumentException(ErrorCategory.SQUADMEMBER_NOT_FOUND(squadCheckin_id));
+        if (squadCheckin.SquadId != squad_id) throw new ArgumentException(ErrorCategory.NOT_MEMBER_OF_SQUAD(squadCheckin_id, squad_id));
+
+        return squadCheckin;
+    }
+
+
 
     public async Task<bool> Update(int game_id, Squad squad)
     {
@@ -142,8 +179,12 @@ public class SquadRepository : ISquadRepository
 
         var squad = _context.Squads.Include(s => s.Squad_Members).ThenInclude(sm => sm.Squad_Checkins).First(s => s.Id == squad_id);
 
-        foreach(var s in squad.Squad_Members) { 
-            _context.Squad_Members.Remove(s);
+        foreach(var sm in squad.Squad_Members) { 
+            foreach(var smc in sm.Squad_Checkins)
+            {
+                _context.Squad_Checkins.Remove(smc);
+            }
+            _context.Squad_Members.Remove(sm);
         }
 
         _context.Squads.Remove(squad);

@@ -12,6 +12,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using HvZWebAPI.Utils;
 using HvZWebAPI.Interfaces;
+using System.Security.Claims;
 
 namespace HvZWebAPI.Controllers
 {
@@ -22,13 +23,15 @@ namespace HvZWebAPI.Controllers
     public class MissionController : ControllerBase
     {
         private readonly IMissionRepository _repo;
+        private readonly IPlayerRepository _playerrepo;
         private readonly IMapper _mapper;
 
 
-        public MissionController(IMapper mapper, IMissionRepository repo)
+        public MissionController(IMapper mapper, IMissionRepository repo, IPlayerRepository playerrepo)
         {
             _mapper = mapper;
             _repo = repo;
+            _playerrepo = playerrepo;
         }
 
 
@@ -41,9 +44,26 @@ namespace HvZWebAPI.Controllers
         [HttpGet("{game_id}/[controller]")]
         public async Task<ActionResult<MissionReadDTO[]>> GetMissions(int game_id)
         {
-            IEnumerable<Mission> missions = await _repo.GetAll(game_id);
-            MissionReadDTO[] missionsAsDTOs = missions.Select(mission => _mapper.Map<MissionReadDTO>(mission)).ToArray();
-            return missionsAsDTOs;
+            bool isAdmin = User.IsInRole(ClaimsTransformer.ADMIN_ROLE);
+            var keyId = CheckForKeycloakId();
+            try
+            {
+
+                IEnumerable<Mission> missions = await _repo.GetAll(game_id, keyId, isAdmin);
+                MissionReadDTO[] missionsAsDTOs = missions.Select(mission => _mapper.Map<MissionReadDTO>(mission)).ToArray();
+                return missionsAsDTOs;
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine($"error: {ex.Message}");
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"error: {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, ErrorCategory.INTERNAL);
+            }
+
         }
 
         [Authorize]
@@ -55,7 +75,11 @@ namespace HvZWebAPI.Controllers
         {
             try
             {
-                Mission? mission = await _repo.GetById(game_id, mission_id);
+                //Must send in playerId
+                var keyId = CheckForKeycloakId();
+                bool isAdmin = User.IsInRole(ClaimsTransformer.ADMIN_ROLE);
+
+                Mission? mission = await _repo.GetById(game_id, mission_id, keyId, isAdmin);
                 if (mission is null)
                 {
                     return NotFound(ErrorCategory.FAILURE);
@@ -68,6 +92,10 @@ namespace HvZWebAPI.Controllers
             {
                 Console.WriteLine($"error: {ex.Message}");
                 return BadRequest(ex.Message);
+            }
+            catch (AccessViolationException ex)
+            {
+                return StatusCode(StatusCodes.Status403Forbidden, ex.Message);
             }
             catch (Exception ex)
             {
@@ -120,7 +148,7 @@ namespace HvZWebAPI.Controllers
             try
             {
                 var missionReadDTO = _mapper.Map<Mission, MissionReadDTO>(await _repo.Add(game_id, mission));
-                return CreatedAtAction("GetMission", new { game_id=game_id, mission_id = missionReadDTO.Id }, missionReadDTO);
+                return CreatedAtAction("GetMission", new { game_id = game_id, mission_id = missionReadDTO.Id }, missionReadDTO);
             }
             catch (ArgumentException ex)
             {
@@ -154,6 +182,15 @@ namespace HvZWebAPI.Controllers
             }
             return NoContent();
         }
-
+        private string CheckForKeycloakId()
+        {
+            //If you are admin you can set whatever user you want, users simply send their own identity
+            var nameClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            if (nameClaim != null)
+                return nameClaim.Value;
+            else throw new ArgumentException(ErrorCategory.NO_KEYCLOAK_ID);
+        }
     }
+
+
 }

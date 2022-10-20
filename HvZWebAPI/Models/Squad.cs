@@ -18,3 +18,6 @@ public class Squad
 
     public ICollection<Chat>? Chats { get; set; }
 }
+
+
+    
