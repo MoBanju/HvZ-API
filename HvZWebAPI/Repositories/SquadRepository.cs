@@ -28,7 +28,7 @@ public class SquadRepository : ISquadRepository
 
         //Should automatically try to register a member
         squad.GameId = game_id;
-        SquadMember sm = new SquadMember() { PlayerId = player_id, GameId = game_id, Rank = "Boss"};
+        SquadMember sm = new SquadMember() { PlayerId = player_id, GameId = game_id, Rank = ErrorCategory.TOPRANK};
         squad.Squad_Members = new List<SquadMember>();
         squad.Squad_Members.Add(sm);
 
@@ -43,6 +43,7 @@ public class SquadRepository : ISquadRepository
     {
         await SquadExistsInGame(game_id, squad_id);
 
+        if(squad.Rank == ErrorCategory.TOPRANK) throw new ArgumentException(ErrorCategory.TOPRANK_IS_RESERVED);
         squad.SquadId = squad_id;
         squad.GameId = game_id;
 
@@ -118,7 +119,7 @@ public class SquadRepository : ISquadRepository
     {
         await GameExists(game_id);
 
-        return await _context.Squads.Include(s => s.Squad_Members).Where(s => s.GameId == game_id).ToListAsync();
+        return await _context.Squads.Include(s => s.Squad_Members).ThenInclude(sm => sm.Player).Where(s => s.GameId == game_id).ToListAsync();
 
     }
 

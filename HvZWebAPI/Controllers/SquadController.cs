@@ -136,7 +136,15 @@ namespace HvZWebAPI.Controllers
             try
             {
                 var squads = await _repo.GetAll(game_id);
-                var squadsDTO = _mapper.Map<List<SquadReadDTO>>(squads);
+
+                //Count the squads with squadmembers that are deseased
+                List<SquadReadDTO> squadsDTO = new List<SquadReadDTO>();
+                foreach(Squad sq in squads)
+                {
+                    var squadDTO = _mapper.Map<SquadReadDTO>(sq);
+                    squadDTO.DeseasedPlayers = sq.Squad_Members.Count(sm => !sm.Player.IsHuman);
+                    squadsDTO.Add(squadDTO);
+                }
 
                 return squadsDTO;
             }

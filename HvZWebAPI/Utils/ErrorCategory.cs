@@ -181,4 +181,14 @@ public class ErrorCategory
     {
         return "Mission can only be visible to one faction at a time, or neither";
     }
+
+    public static string TOPRANK
+    {
+        get { return "Boss"; }
+    }
+
+    public static string TOPRANK_IS_RESERVED
+    {
+        get { return "Only the founder can have this rank"; }
+    }
 }

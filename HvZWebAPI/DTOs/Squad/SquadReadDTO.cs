@@ -10,6 +10,8 @@ public class SquadReadDTO
 
     public bool Is_human { get; set; }
 
+    public int DeseasedPlayers { get; set; }
+
     public ICollection<SquadMemberReadDTO> Squad_Members { get; set; }
 
 }
