@@ -46,9 +46,24 @@ namespace HvZWebAPI.Controllers
         {
             bool isAdmin = User.IsInRole(ClaimsTransformer.ADMIN_ROLE);
             var keyId = CheckForKeycloakId();
-            IEnumerable<Mission> missions = await _repo.GetAll(game_id, keyId, isAdmin);
-            MissionReadDTO[] missionsAsDTOs = missions.Select(mission => _mapper.Map<MissionReadDTO>(mission)).ToArray();
-            return missionsAsDTOs;
+            try
+            {
+
+                IEnumerable<Mission> missions = await _repo.GetAll(game_id, keyId, isAdmin);
+                MissionReadDTO[] missionsAsDTOs = missions.Select(mission => _mapper.Map<MissionReadDTO>(mission)).ToArray();
+                return missionsAsDTOs;
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine($"error: {ex.Message}");
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"error: {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, ErrorCategory.INTERNAL);
+            }
+
         }
 
         [Authorize]
@@ -78,7 +93,7 @@ namespace HvZWebAPI.Controllers
                 Console.WriteLine($"error: {ex.Message}");
                 return BadRequest(ex.Message);
             }
-            catch(AccessViolationException ex)
+            catch (AccessViolationException ex)
             {
                 return StatusCode(StatusCodes.Status403Forbidden, ex.Message);
             }
