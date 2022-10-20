@@ -67,9 +67,9 @@ namespace HvZWebAPI.Data
             modelBuilder.Entity<Game>().HasMany<Kill>(g => g.Kills).WithOne(k => k.Game);
 
 
-            modelBuilder.Entity<SquadCheckin>().HasOne<SquadMember>(sc => sc.Squad_Member).WithMany(sm => sm.Squad_Checkins).OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<SquadCheckin>().HasOne<SquadMember>(sc => sc.Squad_Member).WithMany(sm => sm.Squad_Checkins).OnDelete(DeleteBehavior.NoAction);
             modelBuilder.Entity<SquadCheckin>().HasOne<Squad>(sc => sc.Squad).WithMany(sq => sq.Squad_Checkins).OnDelete(DeleteBehavior.NoAction);
-            modelBuilder.Entity<SquadCheckin>().HasOne<Game>(sc => sc.Game).WithMany(g=>g.Squad_Checkins);
+            modelBuilder.Entity<SquadCheckin>().HasOne<Game>(sc => sc.Game).WithMany(g => g.Squad_Checkins);
 
             modelBuilder.Entity<Squad>().HasOne<Game>(s => s.Game).WithMany(g => g.Squads);
             modelBuilder.Entity<Squad>().HasMany<Chat>(s => s.Chats).WithOne(c => c.Squad);

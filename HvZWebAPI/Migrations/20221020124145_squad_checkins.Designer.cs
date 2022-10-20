@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HvZWebAPI.Migrations
 {
     [DbContext(typeof(HvZDbContext))]
-    [Migration("20221020121604_changed_seeding")]
-    partial class changed_seeding
+    [Migration("20221020124145_squad_checkins")]
+    partial class squad_checkins
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -69,7 +69,7 @@ namespace HvZWebAPI.Migrations
                         new
                         {
                             Id = 1,
-                            ChatTime = new DateTime(2022, 10, 20, 12, 16, 4, 223, DateTimeKind.Utc).AddTicks(4531),
+                            ChatTime = new DateTime(2022, 10, 20, 12, 41, 45, 384, DateTimeKind.Utc).AddTicks(3870),
                             GameId = 3,
                             IsHumanGlobal = false,
                             IsZombieGlobal = true,
@@ -79,7 +79,7 @@ namespace HvZWebAPI.Migrations
                         new
                         {
                             Id = 2,
-                            ChatTime = new DateTime(2022, 10, 20, 12, 16, 4, 223, DateTimeKind.Utc).AddTicks(4534),
+                            ChatTime = new DateTime(2022, 10, 20, 12, 41, 45, 384, DateTimeKind.Utc).AddTicks(3874),
                             GameId = 2,
                             IsHumanGlobal = false,
                             IsZombieGlobal = false,
@@ -89,7 +89,7 @@ namespace HvZWebAPI.Migrations
                         new
                         {
                             Id = 3,
-                            ChatTime = new DateTime(2022, 10, 20, 12, 16, 4, 223, DateTimeKind.Utc).AddTicks(4535),
+                            ChatTime = new DateTime(2022, 10, 20, 12, 41, 45, 384, DateTimeKind.Utc).AddTicks(3875),
                             GameId = 1,
                             IsHumanGlobal = true,
                             IsZombieGlobal = false,
@@ -324,53 +324,53 @@ namespace HvZWebAPI.Migrations
                         {
                             Id = 1,
                             Description = "Touch your head!",
-                            End_time = new DateTime(2022, 10, 20, 14, 16, 4, 223, DateTimeKind.Utc).AddTicks(4578),
+                            End_time = new DateTime(2022, 10, 20, 14, 41, 45, 384, DateTimeKind.Utc).AddTicks(3924),
                             GameId = 3,
                             Is_human_visible = true,
                             Is_zombie_visible = false,
                             Latitude = 58.880000000000003,
                             Longitude = 5.6100000000000003,
                             Name = "Head here",
-                            Start_time = new DateTime(2022, 10, 20, 12, 16, 4, 223, DateTimeKind.Utc).AddTicks(4578)
+                            Start_time = new DateTime(2022, 10, 20, 12, 41, 45, 384, DateTimeKind.Utc).AddTicks(3923)
                         },
                         new
                         {
                             Id = 2,
                             Description = "Touch your toes!",
-                            End_time = new DateTime(2022, 10, 20, 13, 16, 4, 223, DateTimeKind.Utc).AddTicks(4585),
+                            End_time = new DateTime(2022, 10, 20, 13, 41, 45, 384, DateTimeKind.Utc).AddTicks(3934),
                             GameId = 2,
                             Is_human_visible = true,
                             Is_zombie_visible = false,
                             Latitude = 58.983899999999998,
                             Longitude = 5.6139999999999999,
                             Name = "Take a trip",
-                            Start_time = new DateTime(2022, 10, 20, 12, 16, 4, 223, DateTimeKind.Utc).AddTicks(4585)
+                            Start_time = new DateTime(2022, 10, 20, 12, 41, 45, 384, DateTimeKind.Utc).AddTicks(3933)
                         },
                         new
                         {
                             Id = 3,
                             Description = "Jump up on the table and do a zombie dance!",
-                            End_time = new DateTime(2022, 10, 20, 16, 16, 4, 223, DateTimeKind.Utc).AddTicks(4587),
+                            End_time = new DateTime(2022, 10, 20, 16, 41, 45, 384, DateTimeKind.Utc).AddTicks(3936),
                             GameId = 2,
                             Is_human_visible = false,
                             Is_zombie_visible = true,
                             Latitude = 58.983980000000003,
                             Longitude = 5.617,
                             Name = "JigglyBrains",
-                            Start_time = new DateTime(2022, 10, 20, 12, 16, 4, 223, DateTimeKind.Utc).AddTicks(4587)
+                            Start_time = new DateTime(2022, 10, 20, 12, 41, 45, 384, DateTimeKind.Utc).AddTicks(3936)
                         },
                         new
                         {
                             Id = 4,
                             Description = "Bring a pencil!",
-                            End_time = new DateTime(2022, 10, 20, 16, 16, 4, 223, DateTimeKind.Utc).AddTicks(4589),
+                            End_time = new DateTime(2022, 10, 20, 16, 41, 45, 384, DateTimeKind.Utc).AddTicks(3938),
                             GameId = 1,
                             Is_human_visible = true,
                             Is_zombie_visible = false,
                             Latitude = 60.395200000000003,
                             Longitude = 5.3200000000000003,
                             Name = "Crossword",
-                            Start_time = new DateTime(2022, 10, 20, 12, 16, 4, 223, DateTimeKind.Utc).AddTicks(4588)
+                            Start_time = new DateTime(2022, 10, 20, 12, 41, 45, 384, DateTimeKind.Utc).AddTicks(3938)
                         });
                 });
 
@@ -723,68 +723,68 @@ namespace HvZWebAPI.Migrations
                         new
                         {
                             Id = 1,
-                            End_time = new DateTime(2022, 10, 20, 12, 46, 4, 223, DateTimeKind.Utc).AddTicks(4692),
+                            End_time = new DateTime(2022, 10, 20, 13, 11, 45, 384, DateTimeKind.Utc).AddTicks(4069),
                             GameId = 1,
                             Latitude = 60.395299999999999,
                             Longitude = 5.3150000000000004,
                             SquadId = 1,
                             Squad_MemberId = 2,
-                            Start_time = new DateTime(2022, 10, 20, 12, 16, 4, 223, DateTimeKind.Utc).AddTicks(4692)
+                            Start_time = new DateTime(2022, 10, 20, 12, 41, 45, 384, DateTimeKind.Utc).AddTicks(4069)
                         },
                         new
                         {
                             Id = 2,
-                            End_time = new DateTime(2022, 10, 20, 12, 36, 4, 223, DateTimeKind.Utc).AddTicks(4727),
+                            End_time = new DateTime(2022, 10, 20, 13, 1, 45, 384, DateTimeKind.Utc).AddTicks(4073),
                             GameId = 2,
                             Latitude = 58.984400000000001,
                             Longitude = 5.6159999999999997,
                             SquadId = 2,
                             Squad_MemberId = 3,
-                            Start_time = new DateTime(2022, 10, 20, 12, 16, 4, 223, DateTimeKind.Utc).AddTicks(4726)
+                            Start_time = new DateTime(2022, 10, 20, 12, 41, 45, 384, DateTimeKind.Utc).AddTicks(4073)
                         },
                         new
                         {
                             Id = 3,
-                            End_time = new DateTime(2022, 10, 20, 13, 11, 4, 223, DateTimeKind.Utc).AddTicks(4729),
+                            End_time = new DateTime(2022, 10, 20, 13, 36, 45, 384, DateTimeKind.Utc).AddTicks(4075),
                             GameId = 3,
                             Latitude = 58.880000000000003,
                             Longitude = 5.6100000000000003,
                             SquadId = 3,
                             Squad_MemberId = 5,
-                            Start_time = new DateTime(2022, 10, 20, 12, 16, 4, 223, DateTimeKind.Utc).AddTicks(4728)
+                            Start_time = new DateTime(2022, 10, 20, 12, 41, 45, 384, DateTimeKind.Utc).AddTicks(4075)
                         },
                         new
                         {
                             Id = 4,
-                            End_time = new DateTime(2022, 10, 20, 13, 11, 4, 223, DateTimeKind.Utc).AddTicks(4730),
+                            End_time = new DateTime(2022, 10, 20, 13, 36, 45, 384, DateTimeKind.Utc).AddTicks(4077),
                             GameId = 3,
                             Latitude = 58.890000000000001,
                             Longitude = 5.6299999999999999,
                             SquadId = 3,
                             Squad_MemberId = 5,
-                            Start_time = new DateTime(2022, 10, 20, 12, 16, 4, 223, DateTimeKind.Utc).AddTicks(4730)
+                            Start_time = new DateTime(2022, 10, 20, 12, 41, 45, 384, DateTimeKind.Utc).AddTicks(4076)
                         },
                         new
                         {
                             Id = 5,
-                            End_time = new DateTime(2022, 10, 20, 12, 19, 4, 223, DateTimeKind.Utc).AddTicks(4731),
+                            End_time = new DateTime(2022, 10, 20, 12, 44, 45, 384, DateTimeKind.Utc).AddTicks(4078),
                             GameId = 3,
                             Latitude = 58.890000000000001,
                             Longitude = 5.6299999999999999,
                             SquadId = 4,
                             Squad_MemberId = 8,
-                            Start_time = new DateTime(2022, 10, 20, 12, 16, 4, 223, DateTimeKind.Utc).AddTicks(4731)
+                            Start_time = new DateTime(2022, 10, 20, 12, 41, 45, 384, DateTimeKind.Utc).AddTicks(4078)
                         },
                         new
                         {
                             Id = 6,
-                            End_time = new DateTime(2022, 10, 20, 13, 11, 4, 223, DateTimeKind.Utc).AddTicks(4733),
+                            End_time = new DateTime(2022, 10, 20, 13, 36, 45, 384, DateTimeKind.Utc).AddTicks(4080),
                             GameId = 4,
                             Latitude = 58.950000000000003,
                             Longitude = 5.8200000000000003,
                             SquadId = 4,
                             Squad_MemberId = 9,
-                            Start_time = new DateTime(2022, 10, 20, 12, 16, 4, 223, DateTimeKind.Utc).AddTicks(4733)
+                            Start_time = new DateTime(2022, 10, 20, 12, 41, 45, 384, DateTimeKind.Utc).AddTicks(4080)
                         });
                 });
 
@@ -1106,7 +1106,7 @@ namespace HvZWebAPI.Migrations
                     b.HasOne("HvZWebAPI.Models.SquadMember", "Squad_Member")
                         .WithMany("Squad_Checkins")
                         .HasForeignKey("Squad_MemberId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Game");

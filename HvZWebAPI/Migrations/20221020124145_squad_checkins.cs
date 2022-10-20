@@ -5,14 +5,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace HvZWebAPI.Migrations
 {
-    public partial class changed_seeding : Migration
+    public partial class squad_checkins : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Squad_Checkins_Squad_Members_Squad_MemberId",
-                table: "Squad_Checkins");
-
             migrationBuilder.RenameColumn(
                 name: "is_human",
                 table: "Squads",
@@ -23,89 +19,89 @@ namespace HvZWebAPI.Migrations
                 keyColumn: "Id",
                 keyValue: 1,
                 column: "ChatTime",
-                value: new DateTime(2022, 10, 20, 12, 16, 4, 223, DateTimeKind.Utc).AddTicks(4531));
+                value: new DateTime(2022, 10, 20, 12, 41, 45, 384, DateTimeKind.Utc).AddTicks(3870));
 
             migrationBuilder.UpdateData(
                 table: "Chats",
                 keyColumn: "Id",
                 keyValue: 2,
                 column: "ChatTime",
-                value: new DateTime(2022, 10, 20, 12, 16, 4, 223, DateTimeKind.Utc).AddTicks(4534));
+                value: new DateTime(2022, 10, 20, 12, 41, 45, 384, DateTimeKind.Utc).AddTicks(3874));
 
             migrationBuilder.UpdateData(
                 table: "Chats",
                 keyColumn: "Id",
                 keyValue: 3,
                 column: "ChatTime",
-                value: new DateTime(2022, 10, 20, 12, 16, 4, 223, DateTimeKind.Utc).AddTicks(4535));
+                value: new DateTime(2022, 10, 20, 12, 41, 45, 384, DateTimeKind.Utc).AddTicks(3875));
 
             migrationBuilder.UpdateData(
                 table: "Missions",
                 keyColumn: "Id",
                 keyValue: 1,
                 columns: new[] { "End_time", "Start_time" },
-                values: new object[] { new DateTime(2022, 10, 20, 14, 16, 4, 223, DateTimeKind.Utc).AddTicks(4578), new DateTime(2022, 10, 20, 12, 16, 4, 223, DateTimeKind.Utc).AddTicks(4578) });
+                values: new object[] { new DateTime(2022, 10, 20, 14, 41, 45, 384, DateTimeKind.Utc).AddTicks(3924), new DateTime(2022, 10, 20, 12, 41, 45, 384, DateTimeKind.Utc).AddTicks(3923) });
 
             migrationBuilder.UpdateData(
                 table: "Missions",
                 keyColumn: "Id",
                 keyValue: 2,
                 columns: new[] { "End_time", "Start_time" },
-                values: new object[] { new DateTime(2022, 10, 20, 13, 16, 4, 223, DateTimeKind.Utc).AddTicks(4585), new DateTime(2022, 10, 20, 12, 16, 4, 223, DateTimeKind.Utc).AddTicks(4585) });
+                values: new object[] { new DateTime(2022, 10, 20, 13, 41, 45, 384, DateTimeKind.Utc).AddTicks(3934), new DateTime(2022, 10, 20, 12, 41, 45, 384, DateTimeKind.Utc).AddTicks(3933) });
 
             migrationBuilder.UpdateData(
                 table: "Missions",
                 keyColumn: "Id",
                 keyValue: 3,
                 columns: new[] { "End_time", "Start_time" },
-                values: new object[] { new DateTime(2022, 10, 20, 16, 16, 4, 223, DateTimeKind.Utc).AddTicks(4587), new DateTime(2022, 10, 20, 12, 16, 4, 223, DateTimeKind.Utc).AddTicks(4587) });
+                values: new object[] { new DateTime(2022, 10, 20, 16, 41, 45, 384, DateTimeKind.Utc).AddTicks(3936), new DateTime(2022, 10, 20, 12, 41, 45, 384, DateTimeKind.Utc).AddTicks(3936) });
 
             migrationBuilder.InsertData(
                 table: "Missions",
                 columns: new[] { "Id", "Description", "End_time", "GameId", "Is_human_visible", "Is_zombie_visible", "Latitude", "Longitude", "Name", "Start_time" },
-                values: new object[] { 4, "Bring a pencil!", new DateTime(2022, 10, 20, 16, 16, 4, 223, DateTimeKind.Utc).AddTicks(4589), 1, true, false, 60.395200000000003, 5.3200000000000003, "Crossword", new DateTime(2022, 10, 20, 12, 16, 4, 223, DateTimeKind.Utc).AddTicks(4588) });
+                values: new object[] { 4, "Bring a pencil!", new DateTime(2022, 10, 20, 16, 41, 45, 384, DateTimeKind.Utc).AddTicks(3938), 1, true, false, 60.395200000000003, 5.3200000000000003, "Crossword", new DateTime(2022, 10, 20, 12, 41, 45, 384, DateTimeKind.Utc).AddTicks(3938) });
 
             migrationBuilder.UpdateData(
                 table: "Squad_Checkins",
                 keyColumn: "Id",
                 keyValue: 1,
                 columns: new[] { "End_time", "Start_time" },
-                values: new object[] { new DateTime(2022, 10, 20, 12, 46, 4, 223, DateTimeKind.Utc).AddTicks(4692), new DateTime(2022, 10, 20, 12, 16, 4, 223, DateTimeKind.Utc).AddTicks(4692) });
+                values: new object[] { new DateTime(2022, 10, 20, 13, 11, 45, 384, DateTimeKind.Utc).AddTicks(4069), new DateTime(2022, 10, 20, 12, 41, 45, 384, DateTimeKind.Utc).AddTicks(4069) });
 
             migrationBuilder.UpdateData(
                 table: "Squad_Checkins",
                 keyColumn: "Id",
                 keyValue: 2,
                 columns: new[] { "End_time", "Start_time" },
-                values: new object[] { new DateTime(2022, 10, 20, 12, 36, 4, 223, DateTimeKind.Utc).AddTicks(4727), new DateTime(2022, 10, 20, 12, 16, 4, 223, DateTimeKind.Utc).AddTicks(4726) });
+                values: new object[] { new DateTime(2022, 10, 20, 13, 1, 45, 384, DateTimeKind.Utc).AddTicks(4073), new DateTime(2022, 10, 20, 12, 41, 45, 384, DateTimeKind.Utc).AddTicks(4073) });
 
             migrationBuilder.UpdateData(
                 table: "Squad_Checkins",
                 keyColumn: "Id",
                 keyValue: 3,
                 columns: new[] { "End_time", "Start_time" },
-                values: new object[] { new DateTime(2022, 10, 20, 13, 11, 4, 223, DateTimeKind.Utc).AddTicks(4729), new DateTime(2022, 10, 20, 12, 16, 4, 223, DateTimeKind.Utc).AddTicks(4728) });
+                values: new object[] { new DateTime(2022, 10, 20, 13, 36, 45, 384, DateTimeKind.Utc).AddTicks(4075), new DateTime(2022, 10, 20, 12, 41, 45, 384, DateTimeKind.Utc).AddTicks(4075) });
 
             migrationBuilder.UpdateData(
                 table: "Squad_Checkins",
                 keyColumn: "Id",
                 keyValue: 4,
                 columns: new[] { "End_time", "Start_time" },
-                values: new object[] { new DateTime(2022, 10, 20, 13, 11, 4, 223, DateTimeKind.Utc).AddTicks(4730), new DateTime(2022, 10, 20, 12, 16, 4, 223, DateTimeKind.Utc).AddTicks(4730) });
+                values: new object[] { new DateTime(2022, 10, 20, 13, 36, 45, 384, DateTimeKind.Utc).AddTicks(4077), new DateTime(2022, 10, 20, 12, 41, 45, 384, DateTimeKind.Utc).AddTicks(4076) });
 
             migrationBuilder.UpdateData(
                 table: "Squad_Checkins",
                 keyColumn: "Id",
                 keyValue: 5,
                 columns: new[] { "End_time", "Start_time" },
-                values: new object[] { new DateTime(2022, 10, 20, 12, 19, 4, 223, DateTimeKind.Utc).AddTicks(4731), new DateTime(2022, 10, 20, 12, 16, 4, 223, DateTimeKind.Utc).AddTicks(4731) });
+                values: new object[] { new DateTime(2022, 10, 20, 12, 44, 45, 384, DateTimeKind.Utc).AddTicks(4078), new DateTime(2022, 10, 20, 12, 41, 45, 384, DateTimeKind.Utc).AddTicks(4078) });
 
             migrationBuilder.UpdateData(
                 table: "Squad_Checkins",
                 keyColumn: "Id",
                 keyValue: 6,
                 columns: new[] { "End_time", "Start_time" },
-                values: new object[] { new DateTime(2022, 10, 20, 13, 11, 4, 223, DateTimeKind.Utc).AddTicks(4733), new DateTime(2022, 10, 20, 12, 16, 4, 223, DateTimeKind.Utc).AddTicks(4733) });
+                values: new object[] { new DateTime(2022, 10, 20, 13, 36, 45, 384, DateTimeKind.Utc).AddTicks(4080), new DateTime(2022, 10, 20, 12, 41, 45, 384, DateTimeKind.Utc).AddTicks(4080) });
 
             migrationBuilder.UpdateData(
                 table: "Squad_Members",
@@ -184,22 +180,10 @@ namespace HvZWebAPI.Migrations
                 table: "Squad_Members",
                 columns: new[] { "Id", "GameId", "PlayerId", "Rank", "SquadId" },
                 values: new object[] { 11, 2, 4, "Goon", 6 });
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Squad_Checkins_Squad_Members_Squad_MemberId",
-                table: "Squad_Checkins",
-                column: "Squad_MemberId",
-                principalTable: "Squad_Members",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Squad_Checkins_Squad_Members_Squad_MemberId",
-                table: "Squad_Checkins");
-
             migrationBuilder.DeleteData(
                 table: "Missions",
                 keyColumn: "Id",
@@ -371,13 +355,6 @@ namespace HvZWebAPI.Migrations
                 keyValue: 9,
                 column: "Rank",
                 value: "AllAlone");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Squad_Checkins_Squad_Members_Squad_MemberId",
-                table: "Squad_Checkins",
-                column: "Squad_MemberId",
-                principalTable: "Squad_Members",
-                principalColumn: "Id");
         }
     }
 }
