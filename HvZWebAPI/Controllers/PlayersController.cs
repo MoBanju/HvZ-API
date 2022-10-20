@@ -50,7 +50,7 @@ public class PlayerController : ControllerBase
 
         try
         {
-            player.User.KeyCloakId = CheckForKeycloakId(player, playerDTO.user.KeyCloakId);
+            player.User.KeyCloakId = CheckForKeycloakId(playerDTO.user.KeyCloakId);
             player.GameId = game_id;
 
             Player? savedPlayer = await _repo.Add(game_id, player);
@@ -80,7 +80,7 @@ public class PlayerController : ControllerBase
     /// <param name="player"></param>
     /// <param name="KeyCloakId"></param>
     /// <exception cref="ArgumentException"></exception>
-    private string CheckForKeycloakId(Player player, string KeyCloakId)
+    private string CheckForKeycloakId(string KeyCloakId)
     {
         //If you are admin you can set whatever user you want, users simply send their own identity
         if (!User.IsInRole(ClaimsTransformer.ADMIN_ROLE))

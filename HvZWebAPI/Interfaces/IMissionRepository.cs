@@ -9,7 +9,7 @@ namespace HvZWebAPI.Interfaces
         /// </summary>
         /// <param name="game_id"></param>
         /// <returns></returns>
-        public Task<IEnumerable<Mission>> GetAll(int game_id);
+        public Task<IEnumerable<Mission>> GetAll(int game_id, string key_id, bool isAdmin);
 
         /// <summary>
         /// 
@@ -17,7 +17,7 @@ namespace HvZWebAPI.Interfaces
         /// <param name="game_id"></param>
         /// <param name="mission_id"></param>
         /// <returns></returns>
-        public Task<Mission> GetById(int game_id, int mission_id);
+        public Task<Mission> GetById(int game_id, int mission_id, string key_id, bool isAdmin);
 
         /// <summary>
         /// 

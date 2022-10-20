@@ -104,8 +104,6 @@ namespace HvZWebAPI.Controllers
             }
         }
 
-
-
         // GET: api/Squad
         [HttpGet("{game_id}/[controller]")]
         public async Task<ActionResult<IEnumerable<SquadReadDTO>>> GetSquads(int game_id)
@@ -128,6 +126,29 @@ namespace HvZWebAPI.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ErrorCategory.INTERNAL);
             }
         }
+
+        [HttpGet("{game_id}/[controller]/{squad_id}/check-in")]
+        public async Task<ActionResult<IEnumerable<SquadReadDTO>>> GetSquadCheckins(int game_id, int squad_id)
+        {
+            try
+            {
+                var checkins = await _repo.GetAllCheckins(game_id, squad_id);
+                var checkinDTO = _mapper.Map<List<SquadReadDTO>>(checkins);
+
+                return checkinDTO;
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ErrorCategory.INTERNAL);
+            }
+
+        }
+
 
         // GET: api/Squad/5
         [HttpGet("{game_id}/[controller]/{squad_id}")]
@@ -209,6 +230,5 @@ namespace HvZWebAPI.Controllers
 
             return NoContent();
         }
-
     }
 }

@@ -48,16 +48,45 @@ namespace HvZWebAPI.Repositories
             }
         }
 
-        public async Task<IEnumerable<Mission>> GetAll(int game_id)
+        public async Task<IEnumerable<Mission>> GetAll(int game_id, string key_id, bool isAdmin)
         {
-
             if (!GameExists(game_id)) throw new ArgumentException("Game by that id does not exsist");
+
+            if (!isAdmin)
+            {
+                User? user = await _context.Users.Include(u => u.Players).FirstOrDefaultAsync(u => u.KeyCloakId == key_id);
+                if (user == null) throw new ArgumentException(ErrorCategory.USER_NOT_FOUND());
+                if (user.Players == null) throw new ArgumentException(ErrorCategory.USER_HAS_NO_PLAYERS());
+
+                var player = user.Players.FirstOrDefault(p => p.GameId == game_id);
+                if (player == null) throw new ArgumentException(ErrorCategory.USER_HAS_NO_PLAYERS());
+
+                bool seeHuman;
+                seeHuman = player.IsHuman;
+
+                return await _context.Missions.Where(m => m.GameId == game_id && m.Is_human_visible == seeHuman).ToListAsync();
+            }
+
             return await _context.Missions.Where(m => m.GameId == game_id).Include(m => m.Game).ToListAsync();
         }
 
-        public async Task<Mission> GetById(int game_id, int mission_id)
+        public async Task<Mission> GetById(int game_id, int mission_id, string key_id, bool isAdmin)
         {
+            User? user = await _context.Users.Include(u => u.Players).FirstOrDefaultAsync(u => u.KeyCloakId == key_id);
+            if (user == null) throw new ArgumentException(ErrorCategory.USER_NOT_FOUND());
+            if (user.Players == null) throw new ArgumentException(ErrorCategory.USER_HAS_NO_PLAYERS());
+
+            var player = user.Players.FirstOrDefault(p => p.GameId == game_id);
+            if (player == null) throw new ArgumentException(ErrorCategory.USER_HAS_NO_PLAYERS());
+
             Mission mission = await FindMissionInGame(game_id, mission_id);
+            if (mission.Is_human_visible)
+            {  
+                if (!player.IsHuman) throw new AccessViolationException(ErrorCategory.CANT_LOOK_AT_OTHER_FACTIONS_MISSIONS()); 
+            }
+            else if (mission.Is_zombie_visible)
+                    if (player.IsHuman) throw new AccessViolationException(ErrorCategory.CANT_LOOK_AT_OTHER_FACTIONS_MISSIONS());
+
             return mission;
         }
 

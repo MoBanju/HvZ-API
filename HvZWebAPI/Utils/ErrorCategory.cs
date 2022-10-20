@@ -162,4 +162,19 @@ public class ErrorCategory
         return $"No squad with id {squad_member_id} found";
     }
 
+    public static string USER_NOT_FOUND()
+    {
+        return $"No user with your keycloakid was found";
+    }
+
+    public static string USER_HAS_NO_PLAYERS()
+    {
+        return $"No user with your keycloakid has players";
+    }
+
+    public static string CANT_LOOK_AT_OTHER_FACTIONS_MISSIONS()
+    {
+        return "You cannot look at human missions if you are dead or zombie missions if you are alive";
+    }
+
 }
