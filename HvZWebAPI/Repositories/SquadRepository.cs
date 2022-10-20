@@ -103,7 +103,9 @@ public class SquadRepository : ISquadRepository
     {
         await SquadExistsInGame(game_id, squad.Id);
 
-        _context.Entry(squad).State = EntityState.Modified;
+        squad.GameId = game_id;
+        
+        _context.Update(squad);
 
         return await _context.SaveChangesAsync() > 0;
     }

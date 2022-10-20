@@ -102,15 +102,16 @@ namespace HvZWebAPI.Controllers
         // PUT: api/Squad/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{game_id}/[controller]/{squad_id}")]
-        public async Task<IActionResult> PutSquad(int game_id, int squad_id, Squad squad)
+        public async Task<IActionResult> PutSquad(int game_id, int squad_id, SquadUpdateDTO squad)
         {
             if (squad_id != squad.Id)
             {
                 return BadRequest();
             }
+
             try
             {
-                var succueed = await _repo.Update(game_id, squad);
+                var succueed = await _repo.Update(game_id, _mapper.Map<SquadUpdateDTO, Squad>(squad));
                 if (!succueed)
                 {
                     return NotFound(ErrorCategory.SQUAD_NOT_FOUND(game_id, squad_id));
@@ -133,10 +134,23 @@ namespace HvZWebAPI.Controllers
         [HttpDelete("{game_id}/[controller]/{squad_id}")]
         public async Task<IActionResult> DeleteSquad(int game_id, int squad_id)
         {
-            var succueed = await _repo.Delete(game_id, squad_id);
-            if (!succueed)
+
+            try
             {
-                return NotFound(ErrorCategory.SQUAD_NOT_FOUND(game_id, squad_id));
+                var succueed = await _repo.Delete(game_id, squad_id);
+                if (!succueed)
+                {
+                    return NotFound(ErrorCategory.SQUAD_NOT_FOUND(game_id, squad_id));
+                }
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ErrorCategory.INTERNAL);
             }
 
             return NoContent();
