@@ -196,4 +196,10 @@ public class ErrorCategory
     {
         return $"Player is allready in a squad this game {game_id}, no more are allowed";
     }
+
+    public static string START_TIME_MUST_BE_BEFORE_ENDTIME()
+    {
+        return "Start time must be before the endtime";
+    }
+
 }

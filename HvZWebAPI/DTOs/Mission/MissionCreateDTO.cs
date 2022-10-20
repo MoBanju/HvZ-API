@@ -14,13 +14,16 @@ public class MissionCreateDTO
     public bool? Is_zombie_visible { get; set; }
 
     [MinLength(FValid.MISSION_DESCRIPTION_MINLENGTH), MaxLength(FValid.MISSION_DESCRIPTION_MAXLENGTH)]
-    public string Description { get; set; }
+    public string? Description { get; set; }
+
+    [Required]
     public DateTime Start_time { get; set; }
+    [Required]
     public DateTime End_time { get; set; }
     
     [Required]
-    public double Latitude { get; set; }
+    public double? Latitude { get; set; }
     [Required]
-    public double Longitude { get; set; }
+    public double? Longitude { get; set; }
 
 }

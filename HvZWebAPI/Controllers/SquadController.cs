@@ -84,6 +84,10 @@ namespace HvZWebAPI.Controllers
         [HttpPost("{game_id}/[controller]/{squad_id}/check-in")]
         public async Task<ActionResult<SquadCheckinReadDTO>> PostSquadCheckin(int game_id, int squad_id, SquadCheckinCreateDTO squadChekinDTO)
         {
+            //Validate it starts before it ends
+            bool IsBefore = squadChekinDTO.Start_time.CompareTo(squadChekinDTO.End_time) < 0;
+            if (!IsBefore) return BadRequest(ErrorCategory.START_TIME_MUST_BE_BEFORE_ENDTIME());
+
             SquadCheckin squadCheckin = _mapper.Map<SquadCheckinCreateDTO, SquadCheckin>(squadChekinDTO);
 
             try
