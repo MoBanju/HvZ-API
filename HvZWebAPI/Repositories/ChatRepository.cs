@@ -43,6 +43,9 @@ public class ChatRepository : IChatRepository
         if(chat.IsZombieGlobal && !chat.IsHumanGlobal && sender.IsHuman)
             throw new ArgumentException(ErrorCategory.ONLY_A_ZOMBIE_CAN_POST_TO_ZOMBIE_CHAT(game.Id, sender.Id));
 
+        if (chat.SquadId == 0)
+            chat.SquadId = null;
+   
 
         chat.GameId = gameId;
         await _context.Chats.AddAsync(chat);
@@ -70,4 +73,5 @@ public class ChatRepository : IChatRepository
         return chat;
     }
 
+ 
 }

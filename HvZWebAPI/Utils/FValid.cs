@@ -15,7 +15,7 @@ public class FValid
 
     public const int KILL_DESCRIPTION_MAXLENGTH = 200;
     public const int KILL_DESCRIPTION_MINLENGTH = 1;
-
+    
     
 
     public const int PLAYER_BITECODE_MAXLENGTH = 50;

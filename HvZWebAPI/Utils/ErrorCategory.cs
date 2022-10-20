@@ -140,4 +140,26 @@ public class ErrorCategory
     {
         return $"The cordinates from North East must be bigger than South West";
     }
+
+
+    public static string ILLEGAL_SQUAD_TYPE()
+    {
+        return "You can only make a squadtype of your own faction";
+    }
+
+    public static string SQUAD_NOT_FOUND(int game_id, int squad_id)
+    {
+        return $"No squad with id {squad_id} found in that game {game_id}";
+    }
+
+    public static string NOT_MEMBER_OF_SQUAD(int squad_member_id, int squad_id)
+    {
+        return $"No squadmember with id {squad_member_id} found in that squad {squad_id}";
+    }
+
+    public static string SQUADMEMBER_NOT_FOUND(int squad_member_id)
+    {
+        return $"No squad with id {squad_member_id} found";
+    }
+
 }
