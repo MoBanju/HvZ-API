@@ -7,4 +7,5 @@ public class SquadCheckinReadDTO
     public DateTime End_time { get; set; }
     public double Latitude { get; set; }
     public double Longitude { get; set; }
+
 }

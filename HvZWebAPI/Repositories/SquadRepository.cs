@@ -32,6 +32,7 @@ public class SquadRepository : ISquadRepository
         squad.Squad_Members = new List<SquadMember>();
         squad.Squad_Members.Add(sm);
 
+        
         _context.Squads.Add(squad);
 
         await _context.SaveChangesAsync();
@@ -50,6 +51,20 @@ public class SquadRepository : ISquadRepository
         
         return squad;
     }
+
+    public async Task<SquadCheckin> AddCheckin(int game_id, SquadCheckin squadCheckin, int squad_id)
+    {
+        await SquadExistsInGame(game_id, squad_id);
+
+        squadCheckin.SquadId = squad_id;
+        squadCheckin.GameId = game_id;
+
+        _context.Squad_Checkins.Add(squadCheckin);
+        await _context.SaveChangesAsync();
+
+        return squadCheckin;
+    }
+
 
     /// <summary>
     /// Returns if is human
