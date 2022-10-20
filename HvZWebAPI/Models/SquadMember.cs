@@ -15,6 +15,6 @@ public class SquadMember
     public Squad Squad { get; set; }
     public int SquadId { get; set; }
 
-    public ICollection<SquadCheckin>? Squad_Checkins { get; set; }
+    public ICollection<SquadCheckin> Squad_Checkins { get; set; }
 
 }

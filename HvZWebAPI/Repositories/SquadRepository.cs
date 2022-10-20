@@ -179,8 +179,12 @@ public class SquadRepository : ISquadRepository
 
         var squad = _context.Squads.Include(s => s.Squad_Members).ThenInclude(sm => sm.Squad_Checkins).First(s => s.Id == squad_id);
 
-        foreach(var s in squad.Squad_Members) { 
-            _context.Squad_Members.Remove(s);
+        foreach(var sm in squad.Squad_Members) { 
+            foreach(var smc in sm.Squad_Checkins)
+            {
+                _context.Squad_Checkins.Remove(smc);
+            }
+            _context.Squad_Members.Remove(sm);
         }
 
         _context.Squads.Remove(squad);
