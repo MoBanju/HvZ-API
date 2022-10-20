@@ -20,9 +20,13 @@ namespace HvZWebAPI.Repositories
             if (!GameExists(game_id)) throw new ArgumentException(ErrorCategory.GAME_NOT_FOUND(game_id));
             if (await InAreaGame(mission.Latitude, mission.Longitude, game_id) is false)
                 throw new ArgumentException(ErrorCategory.MISSION_OUT_GAME_AREA());
+            if(mission.Is_human_visible && mission.Is_zombie_visible)
+                throw new ArgumentException(ErrorCategory.ILLEGAL_TO_SHOW_MISSION_TO_BOTH_FACTIONS());
 
             mission.GameId = game_id;
             await _context.Missions.AddAsync(mission);
+
+
 
             int rowsAfected = await _context.SaveChangesAsync();
             if (rowsAfected == 0)
@@ -64,6 +68,7 @@ namespace HvZWebAPI.Repositories
                 bool seeHuman;
                 seeHuman = player.IsHuman;
 
+                //Is the mision in game 1 human visible, yes
                 return await _context.Missions.Where(m => m.GameId == game_id && m.Is_human_visible == seeHuman).ToListAsync();
             }
 

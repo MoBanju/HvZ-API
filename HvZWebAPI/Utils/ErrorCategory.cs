@@ -177,4 +177,8 @@ public class ErrorCategory
         return "You cannot look at human missions if you are dead or zombie missions if you are alive";
     }
 
+    public static string ILLEGAL_TO_SHOW_MISSION_TO_BOTH_FACTIONS()
+    {
+        return "Mission can only be visible to one faction at a time, or neither";
+    }
 }
