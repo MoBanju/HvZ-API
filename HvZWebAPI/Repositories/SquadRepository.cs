@@ -101,7 +101,7 @@ public class SquadRepository : ISquadRepository
     {
         await GameExists(game_id);
 
-        return await _context.Squads.Include(s => s.Squad_Members).ToListAsync();
+        return await _context.Squads.Include(s => s.Squad_Members).Where(s => s.GameId == game_id).ToListAsync();
 
     }
 
@@ -140,7 +140,7 @@ public class SquadRepository : ISquadRepository
     {
         await SquadExistsInGame(game_id, squad_id);
 
-        var squad = _context.Squads.Include(s => s.Squad_Members).First(s => s.Id == squad_id);
+        var squad = _context.Squads.Include(s => s.Squad_Members).ThenInclude(sm => sm.Squad_Checkins).First(s => s.Id == squad_id);
 
         foreach(var s in squad.Squad_Members) { 
             _context.Squad_Members.Remove(s);
