@@ -144,7 +144,7 @@ public class ErrorCategory
 
     public static string ILLEGAL_SQUAD_TYPE()
     {
-        return "You can only make a squadtype of your own faction";
+        return "You can only be in a squadtype of your own faction";
     }
 
     public static string SQUAD_NOT_FOUND(int game_id, int squad_id)
@@ -190,5 +190,10 @@ public class ErrorCategory
     public static string TOPRANK_IS_RESERVED
     {
         get { return "Only the founder can have this rank"; }
+    }
+
+    public static string UNIQUE_PLAYER_SQUAD(int game_id)
+    {
+        return $"Player is allready in a squad this game {game_id}, no more are allowed";
     }
 }
