@@ -43,10 +43,14 @@ public class GameRepository : IGameRepository
         if(game is null)
             return false;
 
+        //Get squads instead of include them?
 
         foreach(var squad in game.Squads) {
             await _squadRepository.Delete(game.Id, squad.Id);
         }
+
+        game.Squads = null;
+  
 
         _context.RemoveRange(game.Players);
 
