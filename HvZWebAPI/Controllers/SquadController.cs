@@ -60,7 +60,6 @@ namespace HvZWebAPI.Controllers
         public async Task<ActionResult<SquadMemberReadDTO>> PostSquadMember(int game_id, int squad_id, SquadMemberCreateDTO squadMemberDTO)
         {
             SquadMember squadMember = _mapper.Map<SquadMemberCreateDTO, SquadMember>(squadMemberDTO);
-
             try
             {
                 var squadMemberSaved = await _repo.AddMember(game_id, squadMember, squad_id);
@@ -77,6 +76,7 @@ namespace HvZWebAPI.Controllers
 
             SquadMemberReadDTO mapped = _mapper.Map<SquadMember, SquadMemberReadDTO>(squadMember);
             mapped.SquadId = squadMember.Id;
+            mapped.PlayerId = squadMember.PlayerId;
 
             return CreatedAtAction("GetSquadMember", new { game_id = game_id, squad_id = squad_id, squad_member_id = mapped.Id }, mapped);
         }
@@ -125,6 +125,7 @@ namespace HvZWebAPI.Controllers
 
                 var mapped = _mapper.Map<SquadMember, SquadMemberReadDTO>(sm);
                 mapped.SquadId = squad_id;
+                mapped.PlayerId = sm.PlayerId;
 
                 return mapped;
             }
@@ -202,6 +203,8 @@ namespace HvZWebAPI.Controllers
                 {
                     return NotFound();
                 }
+
+
                 return _mapper.Map<Squad, SquadReadDTO>(squad);
             }
             catch (ArgumentException ex)

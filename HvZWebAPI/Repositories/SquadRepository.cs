@@ -58,6 +58,7 @@ public class SquadRepository : ISquadRepository
 
 
         squadMember.SquadId = squad_id;
+        squadMember.PlayerId = squadMember.PlayerId;
         squadMember.GameId = game_id;
 
         _context.Squad_Members.Add(squadMember);
@@ -116,7 +117,7 @@ public class SquadRepository : ISquadRepository
 
     private async Task<Squad> SquadExistsInGame(int game_id, int squad_id)
     {
-        var game = await _context.Games.Where(g => g.Id == game_id).Include(g => g.Squads).FirstAsync();
+        var game = await _context.Games.Where(g => g.Id == game_id).Include(g => g.Squads).FirstOrDefaultAsync();
         if (game == null) throw new ArgumentException(ErrorCategory.GAME_NOT_FOUND(game_id));
         else
             _context.Entry(game).State = EntityState.Detached;
