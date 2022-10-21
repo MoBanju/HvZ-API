@@ -40,6 +40,8 @@ public class GameController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<GameReadDTO>> PostGame(GameCreateDTO gameAsDTO)
     {
+        bool IsBefore = gameAsDTO.StartTime.CompareTo(gameAsDTO.EndTime) < 0;
+        if (!IsBefore) return BadRequest(ErrorCategory.START_TIME_MUST_BE_BEFORE_ENDTIME());
 
 
         Game? game = _mapper.Map<Game>(gameAsDTO);
@@ -227,6 +229,9 @@ public class GameController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> PutGame(int id, GameUpdateDeleteDTO gameAsDto)
     {
+        bool IsBefore = gameAsDto.StartTime.CompareTo(gameAsDto.EndTime) < 0;
+        if (!IsBefore) return BadRequest(ErrorCategory.START_TIME_MUST_BE_BEFORE_ENDTIME());
+
         if (id != gameAsDto.Id)
         {
             return BadRequest();

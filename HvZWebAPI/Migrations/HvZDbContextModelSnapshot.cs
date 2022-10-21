@@ -61,7 +61,7 @@ namespace HvZWebAPI.Migrations
 
                     b.HasIndex("SquadId");
 
-                    b.ToTable("Chats");
+                    b.ToTable("Chats", (string)null);
 
                     b.HasData(
                         new
@@ -137,7 +137,7 @@ namespace HvZWebAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Games");
+                    b.ToTable("Games", (string)null);
 
                     b.HasData(
                         new
@@ -222,7 +222,7 @@ namespace HvZWebAPI.Migrations
 
                     b.HasIndex("GameId");
 
-                    b.ToTable("Kills");
+                    b.ToTable("Kills", (string)null);
 
                     b.HasData(
                         new
@@ -315,7 +315,7 @@ namespace HvZWebAPI.Migrations
 
                     b.HasIndex("GameId");
 
-                    b.ToTable("Missions");
+                    b.ToTable("Missions", (string)null);
 
                     b.HasData(
                         new
@@ -406,7 +406,7 @@ namespace HvZWebAPI.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Players");
+                    b.ToTable("Players", (string)null);
 
                     b.HasData(
                         new
@@ -543,7 +543,7 @@ namespace HvZWebAPI.Migrations
 
                     b.HasIndex("KillId");
 
-                    b.ToTable("PlayerKills");
+                    b.ToTable("PlayerKills", (string)null);
 
                     b.HasData(
                         new
@@ -631,7 +631,7 @@ namespace HvZWebAPI.Migrations
 
                     b.HasIndex("GameId");
 
-                    b.ToTable("Squads");
+                    b.ToTable("Squads", (string)null);
 
                     b.HasData(
                         new
@@ -715,7 +715,7 @@ namespace HvZWebAPI.Migrations
 
                     b.HasIndex("Squad_MemberId");
 
-                    b.ToTable("Squad_Checkins");
+                    b.ToTable("Squad_Checkins", (string)null);
 
                     b.HasData(
                         new
@@ -816,7 +816,7 @@ namespace HvZWebAPI.Migrations
 
                     b.HasIndex("SquadId");
 
-                    b.ToTable("Squad_Members");
+                    b.ToTable("Squad_Members", (string)null);
 
                     b.HasData(
                         new
@@ -937,7 +937,7 @@ namespace HvZWebAPI.Migrations
                     b.HasIndex("KeyCloakId")
                         .IsUnique();
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
 
                     b.HasData(
                         new
