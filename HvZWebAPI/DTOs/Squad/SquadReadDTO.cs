@@ -12,6 +12,7 @@ public class SquadReadDTO
 
     public int DeseasedPlayers { get; set; }
 
+
     public ICollection<SquadMemberReadDTO> Squad_Members { get; set; }
 
 }
