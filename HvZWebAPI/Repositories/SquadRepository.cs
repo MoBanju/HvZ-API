@@ -5,6 +5,7 @@ using HvZWebAPI.Models;
 using HvZWebAPI.Utils;
 using Microsoft.EntityFrameworkCore;
 using System.Numerics;
+using System.Security.Cryptography;
 
 namespace HvZWebAPI.Repositories;
 
@@ -25,33 +26,47 @@ public class SquadRepository : ISquadRepository
         bool human = await PlayerInGame(player_id, game_id);
         if(squad.Is_human != human) throw new ArgumentException(ErrorCategory.ILLEGAL_SQUAD_TYPE());
 
-
+        bool IsUnique = !_context.Squad_Members.Where(sm => sm.GameId == game_id).Any(sm => sm.PlayerId == player_id);
+        if (!IsUnique) throw new ArgumentException(ErrorCategory.UNIQUE_PLAYER_SQUAD(game_id));
+        
         //Should automatically try to register a member
         squad.GameId = game_id;
         SquadMember sm = new SquadMember() { PlayerId = player_id, GameId = game_id, Rank = ErrorCategory.TOPRANK};
         squad.Squad_Members = new List<SquadMember>();
         squad.Squad_Members.Add(sm);
 
-        
+
         _context.Squads.Add(squad);
 
         await _context.SaveChangesAsync();
 
         return squad;
     }
-    public async Task<SquadMember> AddMember(int game_id, SquadMember squad, int squad_id)
+    public async Task<SquadMember> AddMember(int game_id, SquadMember squadMember, int squad_id)
     {
-        await SquadExistsInGame(game_id, squad_id);
+        if(squadMember.Rank == ErrorCategory.TOPRANK) throw new ArgumentException(ErrorCategory.TOPRANK_IS_RESERVED);
+        
+        //Only join squads of your faction
+        var squad = await SquadExistsInGame(game_id, squad_id);
+        bool human = await PlayerInGame(squadMember.PlayerId, game_id);
+        if (squad.Is_human != human) throw new ArgumentException(ErrorCategory.ILLEGAL_SQUAD_TYPE());
 
-        if(squad.Rank == ErrorCategory.TOPRANK) throw new ArgumentException(ErrorCategory.TOPRANK_IS_RESERVED);
-        squad.SquadId = squad_id;
-        squad.GameId = game_id;
+        //Only allowed to join one squad in a game
+        bool IsUnique = !_context.Squad_Members.Where(sm => sm.GameId == game_id).Any(sm=> sm.PlayerId == squadMember.PlayerId);
+        if (!IsUnique) throw new ArgumentException(ErrorCategory.UNIQUE_PLAYER_SQUAD(game_id));
 
-        _context.Squad_Members.Add(squad);
+
+
+        squadMember.SquadId = squad_id;
+        squadMember.GameId = game_id;
+
+        _context.Squad_Members.Add(squadMember);
         await _context.SaveChangesAsync();
         
-        return squad;
+        return squadMember;
     }
+
+
 
     public async Task<SquadCheckin> AddCheckin(int game_id, SquadCheckin squadCheckin, int squad_id)
     {

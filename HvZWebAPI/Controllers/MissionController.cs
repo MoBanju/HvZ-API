@@ -111,6 +111,9 @@ namespace HvZWebAPI.Controllers
         [HttpPut("{game_id}/[controller]/{mission_id}")]
         public async Task<IActionResult> PutMission(int game_id, int mission_id, MissionUpdateDTO missionAsDTO)
         {
+            bool IsBefore = missionAsDTO.Start_time.CompareTo(missionAsDTO.End_time) < 0;
+            if (!IsBefore) return BadRequest(ErrorCategory.START_TIME_MUST_BE_BEFORE_ENDTIME());
+
             if (mission_id != missionAsDTO.Id)
             {
                 return BadRequest("Id in body and url doesn't match");
@@ -140,6 +143,10 @@ namespace HvZWebAPI.Controllers
         [HttpPost("{game_id}/[controller]")]
         public async Task<ActionResult<MissionReadDTO>> PostMission(int game_id, MissionCreateDTO missionAsDTO)
         {
+            bool IsBefore = missionAsDTO.Start_time.CompareTo(missionAsDTO.End_time) < 0;
+            if (!IsBefore) return BadRequest(ErrorCategory.START_TIME_MUST_BE_BEFORE_ENDTIME());
+
+
 
             Mission mission = _mapper.Map<MissionCreateDTO, Mission>(missionAsDTO);
 

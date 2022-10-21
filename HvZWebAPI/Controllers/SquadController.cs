@@ -76,7 +76,7 @@ namespace HvZWebAPI.Controllers
             }
 
             SquadMemberReadDTO mapped = _mapper.Map<SquadMember, SquadMemberReadDTO>(squadMember);
-
+            mapped.SquadId = squadMember.Id;
 
             return CreatedAtAction("GetSquadMember", new { game_id = game_id, squad_id = squad_id, squad_member_id = mapped.Id }, mapped);
         }
@@ -84,6 +84,10 @@ namespace HvZWebAPI.Controllers
         [HttpPost("{game_id}/[controller]/{squad_id}/check-in")]
         public async Task<ActionResult<SquadCheckinReadDTO>> PostSquadCheckin(int game_id, int squad_id, SquadCheckinCreateDTO squadChekinDTO)
         {
+            //Validate it starts before it ends
+            bool IsBefore = squadChekinDTO.Start_time.CompareTo(squadChekinDTO.End_time) < 0;
+            if (!IsBefore) return BadRequest(ErrorCategory.START_TIME_MUST_BE_BEFORE_ENDTIME());
+
             SquadCheckin squadCheckin = _mapper.Map<SquadCheckinCreateDTO, SquadCheckin>(squadChekinDTO);
 
             try
@@ -113,11 +117,16 @@ namespace HvZWebAPI.Controllers
             {
 
                 SquadMember? sm = await _repo.GetMemberById(game_id, squad_id, squad_member_id);
+                
                 if (sm == null)
                 {
                     return NotFound();
                 }
-                return _mapper.Map<SquadMember, SquadMemberReadDTO>(sm);
+
+                var mapped = _mapper.Map<SquadMember, SquadMemberReadDTO>(sm);
+                mapped.SquadId = squad_id;
+
+                return mapped;
             }
             catch (ArgumentException ex)
             {
