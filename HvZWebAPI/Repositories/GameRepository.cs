@@ -10,10 +10,12 @@ namespace HvZWebAPI.Repositories;
 public class GameRepository : IGameRepository
 {
     private readonly HvZDbContext _context;
+    private readonly ISquadRepository _squadRepository;
 
-    public GameRepository(HvZDbContext context)
+    public GameRepository(HvZDbContext context, ISquadRepository squadRepository)
     {
         _context = context;
+        _squadRepository = squadRepository;
     }
 
     public async Task<bool> Update(Game entity)
@@ -35,12 +37,19 @@ public class GameRepository : IGameRepository
     {
         Game? game = await _context.Games.Where(g => g.Id == id)
             .Include(g => g.Players)
+            .Include(g => g.Squads)
             .FirstOrDefaultAsync();
 
         if(game is null)
             return false;
 
+
+        foreach(var squad in game.Squads) {
+            await _squadRepository.Delete(game.Id, squad.Id);
+        }
+
         _context.RemoveRange(game.Players);
+
         _context.Remove(game);
         return await _context.SaveChangesAsync() > 0;
     }

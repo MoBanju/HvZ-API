@@ -24,14 +24,14 @@ public class SquadRepository : ISquadRepository
     {
         await GameExists(game_id);
         bool human = await PlayerInGame(player_id, game_id);
-        if(squad.Is_human != human) throw new ArgumentException(ErrorCategory.ILLEGAL_SQUAD_TYPE());
+        if (squad.Is_human != human) throw new ArgumentException(ErrorCategory.ILLEGAL_SQUAD_TYPE());
 
         bool IsUnique = !_context.Squad_Members.Where(sm => sm.GameId == game_id).Any(sm => sm.PlayerId == player_id);
         if (!IsUnique) throw new ArgumentException(ErrorCategory.UNIQUE_PLAYER_SQUAD(game_id));
-        
+
         //Should automatically try to register a member
         squad.GameId = game_id;
-        SquadMember sm = new SquadMember() { PlayerId = player_id, GameId = game_id, Rank = ErrorCategory.TOPRANK};
+        SquadMember sm = new SquadMember() { PlayerId = player_id, GameId = game_id, Rank = ErrorCategory.TOPRANK };
         squad.Squad_Members = new List<SquadMember>();
         squad.Squad_Members.Add(sm);
 
@@ -44,15 +44,15 @@ public class SquadRepository : ISquadRepository
     }
     public async Task<SquadMember> AddMember(int game_id, SquadMember squadMember, int squad_id)
     {
-        if(squadMember.Rank == ErrorCategory.TOPRANK) throw new ArgumentException(ErrorCategory.TOPRANK_IS_RESERVED);
-        
+        if (squadMember.Rank == ErrorCategory.TOPRANK) throw new ArgumentException(ErrorCategory.TOPRANK_IS_RESERVED);
+
         //Only join squads of your faction
         var squad = await SquadExistsInGame(game_id, squad_id);
         bool human = await PlayerInGame(squadMember.PlayerId, game_id);
         if (squad.Is_human != human) throw new ArgumentException(ErrorCategory.ILLEGAL_SQUAD_TYPE());
 
         //Only allowed to join one squad in a game
-        bool IsUnique = !_context.Squad_Members.Where(sm => sm.GameId == game_id).Any(sm=> sm.PlayerId == squadMember.PlayerId);
+        bool IsUnique = !_context.Squad_Members.Where(sm => sm.GameId == game_id).Any(sm => sm.PlayerId == squadMember.PlayerId);
         if (!IsUnique) throw new ArgumentException(ErrorCategory.UNIQUE_PLAYER_SQUAD(game_id));
 
 
@@ -62,7 +62,7 @@ public class SquadRepository : ISquadRepository
 
         _context.Squad_Members.Add(squadMember);
         await _context.SaveChangesAsync();
-        
+
         return squadMember;
     }
 
@@ -116,12 +116,12 @@ public class SquadRepository : ISquadRepository
 
     private async Task<Squad> SquadExistsInGame(int game_id, int squad_id)
     {
-        var game = await _context.Games.Where(g => g.Id == game_id).Include(g=>g.Squads).FirstAsync();
+        var game = await _context.Games.Where(g => g.Id == game_id).Include(g => g.Squads).FirstAsync();
         if (game == null) throw new ArgumentException(ErrorCategory.GAME_NOT_FOUND(game_id));
         else
             _context.Entry(game).State = EntityState.Detached;
 
-        if(game.Squads == null) throw new ArgumentException(ErrorCategory.SQUAD_NOT_FOUND(game_id, squad_id));
+        if (game.Squads == null) throw new ArgumentException(ErrorCategory.SQUAD_NOT_FOUND(game_id, squad_id));
         Squad? squad = game.Squads.FirstOrDefault(s => s.Id == squad_id);
         if (squad == null) throw new ArgumentException(ErrorCategory.SQUAD_NOT_FOUND(game_id, squad_id));
         _context.Entry(squad).State = EntityState.Detached;
@@ -157,7 +157,7 @@ public class SquadRepository : ISquadRepository
         await SquadExistsInGame(game_id, squad_id);
         //Use squad id to check if squadmember has same
         var squadmember = await _context.Squad_Members.FindAsync(squadMember_id);
-        if(squadmember==null) throw new ArgumentException(ErrorCategory.SQUADMEMBER_NOT_FOUND(squadMember_id));
+        if (squadmember == null) throw new ArgumentException(ErrorCategory.SQUADMEMBER_NOT_FOUND(squadMember_id));
         if (squadmember.SquadId != squad_id) throw new ArgumentException(ErrorCategory.NOT_MEMBER_OF_SQUAD(squadMember_id, squad_id));
 
         return squadmember;
@@ -182,7 +182,7 @@ public class SquadRepository : ISquadRepository
         await SquadExistsInGame(game_id, squad.Id);
 
         squad.GameId = game_id;
-        
+
         _context.Update(squad);
 
         return await _context.SaveChangesAsync() > 0;
@@ -192,15 +192,11 @@ public class SquadRepository : ISquadRepository
     {
         await SquadExistsInGame(game_id, squad_id);
 
-        var squad = _context.Squads.Include(s => s.Squad_Members).ThenInclude(sm => sm.Squad_Checkins).First(s => s.Id == squad_id);
+        var squad = _context.Squads.Include(sm => sm.Squad_Checkins).Include(s=> s.Squad_Members).First(s => s.Id == squad_id);
 
-        foreach(var sm in squad.Squad_Members) { 
-            foreach(var smc in sm.Squad_Checkins)
-            {
-                _context.Squad_Checkins.Remove(smc);
-            }
-            _context.Squad_Members.Remove(sm);
-        }
+        _context.RemoveRange(squad.Squad_Checkins);
+        _context.RemoveRange(squad.Squad_Members);
+
 
         _context.Squads.Remove(squad);
 
