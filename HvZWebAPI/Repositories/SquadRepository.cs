@@ -198,15 +198,32 @@ public class SquadRepository : ISquadRepository
     {
         await SquadExistsInGame(game_id, squad_id);
 
-        var squad = _context.Squads.Include(sm => sm.Squad_Checkins).Include(s=> s.Squad_Members).First(s => s.Id == squad_id);
+        var squad = _context.Squads.Include(s => s.Squad_Checkins).Include(s=> s.Squad_Members).First(s => s.Id == squad_id);
 
-        _context.RemoveRange(squad.Squad_Checkins);
+        if (squad.Squad_Checkins != null)
+            _context.RemoveRange(squad.Squad_Checkins);
         _context.RemoveRange(squad.Squad_Members);
 
 
         _context.Squads.Remove(squad);
 
         return await _context.SaveChangesAsync() > 0;
+    }
+
+    public async Task<bool> DeleteMember(int game_id, int squad_id, int player_id)
+    {
+
+        await SquadExistsInGame(game_id, squad_id);
+
+        SquadMember? squadMember = await _context.Squad_Members.Include(sm => sm.Squad_Checkins).FirstAsync(sm => sm.SquadId == squad_id && sm.PlayerId == player_id);
+
+        if(squadMember.Squad_Checkins != null)
+            _context.Squad_Checkins.RemoveRange(squadMember.Squad_Checkins);
+
+        if(squadMember != null)
+            _context.Squad_Members.Remove(squadMember);
+        return await _context.SaveChangesAsync() > 0;
+
     }
 
 }

@@ -15,4 +15,5 @@ public interface ISquadRepository
     public Task<SquadCheckin> GetCheckinById(int game_id, int squad_id, int squadCheckin_id);
     public Task<bool> Update(int game_id, Squad squad);
     public Task<bool> Delete(int game_id, int squad_id);
+    public Task<bool> DeleteMember(int game_id, int squad_id, int player_id);
 }
