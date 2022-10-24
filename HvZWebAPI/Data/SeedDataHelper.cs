@@ -24,25 +24,26 @@ namespace HvZWebAPI.Data
             List<Player> players = new List<Player>()
             {
                 // Game 1
-                new Player(){ Id=5, IsHuman=true, BiteCode="Five", IsPatientZero=false, UserId=1, GameId=1},
-                new Player(){ Id=7, IsHuman=true, BiteCode="Seven", IsPatientZero=false, UserId=4, GameId=1},
-                new Player(){ Id=6, IsHuman=false, BiteCode="Six", IsPatientZero=true, UserId=3, GameId=1},
+                new Player(){ Id=5, IsHuman=true, BiteCode="8xl2v6cho4w", IsPatientZero=false, UserId=5, GameId=1},
+                new Player(){ Id=7, IsHuman=true, BiteCode="7cbq3kjnz9f", IsPatientZero=false, UserId=4, GameId=1},
+                new Player(){ Id=6, IsHuman=false, BiteCode="ao56yqf3nel", IsPatientZero=true, UserId=3, GameId=1},
 
                 // Game 2
-                new Player(){ Id=1, IsHuman=false, BiteCode="Street", IsPatientZero=false, UserId=1, GameId=2},
-                new Player(){ Id=4, IsHuman=false, BiteCode="Helloma", IsPatientZero=true, UserId=2, GameId=2},
-                new Player(){ Id=13, IsHuman=false, BiteCode="HellomaSma", IsPatientZero=false, UserId=3, GameId=2},
+                new Player(){ Id=1, IsHuman=false, BiteCode="udo9zhwi9q", IsPatientZero=false, UserId=5, GameId=2},
+                new Player(){ Id=4, IsHuman=false, BiteCode="gnr5uvef03", IsPatientZero=true, UserId=2, GameId=2},
+                new Player(){ Id=13, IsHuman=false, BiteCode="7ijo6pppt9d", IsPatientZero=false, UserId=3, GameId=2},
+                new Player(){ Id=14, IsHuman=false, BiteCode="n7p3cb0xoh", IsPatientZero=false, UserId=4, GameId=2},
 
                 // Game 3
-                new Player(){ Id=8, IsHuman=false, BiteCode="Eight", IsPatientZero=false, UserId=1, GameId=3},
-                new Player(){ Id=9, IsHuman=true, BiteCode="Nine", IsPatientZero=false, UserId=2, GameId=3},
-                new Player(){ Id=2, IsHuman=false, BiteCode="BooHoo", IsPatientZero=false, UserId=3, GameId=3},
-                new Player(){ Id=3, IsHuman=false, BiteCode="Hello", IsPatientZero=true, UserId=4, GameId=3},
+                new Player(){ Id=8, IsHuman=false, BiteCode="pzuaz7xxts", IsPatientZero=false, UserId=5, GameId=3},
+                new Player(){ Id=9, IsHuman=true, BiteCode="pt4nv8yilk", IsPatientZero=false, UserId=2, GameId=3},
+                new Player(){ Id=2, IsHuman=false, BiteCode="86bhuu95llh", IsPatientZero=false, UserId=3, GameId=3},
+                new Player(){ Id=3, IsHuman=false, BiteCode="hphhgffkt27", IsPatientZero=true, UserId=4, GameId=3},
 
                 // Game 4
-                new Player(){ Id=10, IsHuman=true, BiteCode="DontGuessMe", IsPatientZero=false, UserId=4, GameId=4},
-                new Player(){ Id=11, IsHuman=false, BiteCode="NoGuess", IsPatientZero=false, UserId=3, GameId=4},
-                new Player(){ Id=12, IsHuman=false, BiteCode="DontAtMeBro", IsPatientZero=true, UserId=2, GameId=4},
+                new Player(){ Id=10, IsHuman=true, BiteCode="0ox01mfifxu", IsPatientZero=false, UserId=4, GameId=4},
+                new Player(){ Id=11, IsHuman=false, BiteCode="y4agjazrxt", IsPatientZero=false, UserId=3, GameId=4},
+                new Player(){ Id=12, IsHuman=false, BiteCode="22k36equedx", IsPatientZero=true, UserId=2, GameId=4},
             };
             return players;
         }
@@ -51,10 +52,10 @@ namespace HvZWebAPI.Data
         {
             List<Game> games = new List<Game>()
             {
-                new Game(){ Id=1, Name="Jungle", State=State.Registration, Description="Hosted by George of the Jungle.", StartTime=new DateTime(2022, 10, 10), EndTime=new DateTime(2022, 10, 26),  Sw_lat=60.395123, Sw_lng=5.314687, Ne_lat=60.395528, Ne_lng=5.320989},
+                new Game(){ Id=1, Name="Jungle", State=State.Registration, Description="Hosted by George of the Jungle.", StartTime=new DateTime(2022, 10, 10), EndTime=new DateTime(2022, 10, 26),  Sw_lat=58.8574036443497, Sw_lng=5.65963540246227, Ne_lat=58.9056652423756, Ne_lng=5.755525336998},
                 new Game(){ Id=2, Name="Island", State=State.Complete, Description="Match happens in Finland.",StartTime=new DateTime(2022, 10, 10), EndTime=new DateTime(2022, 10, 26), Sw_lat=58.983857, Sw_lng=5.613486, Ne_lat=58.984830, Ne_lng=5.619021},
-                new Game(){ Id=3, Name="Ocean", State=State.Progress, Description = "Sharks, Bombs and Boats.",StartTime=new DateTime(2022, 10, 10), EndTime=new DateTime(2022, 10, 26), Sw_lat=58.870288, Sw_lng=5.602136, Ne_lat=58.895002, Ne_lng=5.644981},
-                new Game(){ Id=4, Name="Space", State=State.Progress, Description = "Armstrong in the building.",StartTime=new DateTime(2022, 10, 10), EndTime=new DateTime(2022, 10, 26), Sw_lat=58.940605, Sw_lng=5.803512, Ne_lat=58.964327, Ne_lng=5.846468},
+                new Game(){ Id=3, Name="Ocean", State=State.Progress, Description = "Sharks, Bombs and Boats.",StartTime=new DateTime(2022, 10, 10), EndTime=new DateTime(2022, 10, 26), Sw_lat=58.8506558531135, Sw_lng=5.6369517620345, Ne_lat=58.8907681118828, Ne_lng=5.76205547590901},
+                new Game(){ Id=4, Name="Space", State=State.Progress, Description = "Armstrong in the building.",StartTime=new DateTime(2022, 10, 10), EndTime=new DateTime(2022, 10, 26), Sw_lat=58.8844258924142, Sw_lng=5.6463966410603, Ne_lat=58.8957799309783, Ne_lng=5.76565759906708},
             };
             return games;
         }
@@ -64,13 +65,13 @@ namespace HvZWebAPI.Data
             List<Kill> kills = new List<Kill>()
             {
                 // Game 2
-                new Kill(){ Id=1, TimeDeath= new DateTime(2022, 10, 13, 13, 37, 59), GameId=2, Description="CAMPER!!", Latitude=58.9839, Longitude=5.615},
+                new Kill(){ Id=1, TimeDeath= new DateTime(2022, 10, 13, 13, 37, 59), GameId=2, Description="CAMPER!!", Latitude=58.8874036443497, Longitude=5.7},
                 new Kill(){ Id=2, TimeDeath= new DateTime(2022, 10, 14, 13, 37, 59), GameId=2, Description="GET HIM!", Latitude=58.984173, Longitude=5.615167},
                 // Game 3
-                new Kill(){ Id=3, TimeDeath= new DateTime(2022, 10, 13, 13, 37, 59), GameId=3, Description="", Latitude=58.885642, Longitude=5.633585},
-                new Kill(){ Id=4, TimeDeath= new DateTime(2022, 10, 14, 13, 37, 59), GameId=3, Description="", Latitude=58.893353, Longitude=5.637278},
+                new Kill(){ Id=3, TimeDeath= new DateTime(2022, 10, 13, 13, 37, 59), GameId=3, Description="", Latitude=58.86, Longitude=5.7},
+                new Kill(){ Id=4, TimeDeath= new DateTime(2022, 10, 14, 13, 37, 59), GameId=3, Description="", Latitude=58.87, Longitude=5.65},
                 // Game 4
-                new Kill(){ Id=5, TimeDeath= new DateTime(2022, 10, 13, 13, 37, 59), GameId=4, Description="Fiesty", Latitude=58.95, Longitude=5.81},
+                new Kill(){ Id=5, TimeDeath= new DateTime(2022, 10, 13, 13, 37, 59), GameId=4, Description="Fiesty", Latitude=58.89, Longitude=5.68},
 
             };
             return kills;
@@ -111,22 +112,26 @@ namespace HvZWebAPI.Data
             return chats;
         }
 
+
+
         public static List<Mission> GetMissions()
         {
             List<Mission> missions = new List<Mission>()
             {
-                new Mission(){ Id=1, Description="Touch your head!", Is_zombie_visible=false, Is_human_visible=true,
-                    GameId=3, Start_time=DateTime.UtcNow, End_time=DateTime.UtcNow.AddHours(2)
-                , Latitude=58.88, Longitude=5.61, Name = "Head here"},
+                new Mission(){ Id=4, Description="Bring a pencil!", Is_zombie_visible=false, Is_human_visible=true,
+                    GameId=1, Start_time=DateTime.UtcNow, End_time=DateTime.UtcNow.AddHours(4)
+                    , Latitude=58.885, Longitude=5.72, Name = "Crossword" },
+
                 new Mission(){ Id=2, Description="Touch your toes!", Is_zombie_visible=false, Is_human_visible=true,
                     GameId=2, Start_time=DateTime.UtcNow, End_time=DateTime.UtcNow.AddHours(1)
                     , Latitude=58.9839, Longitude=5.614, Name = "Take a trip"},
                 new Mission(){ Id=3, Description="Jump up on the table and do a zombie dance!", Is_zombie_visible=true, Is_human_visible=false,
                     GameId=2, Start_time=DateTime.UtcNow, End_time=DateTime.UtcNow.AddHours(4)
                     , Latitude=58.98398, Longitude=5.617, Name = "JigglyBrains" },
-                new Mission(){ Id=4, Description="Bring a pencil!", Is_zombie_visible=false, Is_human_visible=true,
-                    GameId=1, Start_time=DateTime.UtcNow, End_time=DateTime.UtcNow.AddHours(4)
-                    , Latitude=60.3952, Longitude=5.32, Name = "Crossword" }
+
+                new Mission(){ Id=1, Description="Touch your head!", Is_zombie_visible=false, Is_human_visible=true,
+                    GameId=3, Start_time=DateTime.UtcNow, End_time=DateTime.UtcNow.AddHours(2)
+                , Latitude=58.893, Longitude=5.76, Name = "Head here"},
             };
             return missions;
         }
@@ -159,7 +164,7 @@ namespace HvZWebAPI.Data
                 new SquadMember(){ Id=3, Rank = "Boss", SquadId=2, PlayerId=1, GameId = 2},
                 new SquadMember(){ Id=4, Rank = "Goon", SquadId=2, PlayerId=4, GameId = 2},
                 new SquadMember(){ Id=10, Rank = "Boss", SquadId=6, PlayerId=13, GameId = 2},
-                new SquadMember(){ Id=11, Rank = "Goon", SquadId=6, PlayerId=4, GameId = 2},
+                new SquadMember(){ Id=11, Rank = "Goon", SquadId=6, PlayerId=14, GameId = 2},
 
                 new SquadMember(){ Id=5, Rank = "Boss", SquadId=3, PlayerId=9, GameId = 3},
                 new SquadMember(){ Id=6, Rank = "Goon", SquadId=4, PlayerId=8, GameId = 3},
@@ -171,21 +176,22 @@ namespace HvZWebAPI.Data
             return squadMembers;
         }
 
+
         public static List<SquadCheckin> GetSquadCheckins()
         {
             
 
             List<SquadCheckin> squadCheckins = new List<SquadCheckin>()
             {
-                new SquadCheckin(){ Id = 1, Start_time = DateTime.UtcNow, End_time = DateTime.UtcNow.AddMinutes(30), GameId = 1, Latitude = 60.3953, Longitude = 5.315, SquadId = 1, Squad_MemberId = 2},   
+                new SquadCheckin(){ Id = 1, Start_time = DateTime.UtcNow, End_time = DateTime.UtcNow.AddMinutes(30), GameId = 1, Latitude = 58.88, Longitude = 5.73, SquadId = 1, Squad_MemberId = 2},   
 
                 new SquadCheckin(){ Id = 2, Start_time = DateTime.UtcNow, End_time = DateTime.UtcNow.AddMinutes(20), GameId = 2, Latitude = 58.9844, Longitude = 5.616, SquadId = 2, Squad_MemberId = 3},
 
-                new SquadCheckin(){ Id = 3, Start_time = DateTime.UtcNow, End_time = DateTime.UtcNow.AddMinutes(55), GameId = 3, Latitude = 58.88, Longitude = 5.61, SquadId = 3, Squad_MemberId = 5},
-                new SquadCheckin(){ Id = 4, Start_time = DateTime.UtcNow, End_time = DateTime.UtcNow.AddMinutes(55), GameId = 3, Latitude = 58.89, Longitude = 5.63, SquadId = 3, Squad_MemberId = 5},
-                new SquadCheckin(){ Id = 5, Start_time = DateTime.UtcNow, End_time = DateTime.UtcNow.AddMinutes(3), GameId = 3, Latitude = 58.89, Longitude = 5.63, SquadId = 4, Squad_MemberId = 8},
+                new SquadCheckin(){ Id = 3, Start_time = DateTime.UtcNow, End_time = DateTime.UtcNow.AddMinutes(55), GameId = 3, Latitude = 58.88, Longitude = 5.71, SquadId = 3, Squad_MemberId = 5},
+                new SquadCheckin(){ Id = 4, Start_time = DateTime.UtcNow, End_time = DateTime.UtcNow.AddMinutes(55), GameId = 3, Latitude = 58.86, Longitude = 5.73, SquadId = 3, Squad_MemberId = 5},
+                new SquadCheckin(){ Id = 5, Start_time = DateTime.UtcNow, End_time = DateTime.UtcNow.AddMinutes(3), GameId = 3, Latitude = 58.87, Longitude = 5.76, SquadId = 4, Squad_MemberId = 8},
 
-                new SquadCheckin(){ Id = 6, Start_time = DateTime.UtcNow, End_time = DateTime.UtcNow.AddMinutes(55), GameId = 4, Latitude = 58.95, Longitude = 5.82, SquadId = 4, Squad_MemberId = 9},
+                new SquadCheckin(){ Id = 6, Start_time = DateTime.UtcNow, End_time = DateTime.UtcNow.AddMinutes(55), GameId = 4, Latitude = 58.89, Longitude = 5.65, SquadId = 4, Squad_MemberId = 9},
             };
             return squadCheckins;
         }
