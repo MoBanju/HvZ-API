@@ -15,6 +15,7 @@ using HvZWebAPI.Utils;
 using HvZWebAPI.DTOs.SquadMember;
 using HvZWebAPI.Migrations;
 using HvZWebAPI.DTOs.SquadCheckin;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HvZWebAPI.Controllers
 {
@@ -34,6 +35,7 @@ namespace HvZWebAPI.Controllers
 
         // POST: api/Squad
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize]
         [HttpPost("{game_id}/[controller]")]
         public async Task<ActionResult<SquadReadDTO>> PostSquad(int game_id, SquadCreateDTO squadDTO)
         {
@@ -54,8 +56,9 @@ namespace HvZWebAPI.Controllers
             SquadReadDTO readDTO = _mapper.Map<Squad, SquadReadDTO>(squad);
 
             return CreatedAtAction("GetSquad", new { game_id = game_id, squad_id = squad.Id }, readDTO);
-        }       
+        }
 
+        [Authorize]
         [HttpPost("{game_id}/[controller]/{squad_id}/join")]
         public async Task<ActionResult<SquadMemberReadDTO>> PostSquadMember(int game_id, int squad_id, SquadMemberCreateDTO squadMemberDTO)
         {
@@ -81,6 +84,7 @@ namespace HvZWebAPI.Controllers
             return CreatedAtAction("GetSquadMember", new { game_id = game_id, squad_id = squad_id, squad_member_id = mapped.Id }, mapped);
         }
 
+        [Authorize]
         [HttpPost("{game_id}/[controller]/{squad_id}/check-in")]
         public async Task<ActionResult<SquadCheckinReadDTO>> PostSquadCheckin(int game_id, int squad_id, SquadCheckinCreateDTO squadChekinDTO)
         {
@@ -108,8 +112,9 @@ namespace HvZWebAPI.Controllers
 
 
             return CreatedAtAction("GetSquadMember", new { game_id = game_id, squad_id = squad_id, squad_member_id = mapped.Id }, mapped);
-        }       
+        }
 
+        [Authorize]
         [HttpGet("{game_id}/[controller]/{squad_id}/{squad_member_id}")]
         public async Task<ActionResult<SquadMemberReadDTO>> GetSquadMember(int game_id, int squad_id, int squad_member_id)
         {
@@ -169,6 +174,7 @@ namespace HvZWebAPI.Controllers
             }
         }
 
+        [Authorize]
         [HttpGet("{game_id}/[controller]/{squad_id}/check-in")]
         public async Task<ActionResult<IEnumerable<SquadCheckinReadDTO>>> GetSquadCheckins(int game_id, int squad_id)
         {
@@ -193,6 +199,7 @@ namespace HvZWebAPI.Controllers
 
 
         // GET: api/Squad/5
+        [Authorize]
         [HttpGet("{game_id}/[controller]/{squad_id}")]
         public async Task<ActionResult<SquadReadDTO>> GetSquad(int game_id, int squad_id)
         {
@@ -220,6 +227,7 @@ namespace HvZWebAPI.Controllers
 
         // PUT: api/Squad/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize(Roles = "admin-client-role")]
         [HttpPut("{game_id}/[controller]/{squad_id}")]
         public async Task<IActionResult> PutSquad(int game_id, int squad_id, SquadUpdateDTO squad)
         {
@@ -246,10 +254,11 @@ namespace HvZWebAPI.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ErrorCategory.INTERNAL);
             }
             return NoContent();
-        }       
+        }
 
 
         // DELETE: api/Squad/5
+        [Authorize(Roles = "admin-client-role")]
         [HttpDelete("{game_id}/[controller]/{squad_id}")]
         public async Task<IActionResult> DeleteSquad(int game_id, int squad_id)
         {
@@ -275,6 +284,7 @@ namespace HvZWebAPI.Controllers
             return NoContent();
         }
 
+        [Authorize]
         [HttpDelete("{game_id}/[controller]/{squad_id}/{player_id}")]
         public async Task<IActionResult> DeleteSquadMember(int game_id, int squad_id, int player_id)
         {
