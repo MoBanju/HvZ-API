@@ -184,8 +184,7 @@ public class PlayerController : ControllerBase
     }
 
     /// <summary>
-    /// Updates the player object itself, not the associated user object.
-    /// Admin only
+    /// (Admin Only) Updates the player object itself, not the associated user object.
     /// </summary>
     /// <param name="game_id"></param>
     /// <param name="player_id"></param>
@@ -222,7 +221,7 @@ public class PlayerController : ControllerBase
     }
 
     /// <summary>
-    /// Deletes a player, Admin only
+    /// (Admin Only) Deletes a player
     /// </summary>
     /// <param name="game_id"></param>
     /// <param name="player_id"></param>

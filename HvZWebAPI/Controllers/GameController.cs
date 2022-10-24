@@ -29,10 +29,11 @@ public class GameController : ControllerBase
     }
 
     /// <summary>
-    /// Creates a new game, Admin only
+    /// (Admin Only) Creates a new game
     /// </summary>
     /// <param name="gameAsDTO"></param>
-    /// <returns></returns>
+    /// <returns>The newly created game</returns>
+    /// <response code="400"> The specific </response>
     [Authorize(Roles = "admin-client-role")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -212,11 +213,8 @@ public class GameController : ControllerBase
         }
     }
 
-
-
-    
     /// <summary>
-    /// Updates a game, Admin only
+    /// (Admin Only) Updates a game
     /// </summary>
     /// <param name="id"></param>
     /// <param name="gameAsDto"></param>
@@ -259,7 +257,7 @@ public class GameController : ControllerBase
 
 
     /// <summary>
-    /// Deletes a game, Admin only
+    /// (Admin Only) Deletes a game, Admin only
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>

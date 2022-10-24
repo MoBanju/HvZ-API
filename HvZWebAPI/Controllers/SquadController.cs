@@ -15,10 +15,13 @@ using HvZWebAPI.Utils;
 using HvZWebAPI.DTOs.SquadMember;
 using HvZWebAPI.Migrations;
 using HvZWebAPI.DTOs.SquadCheckin;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HvZWebAPI.Controllers
 {
     [Route("game/")]
+    [Produces("application/json")]
+    [Consumes("application/json")]
     [ApiController]
     public class SquadController : ControllerBase
     {
@@ -32,8 +35,16 @@ namespace HvZWebAPI.Controllers
             _mapper = mapper;
         }
 
-        // POST: api/Squad
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Add a squad to a game
+        /// </summary>
+        /// <param name="game_id"></param>
+        /// <param name="squadDTO"></param>
+        /// <returns></returns>
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPost("{game_id}/[controller]")]
         public async Task<ActionResult<SquadReadDTO>> PostSquad(int game_id, SquadCreateDTO squadDTO)
         {
@@ -54,8 +65,19 @@ namespace HvZWebAPI.Controllers
             SquadReadDTO readDTO = _mapper.Map<Squad, SquadReadDTO>(squad);
 
             return CreatedAtAction("GetSquad", new { game_id = game_id, squad_id = squad.Id }, readDTO);
-        }       
+        }
 
+        /// <summary>
+        /// Add a squadmember to the specified squad
+        /// </summary>
+        /// <param name="game_id"></param>
+        /// <param name="squad_id"></param>
+        /// <param name="squadMemberDTO"></param>
+        /// <returns></returns>
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPost("{game_id}/[controller]/{squad_id}/join")]
         public async Task<ActionResult<SquadMemberReadDTO>> PostSquadMember(int game_id, int squad_id, SquadMemberCreateDTO squadMemberDTO)
         {
@@ -81,6 +103,17 @@ namespace HvZWebAPI.Controllers
             return CreatedAtAction("GetSquadMember", new { game_id = game_id, squad_id = squad_id, squad_member_id = mapped.Id }, mapped);
         }
 
+        /// <summary>
+        /// Adds a squad-checkin to a squad 
+        /// </summary>
+        /// <param name="game_id"></param>
+        /// <param name="squad_id"></param>
+        /// <param name="squadChekinDTO"></param>
+        /// <returns></returns>
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPost("{game_id}/[controller]/{squad_id}/check-in")]
         public async Task<ActionResult<SquadCheckinReadDTO>> PostSquadCheckin(int game_id, int squad_id, SquadCheckinCreateDTO squadChekinDTO)
         {
@@ -108,8 +141,19 @@ namespace HvZWebAPI.Controllers
 
 
             return CreatedAtAction("GetSquadMember", new { game_id = game_id, squad_id = squad_id, squad_member_id = mapped.Id }, mapped);
-        }       
+        }
 
+        /// <summary>
+        /// Retrieves a specific squad member by it's id
+        /// </summary>
+        /// <param name="game_id"></param>
+        /// <param name="squad_id"></param>
+        /// <param name="squad_member_id"></param>
+        /// <returns></returns>
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet("{game_id}/[controller]/{squad_id}/{squad_member_id}")]
         public async Task<ActionResult<SquadMemberReadDTO>> GetSquadMember(int game_id, int squad_id, int squad_member_id)
         {
@@ -140,6 +184,14 @@ namespace HvZWebAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Retrieves all squads associated with a game, the number of zombies and all it's members
+        /// </summary>
+        /// <param name="game_id"></param>
+        /// <returns></returns>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet("{game_id}/[controller]")]
         public async Task<ActionResult<IEnumerable<SquadReadDTO>>> GetSquads(int game_id)
         {
@@ -169,6 +221,16 @@ namespace HvZWebAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Displays every squad-checkin a squad has made
+        /// </summary>
+        /// <param name="game_id"></param>
+        /// <param name="squad_id"></param>
+        /// <returns></returns>
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet("{game_id}/[controller]/{squad_id}/check-in")]
         public async Task<ActionResult<IEnumerable<SquadCheckinReadDTO>>> GetSquadCheckins(int game_id, int squad_id)
         {
@@ -191,8 +253,17 @@ namespace HvZWebAPI.Controllers
 
         }
 
-
-        // GET: api/Squad/5
+        /// <summary>
+        /// Retrieves one squad, the number of zombies and all it's members
+        /// </summary>
+        /// <param name="game_id"></param>
+        /// <param name="squad_id"></param>
+        /// <returns></returns>
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet("{game_id}/[controller]/{squad_id}")]
         public async Task<ActionResult<SquadReadDTO>> GetSquad(int game_id, int squad_id)
         {
@@ -218,8 +289,17 @@ namespace HvZWebAPI.Controllers
             }
         }
 
-        // PUT: api/Squad/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// (Admin Only) Updates the squad object, replacing it with a new one
+        /// </summary>
+        /// <param name="game_id"></param>
+        /// <param name="squad_id"></param>
+        /// <param name="squad"></param>
+        /// <returns></returns>
+        [Authorize(Roles = "admin-client-role")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPut("{game_id}/[controller]/{squad_id}")]
         public async Task<IActionResult> PutSquad(int game_id, int squad_id, SquadUpdateDTO squad)
         {
@@ -246,10 +326,18 @@ namespace HvZWebAPI.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ErrorCategory.INTERNAL);
             }
             return NoContent();
-        }       
+        }
 
-
-        // DELETE: api/Squad/5
+        /// <summary>
+        /// (Admin-Only) Deletes a specific squad
+        /// </summary>
+        /// <param name="game_id"></param>
+        /// <param name="squad_id"></param>
+        /// <returns></returns>
+        [Authorize(Roles = "admin-client-role")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpDelete("{game_id}/[controller]/{squad_id}")]
         public async Task<IActionResult> DeleteSquad(int game_id, int squad_id)
         {
@@ -275,6 +363,17 @@ namespace HvZWebAPI.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Deletes a squadmember in a squad with it's player_id
+        /// </summary>
+        /// <param name="game_id"></param>
+        /// <param name="squad_id"></param>
+        /// <param name="player_id"></param>
+        /// <returns></returns>
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpDelete("{game_id}/[controller]/{squad_id}/{player_id}")]
         public async Task<IActionResult> DeleteSquadMember(int game_id, int squad_id, int player_id)
         {

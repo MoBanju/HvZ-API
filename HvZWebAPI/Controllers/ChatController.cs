@@ -29,7 +29,7 @@ public class ChatController : ControllerBase
     }
     
     /// <summary>
-    /// Creates a new gamechat for a given game
+    /// Creates a new chat object for a given game
     /// </summary>
     /// <param name="game_id"></param>
     /// <param name="chatAsDTO"></param>
@@ -102,7 +102,7 @@ public class ChatController : ControllerBase
     }
 
     /// <summary>
-    /// Gets a chat for a given game
+    /// Gets a specific chat for a given game
     /// </summary>
     /// <param name="game_id"></param>
     /// <param name="chat_id"></param>

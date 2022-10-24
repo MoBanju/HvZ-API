@@ -25,18 +25,32 @@ namespace HvZWebAPI.Controllers
             _repo = repo;
         }
 
+        /// <summary>
+        /// Retreives a list of kills, each with it's two playerkill objects where one is victim the other killr
+        /// </summary>
+        /// <param name="game_id"></param>
+        /// <returns></returns>
         [Authorize]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpGet("{game_id}/[controller]")]
         public async Task<ActionResult<KillReadDTO[]>> GetKills(int game_id)
         {
-            
-            IEnumerable<Kill> kills = await _repo.GetAllByGameId(game_id);
-            KillReadDTO[] killsAsDTOs = kills.Select(kill => _mapper.Map<KillReadDTO>(kill)).ToArray();
-            return killsAsDTOs;
+            try
+            {
+                IEnumerable<Kill> kills = await _repo.GetAllByGameId(game_id);
+                KillReadDTO[] killsAsDTOs = kills.Select(kill => _mapper.Map<KillReadDTO>(kill)).ToArray();
+                return killsAsDTOs;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"error: {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, ErrorCategory.INTERNAL);
+            }
         }
 
         /// <summary>
-        /// 
+        /// Retrieves a specific kill, including two playerkill objects one is victim and the other killer.
         /// </summary>
         /// <param name="game_id">Game Id</param>
         /// <param name="kill_id">Kill Id</param>
@@ -44,14 +58,14 @@ namespace HvZWebAPI.Controllers
         [Authorize]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpGet("{game_id}/[controller]/{kill_id}")]
         public async Task<ActionResult<KillReadDTO>> GetKill(int game_id, int kill_id)
         {
             try
             {
                 Kill? kill = await _repo.GetById(game_id, kill_id);
-                if(kill is null)
+                if (kill is null)
                 {
                     return NotFound(ErrorCategory.FAILURE);
                 }
@@ -73,14 +87,13 @@ namespace HvZWebAPI.Controllers
         }
 
         /// <summary>
-        /// Updates the kill object itself.
-        /// Admin only
+        /// (Admin Only) Updates the kill object itself.
         /// </summary>
         /// <param name="game_id">Specified Game</param>
         /// <param name="kill_id">Specified Kill</param>
         /// <param name="killAsDTO">Kill Data Transfer Object</param>
         /// <returns></returns>
-        //[Authorize]
+        [Authorize(Roles = "admin-client-role")]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -111,8 +124,6 @@ namespace HvZWebAPI.Controllers
 
         /// <summary>
         /// Adds the kill object itself.
-        /// Admin only.
-        /// Also it throws error if the specified bitecode is invlid
         /// </summary>
         /// <param name="game_id">Specified Game</param>
         /// <param name="killAsDTO">Kill Data Transfer Object</param>
@@ -129,17 +140,15 @@ namespace HvZWebAPI.Controllers
             kill.GameId = game_id;
             try
             {
-                //KillerId will never be null as it is tagged as required
-                Kill? savedKill = await _repo.Add(game_id, kill, killAsDTO.BiteCode, killAsDTO.KillerId??0);
+                Kill? savedKill = await _repo.Add(game_id, kill, killAsDTO.BiteCode, killAsDTO.KillerId ?? 0);
 
                 if (savedKill == null)
                 {
                     return BadRequest(ErrorCategory.FAILED_TO_CREATE("Kill"));
                 }
-                
+
                 KillReadDTO mapped = _mapper.Map<Kill, KillReadDTO>(savedKill);
 
-                //if()
                 return CreatedAtAction("GetKill", new { game_id = game_id, kill_id = savedKill.Id }, mapped);
 
             }
@@ -152,12 +161,11 @@ namespace HvZWebAPI.Controllers
                 Console.WriteLine(ex);
                 return StatusCode(StatusCodes.Status500InternalServerError, ErrorCategory.INTERNAL);
             }
-        }       
+        }
 
 
         /// <summary>
-        /// Deletes the kill object itself.
-        /// Admin only.
+        /// (Admin Only) Deletes the kill object itself.
         /// </summary>
         /// <param name="game_id">Specified Game</param>
         /// <param name="kill_id">Specified Kill</param>

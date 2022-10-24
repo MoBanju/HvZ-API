@@ -36,11 +36,14 @@ namespace HvZWebAPI.Controllers
 
 
         /// <summary>
-        /// 
+        /// Retrieves all the missions in a game, must be filtered on the frontend so players only see missions from their faction. 
         /// </summary>
         /// <param name="game_id"></param>
         /// <returns></returns>
         [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet("{game_id}/[controller]")]
         public async Task<ActionResult<MissionReadDTO[]>> GetMissions(int game_id)
         {
@@ -66,10 +69,17 @@ namespace HvZWebAPI.Controllers
 
         }
 
+        /// <summary>
+        /// Retrieves a specific mission object
+        /// </summary>
+        /// <param name="game_id"></param>
+        /// <param name="mission_id"></param>
+        /// <returns></returns>
         [Authorize]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet("{game_id}/[controller]/{mission_id}")]
         public async Task<ActionResult<MissionReadDTO>> GetMission(int game_id, int mission_id)
         {
@@ -104,10 +114,17 @@ namespace HvZWebAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// (Admin Only) Updates a specific mission object, replacing the old one
+        /// </summary>
+        /// <param name="game_id"></param>
+        /// <param name="mission_id"></param>
+        /// <param name="missionAsDTO"></param>
+        /// <returns></returns>
         [Authorize(Roles = "admin-client-role")]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPut("{game_id}/[controller]/{mission_id}")]
         public async Task<IActionResult> PutMission(int game_id, int mission_id, MissionUpdateDTO missionAsDTO)
         {
@@ -135,11 +152,16 @@ namespace HvZWebAPI.Controllers
             return NoContent();
         }
 
-
+        /// <summary>
+        /// (Admin Only) Adds a new mission to the game
+        /// </summary>
+        /// <param name="game_id"></param>
+        /// <param name="missionAsDTO"></param>
+        /// <returns></returns>
         [Authorize(Roles = "admin-client-role")]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPost("{game_id}/[controller]")]
         public async Task<ActionResult<MissionReadDTO>> PostMission(int game_id, MissionCreateDTO missionAsDTO)
         {
@@ -167,10 +189,16 @@ namespace HvZWebAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// (Admin Only) Removes a mission from the game
+        /// </summary>
+        /// <param name="game_id"></param>
+        /// <param name="mission_id"></param>
+        /// <returns></returns>
         [Authorize(Roles = "admin-client-role")]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpDelete("{game_id}/[controller]/{mission_id}")]
         public async Task<IActionResult> DeleteMission(int game_id, int mission_id)
         {
