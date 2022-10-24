@@ -274,5 +274,30 @@ namespace HvZWebAPI.Controllers
 
             return NoContent();
         }
+
+        [HttpDelete("{game_id}/[controller]/{squad_id}/{player_id}")]
+        public async Task<IActionResult> DeleteSquadMember(int game_id, int squad_id, int player_id)
+        {
+            try
+            {
+                var succueed = await _repo.DeleteMember(game_id, squad_id, player_id);
+                if (!succueed)
+                {
+                    return NotFound(ErrorCategory.SQUADMEMBER_NOT_FOUND(squad_id, player_id));
+                }
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ErrorCategory.INTERNAL);
+            }
+
+            return NoContent();
+        }
+
     }
 }

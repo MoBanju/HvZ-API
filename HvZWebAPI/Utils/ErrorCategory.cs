@@ -159,7 +159,12 @@ public class ErrorCategory
 
     public static string SQUADMEMBER_NOT_FOUND(int squad_member_id)
     {
-        return $"No squad with id {squad_member_id} found";
+        return $"No squadmember with id {squad_member_id}";
+    }
+
+    public static string SQUADMEMBER_NOT_FOUND(int squad_id, int player_id)
+    {
+        return $"No squadmember with squad id {squad_id} and playerid {player_id} found";
     }
 
     public static string USER_NOT_FOUND()
