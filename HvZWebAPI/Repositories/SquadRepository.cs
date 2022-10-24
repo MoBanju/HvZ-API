@@ -67,6 +67,11 @@ public class SquadRepository : ISquadRepository
         return squadMember;
     }
 
+/*    public async Task<SquadMember> DeleteMember(int game_id, int squad_id, int squadMember_id)
+    {
+
+
+    }*/
 
 
     public async Task<SquadCheckin> AddCheckin(int game_id, SquadCheckin squadCheckin, int squad_id)

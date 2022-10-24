@@ -54,7 +54,7 @@ namespace HvZWebAPI.Controllers
             SquadReadDTO readDTO = _mapper.Map<Squad, SquadReadDTO>(squad);
 
             return CreatedAtAction("GetSquad", new { game_id = game_id, squad_id = squad.Id }, readDTO);
-        }
+        }       
 
         [HttpPost("{game_id}/[controller]/{squad_id}/join")]
         public async Task<ActionResult<SquadMemberReadDTO>> PostSquadMember(int game_id, int squad_id, SquadMemberCreateDTO squadMemberDTO)
@@ -108,7 +108,7 @@ namespace HvZWebAPI.Controllers
 
 
             return CreatedAtAction("GetSquadMember", new { game_id = game_id, squad_id = squad_id, squad_member_id = mapped.Id }, mapped);
-        }
+        }       
 
         [HttpGet("{game_id}/[controller]/{squad_id}/{squad_member_id}")]
         public async Task<ActionResult<SquadMemberReadDTO>> GetSquadMember(int game_id, int squad_id, int squad_member_id)
@@ -246,7 +246,7 @@ namespace HvZWebAPI.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ErrorCategory.INTERNAL);
             }
             return NoContent();
-        }
+        }       
 
 
         // DELETE: api/Squad/5

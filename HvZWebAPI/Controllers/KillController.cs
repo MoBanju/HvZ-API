@@ -152,7 +152,7 @@ namespace HvZWebAPI.Controllers
                 Console.WriteLine(ex);
                 return StatusCode(StatusCodes.Status500InternalServerError, ErrorCategory.INTERNAL);
             }
-        }
+        }       
 
 
         /// <summary>
