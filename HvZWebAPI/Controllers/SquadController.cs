@@ -15,6 +15,7 @@ using HvZWebAPI.Utils;
 using HvZWebAPI.DTOs.SquadMember;
 using HvZWebAPI.Migrations;
 using HvZWebAPI.DTOs.SquadCheckin;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HvZWebAPI.Controllers
 {
@@ -34,6 +35,7 @@ namespace HvZWebAPI.Controllers
 
         // POST: api/Squad
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize]
         [HttpPost("{game_id}/[controller]")]
         public async Task<ActionResult<SquadReadDTO>> PostSquad(int game_id, SquadCreateDTO squadDTO)
         {
@@ -56,6 +58,7 @@ namespace HvZWebAPI.Controllers
             return CreatedAtAction("GetSquad", new { game_id = game_id, squad_id = squad.Id }, readDTO);
         }
 
+        [Authorize]
         [HttpPost("{game_id}/[controller]/{squad_id}/join")]
         public async Task<ActionResult<SquadMemberReadDTO>> PostSquadMember(int game_id, int squad_id, SquadMemberCreateDTO squadMemberDTO)
         {
@@ -81,6 +84,7 @@ namespace HvZWebAPI.Controllers
             return CreatedAtAction("GetSquadMember", new { game_id = game_id, squad_id = squad_id, squad_member_id = mapped.Id }, mapped);
         }
 
+        [Authorize]
         [HttpPost("{game_id}/[controller]/{squad_id}/check-in")]
         public async Task<ActionResult<SquadCheckinReadDTO>> PostSquadCheckin(int game_id, int squad_id, SquadCheckinCreateDTO squadChekinDTO)
         {
@@ -220,6 +224,7 @@ namespace HvZWebAPI.Controllers
 
         // PUT: api/Squad/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize(Roles = "admin-client-role")]
         [HttpPut("{game_id}/[controller]/{squad_id}")]
         public async Task<IActionResult> PutSquad(int game_id, int squad_id, SquadUpdateDTO squad)
         {
@@ -250,6 +255,7 @@ namespace HvZWebAPI.Controllers
 
 
         // DELETE: api/Squad/5
+        [Authorize(Roles = "admin-client-role")]
         [HttpDelete("{game_id}/[controller]/{squad_id}")]
         public async Task<IActionResult> DeleteSquad(int game_id, int squad_id)
         {
