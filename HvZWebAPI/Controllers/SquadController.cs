@@ -39,11 +39,15 @@ namespace HvZWebAPI.Controllers
         /// Add a squad to a game
         /// </summary>
         /// <param name="game_id"></param>
-        /// <param name="squadDTO"></param>
-        /// <returns></returns>
+        /// <param name="squadDTO"></param>,
+        /// <response code="201">Succuess, you have created a new squad</response>
+        /// <response code="400">Input validation error</response>
+        /// <response code="500"> Catches all other internal errors</response>
+        /// <returns>The newly created squadobject with its associated members and number of deseased players</returns>
         [Authorize]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPost("{game_id}/[controller]")]
         public async Task<ActionResult<SquadReadDTO>> PostSquad(int game_id, SquadCreateDTO squadDTO)
@@ -73,10 +77,14 @@ namespace HvZWebAPI.Controllers
         /// <param name="game_id"></param>
         /// <param name="squad_id"></param>
         /// <param name="squadMemberDTO"></param>
+        /// <response code="201">Succuess, you created a new squadmember</response>
+        /// <response code="400">Input validation error</response>
+        /// <response code="500"> Catches all other internal errors</response>
         /// <returns></returns>
         [Authorize]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPost("{game_id}/[controller]/{squad_id}/join")]
         public async Task<ActionResult<SquadMemberReadDTO>> PostSquadMember(int game_id, int squad_id, SquadMemberCreateDTO squadMemberDTO)
@@ -110,9 +118,13 @@ namespace HvZWebAPI.Controllers
         /// <param name="squad_id"></param>
         /// <param name="squadChekinDTO"></param>
         /// <returns></returns>
+        /// <response code="201">Succuess, you created a squadcheckin</response>
+        /// <response code="400">Input validation error</response>
+        /// <response code="500"> Catches all other internal errors</response>
         [Authorize]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPost("{game_id}/[controller]/{squad_id}/check-in")]
         public async Task<ActionResult<SquadCheckinReadDTO>> PostSquadCheckin(int game_id, int squad_id, SquadCheckinCreateDTO squadChekinDTO)
@@ -150,9 +162,15 @@ namespace HvZWebAPI.Controllers
         /// <param name="squad_id"></param>
         /// <param name="squad_member_id"></param>
         /// <returns></returns>
+        /// <response code="200">Succuess, returns a squadmember</response>
+        /// <response code="400">Input validation error</response>
+        /// <response code="404">Squadmember not found</response>
+        /// <response code="500"> Catches all other internal errors</response>
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet("{game_id}/[controller]/{squad_id}/{squad_member_id}")]
         public async Task<ActionResult<SquadMemberReadDTO>> GetSquadMember(int game_id, int squad_id, int squad_member_id)
@@ -188,9 +206,13 @@ namespace HvZWebAPI.Controllers
         /// Retrieves all squads associated with a game, the number of zombies and all it's members
         /// </summary>
         /// <param name="game_id"></param>
+        /// <response code="200">Succuess, returns a list of squads with members and number of deaseased players</response>
+        /// <response code="400">Input validation error</response>
+        /// <response code="500"> Catches all other internal errors</response>
         /// <returns></returns>
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet("{game_id}/[controller]")]
         public async Task<ActionResult<IEnumerable<SquadReadDTO>>> GetSquads(int game_id)
@@ -226,10 +248,14 @@ namespace HvZWebAPI.Controllers
         /// </summary>
         /// <param name="game_id"></param>
         /// <param name="squad_id"></param>
+        /// <response code="200">Succuess, returns a list of squad checkins</response>
+        /// <response code="400">Input validation error</response>
+        /// <response code="500"> Catches all other internal errors</response>
         /// <returns></returns>
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet("{game_id}/[controller]/{squad_id}/check-in")]
         public async Task<ActionResult<IEnumerable<SquadCheckinReadDTO>>> GetSquadCheckins(int game_id, int squad_id)
@@ -258,11 +284,16 @@ namespace HvZWebAPI.Controllers
         /// </summary>
         /// <param name="game_id"></param>
         /// <param name="squad_id"></param>
-        /// <returns></returns>
+        /// <response code="200">Succuess, returns a single squad, it's members and number of deseased players</response>
+        /// <response code="400">Input validation error</response>
+        /// <response code="404">Squad not found</response>
+        /// <response code="500"> Catches all other internal errors</response>
+        /// <returns>Succuess, returns a single squad, it's members and number of deseased players</returns>
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet("{game_id}/[controller]/{squad_id}")]
         public async Task<ActionResult<SquadReadDTO>> GetSquad(int game_id, int squad_id)
@@ -295,9 +326,14 @@ namespace HvZWebAPI.Controllers
         /// <param name="game_id"></param>
         /// <param name="squad_id"></param>
         /// <param name="squad"></param>
-        /// <returns></returns>
+        /// <returns></returns>        
+        /// <response code="204">Succuess, returns a updated squad with members and number of deaseased players</response>
+        /// <response code="400">Input validation error</response>
+        /// <response code="404">The squad object we wished to update was not found</response>
+        /// <response code="500"> Catches all other internal errors</response>
         [Authorize(Roles = "admin-client-role")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPut("{game_id}/[controller]/{squad_id}")]
@@ -334,8 +370,13 @@ namespace HvZWebAPI.Controllers
         /// <param name="game_id"></param>
         /// <param name="squad_id"></param>
         /// <returns></returns>
+        /// <response code="204">Succuess, squad deleted</response>
+        /// <response code="400">Input validation error</response>
+        /// <response code="404">The squad object we wished to delete was not found</response>
+        /// <response code="500"> Catches all other internal errors</response>
         [Authorize(Roles = "admin-client-role")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpDelete("{game_id}/[controller]/{squad_id}")]
@@ -370,8 +411,13 @@ namespace HvZWebAPI.Controllers
         /// <param name="squad_id"></param>
         /// <param name="player_id"></param>
         /// <returns></returns>
+        /// <response code="204">Succuess, member deleted</response>
+        /// <response code="400">Input validation error</response>
+        /// <response code="404">The squadmember we wished to delete was not found</response>
+        /// <response code="500"> Catches all other internal errors</response>
         [Authorize]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpDelete("{game_id}/[controller]/{squad_id}/{player_id}")]

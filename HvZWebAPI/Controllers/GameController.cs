@@ -33,7 +33,8 @@ public class GameController : ControllerBase
     /// </summary>
     /// <param name="gameAsDTO"></param>
     /// <returns>The newly created game</returns>
-    /// <response code="400">Validation of sent in data failed, be it time, coordinates </response>
+    /// <response code="201">Game is created</response>
+    /// <response code="400">Validation of input data failed, it validates start and entime, if coordinates are within the game </response>
     /// <response code="500"> Catches all other internal errors</response>
     [Authorize(Roles = "admin-client-role")]
     [ProducesResponseType(StatusCodes.Status201Created)]
@@ -68,8 +69,11 @@ public class GameController : ControllerBase
     /// <summary>
     /// Returns a list of all games
     /// </summary>
-    /// <returns></returns>
+    /// <returns>A list of games</returns>    
+    /// <response code="200"> Succuess, returns a list of games</response>
+    /// <response code="500"> Catches all other internal errors</response>
     [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [HttpGet]
     public async Task<ActionResult<GameReadDTO[]>> GetGames()
@@ -92,9 +96,13 @@ public class GameController : ControllerBase
     /// Returns a specific game object
     /// </summary>
     /// <param name="id"></param>
-    /// <returns></returns>
+    /// <returns>A specific game</returns>
+    /// <response code="200">Returns the specified game</response>
+    /// <response code="404"> The game was not found in the database</response>
+    /// <response code="500"> Catches all other internal errors</response>
     [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [HttpGet("{id}")]
@@ -132,6 +140,8 @@ public class GameController : ControllerBase
     /// List of all games that are in registration
     /// </summary>
     /// <returns></returns>
+    /// <response code="200"> Returns games in the registration state</response>
+    /// <response code="500"> Catches all other internal errors</response>
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [HttpGet("State/Registration")]
@@ -154,7 +164,9 @@ public class GameController : ControllerBase
     /// <summary>
     /// List of all games that are in progress
     /// </summary>
-    /// <returns></returns>
+    /// <returns>List of all games that are in progress</returns>
+    /// <response code="200"> Returns games in the progress state</response>
+    /// <response code="500"> Catches all other internal errors</response>
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [HttpGet("State/Progress")]
@@ -179,7 +191,9 @@ public class GameController : ControllerBase
     /// <summary>
     /// List of all games that are completed
     /// </summary>
-    /// <returns></returns>
+    /// <returns>List of all games that are completed</returns>
+    /// <response code="200"> List of all games that are completed</response>
+    /// <response code="500"> Catches all other internal errors</response>
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [HttpGet("State/Completed")]
@@ -216,9 +230,14 @@ public class GameController : ControllerBase
     /// <param name="id"></param>
     /// <param name="gameAsDto"></param>
     /// <returns></returns>
+    /// <response code="204"> Sucuess, game is updated</response>
+    /// <response code="400">Validation error</response>
+    /// <response code="404"> Failed to update the game</response>
+    /// <response code="500"> Catches all other internal errors</response>
     [Authorize(Roles = "admin-client-role")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [HttpPut("{id}")]
@@ -240,7 +259,7 @@ public class GameController : ControllerBase
 
             if (!success)
             {
-                return BadRequest(ErrorCategory.FAILED_TO_UPDATE("Game"));
+                return NotFound(ErrorCategory.FAILED_TO_UPDATE("Game"));
             }
 
             return NoContent();
@@ -254,12 +273,16 @@ public class GameController : ControllerBase
 
 
     /// <summary>
-    /// (Admin Only) Deletes a game, Admin only
+    /// (Admin Only) Deletes a game
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
+    /// <response code="204"> Sucuess, game is deleted</response>
+    /// <response code="404"> Validation error, failed to update the game</response>
+    /// <response code="500"> Catches all other internal errors</response>
     [Authorize(Roles = "admin-client-role")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [HttpDelete("{id}")]

@@ -27,16 +27,21 @@ public class ChatController : ControllerBase
         _repo = repo;
         _mapper = mapper;
     }
-    
+
     /// <summary>
     /// Creates a new chat object for a given game
     /// </summary>
     /// <param name="game_id"></param>
     /// <param name="chatAsDTO"></param>
     /// <returns></returns>
+    /// <response code="201">Succuess, new chat created</response>
+    /// <response code="400">Input validation error</response>
+    /// <response code="403">Illegal chats in squads you are not a member of, or that you don't have the correct faction for</response>
+    /// <response code="500"> Catches all other internal errors</response>
     [Authorize]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [HttpPost("{game_id}/[controller]")]
@@ -81,9 +86,13 @@ public class ChatController : ControllerBase
     /// </summary>
     /// <param name="game_id"></param>
     /// <returns></returns>
+    /// <response code="200">Succuess, returns a lists of chats</response>
+    /// <response code="400">Input validation error</response>
+    /// <response code="500"> Catches all other internal errors</response>
     [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [HttpGet("{game_id}/[controller]")]
     public async Task<ActionResult<ChatReadDTO[]>> GetGameChats(int game_id)
@@ -112,9 +121,13 @@ public class ChatController : ControllerBase
     /// <param name="game_id"></param>
     /// <param name="chat_id"></param>
     /// <returns></returns>
+    /// <response code="200">Succuess, returns a specific chat</response>
+    /// <response code="404">The chat was not found</response>
+    /// <response code="500"> Catches all other internal errors</response>
     [Authorize]
     [HttpGet("{game_id}/[controller]/{chat_id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<ChatReadDTO[]>> GetGameChat(int game_id, int chat_id)

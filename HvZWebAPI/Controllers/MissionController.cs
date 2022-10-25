@@ -39,10 +39,14 @@ namespace HvZWebAPI.Controllers
         /// Retrieves all the missions in a game, must be filtered on the frontend so players only see missions from their faction. 
         /// </summary>
         /// <param name="game_id"></param>
-        /// <returns></returns>
+        /// <returns></returns>'
+        /// <response code="200">Succuess, returns a list of missions from a game</response>
+        /// <response code="400">Input validation error</response>
+        /// <response code="500"> Catches all other internal errors</response>
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet("{game_id}/[controller]")]
         public async Task<ActionResult<MissionReadDTO[]>> GetMissions(int game_id)
@@ -75,9 +79,15 @@ namespace HvZWebAPI.Controllers
         /// <param name="game_id"></param>
         /// <param name="mission_id"></param>
         /// <returns></returns>
+        /// <response code="200">Succuess, returns a mission</response>
+        /// <response code="400">Input validation error</response>
+        /// <response code="403">You are not the proper faction to access these missions</response>
+        /// <response code="404">The mission object we wished to get was not found</response>
+        /// <response code="500"> Catches all other internal errors</response>
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -122,9 +132,14 @@ namespace HvZWebAPI.Controllers
         /// <param name="mission_id"></param>
         /// <param name="missionAsDTO"></param>
         /// <returns></returns>
+        /// <response code="204">Succuess, mission updated</response>
+        /// <response code="400">Input validation error</response>
+        /// <response code="404">The mission object we wished to update was not found</response>
+        /// <response code="500"> Catches all other internal errors</response>
         [Authorize(Roles = "admin-client-role")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPut("{game_id}/[controller]/{mission_id}")]
         public async Task<IActionResult> PutMission(int game_id, int mission_id, MissionUpdateDTO missionAsDTO)
@@ -159,17 +174,19 @@ namespace HvZWebAPI.Controllers
         /// <param name="game_id"></param>
         /// <param name="missionAsDTO"></param>
         /// <returns></returns>
+        /// <response code="201">Succuess, new mission created</response>
+        /// <response code="400">Input validation error</response>
+        /// <response code="500"> Catches all other internal errors</response>
         [Authorize(Roles = "admin-client-role")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPost("{game_id}/[controller]")]
         public async Task<ActionResult<MissionReadDTO>> PostMission(int game_id, MissionCreateDTO missionAsDTO)
         {
             bool IsBefore = missionAsDTO.Start_time.CompareTo(missionAsDTO.End_time) < 0;
             if (!IsBefore) return BadRequest(ErrorCategory.START_TIME_MUST_BE_BEFORE_ENDTIME());
-
-
 
             Mission mission = _mapper.Map<MissionCreateDTO, Mission>(missionAsDTO);
 
@@ -196,9 +213,13 @@ namespace HvZWebAPI.Controllers
         /// <param name="game_id"></param>
         /// <param name="mission_id"></param>
         /// <returns></returns>
+        /// <response code="204">Succuess, mission is deleted</response>
+        /// <response code="400">Input validation error</response>
+        /// <response code="500"> Catches all other internal errors</response>
         [Authorize(Roles = "admin-client-role")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpDelete("{game_id}/[controller]/{mission_id}")]
         public async Task<IActionResult> DeleteMission(int game_id, int mission_id)
