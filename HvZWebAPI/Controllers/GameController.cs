@@ -33,10 +33,12 @@ public class GameController : ControllerBase
     /// </summary>
     /// <param name="gameAsDTO"></param>
     /// <returns>The newly created game</returns>
-    /// <response code="400"> The specific </response>
+    /// <response code="400">Validation of sent in data failed, be it time, coordinates </response>
+    /// <response code="500"> Catches all other internal errors</response>
     [Authorize(Roles = "admin-client-role")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [HttpPost]
     public async Task<ActionResult<GameReadDTO>> PostGame(GameCreateDTO gameAsDTO)
@@ -51,7 +53,7 @@ public class GameController : ControllerBase
         {
             game = await _repo.Add(game);
             if (game == null)
-                return BadRequest(ErrorCategory.FAILED_TO_CREATE("Game"));
+                return StatusCode(StatusCodes.Status500InternalServerError, ErrorCategory.FAILED_TO_CREATE("Game"));
 
 
             return CreatedAtAction("GetGame", new { id = game.Id }, _mapper.Map<GameReadDTO>(game));
@@ -98,18 +100,13 @@ public class GameController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<GameReadDTO>> GetGame(int id)
     {
-
-
         User.HasClaim((c) => {
-
             if (c.Type == ClaimTypes.Role)
                 Debug.WriteLine("Roleclaim " + c);
             return c.Value == ClaimTypes.Role;
         });
 
-
         var roles = User.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value);
-
         var roles3 = User.IsInRole(ClaimsTransformer.ADMIN_ROLE);
 
         try

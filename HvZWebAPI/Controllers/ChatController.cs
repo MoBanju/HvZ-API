@@ -37,6 +37,7 @@ public class ChatController : ControllerBase
     [Authorize]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [HttpPost("{game_id}/[controller]")]
     public async Task<ActionResult<ChatReadDTO>> PostGameChat(int game_id, ChatCreateDTO chatAsDTO)
@@ -59,6 +60,10 @@ public class ChatController : ControllerBase
             JObject nullIgnoredObject = JObject.Parse(nullIgnorer);
 
             return CreatedAtAction("GetGameChat", new { game_id = game_id, chat_id = chat.Id }, nullIgnoredObject);
+        }
+        catch (AccessViolationException e)
+        {
+            return StatusCode(StatusCodes.Status403Forbidden, e.Message);
         }
         catch (ArgumentException e)
         {

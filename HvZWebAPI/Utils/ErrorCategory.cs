@@ -18,11 +18,11 @@ public class ErrorCategory
     }
     public static string ONLY_A_ZOMBIE_CAN_POST_TO_ZOMBIE_CHAT(int game_id, int player_id)
     {
-        return $"player {player_id} cant post to the zombie chat because she/he is human";
+        return $"player {player_id} cant post to the zombie chat because they are a human";
     }
     public static string ONLY_A_HUMAN_CAN_POST_TO_HUMAN_CHAT(int game_id, int player_id)
     {
-        return $"player {player_id} cant post to the human chat because she/he is a zombie";
+        return $"player {player_id} cant post to the human chat because they are a zombie";
     }
     public static string PLAYER_NOT_IN_GAME(int game_id, int player_id)
     {
