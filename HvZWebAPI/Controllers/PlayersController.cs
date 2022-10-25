@@ -35,12 +35,16 @@ public class PlayerController : ControllerBase
     /// Registers a new user for the game if there is no or unused user id is provided i player object.
     ///  Adds a player object to the user, each user only has one player in each game. 
     /// </summary>
-    /// <param name="game_id"></param>
-    /// <param name="playerDTO"></param>
-    /// <returns></returns>
+    /// <param name="game_id">Game Id</param>
+    /// <param name="playerDTO">Player</param>
+    /// <returns>Created player</returns>
+    /// <response code="400">Game not found. Player cant be human and patient zero simultaneously. Bitecode must be unique for every player for every game. The user must have a unique keycloak Id. Some of the fields are required.</response>
+    /// <response code="401">User Authentication was not perfomed.</response>
+
     [Authorize]
     [HttpPost("{game_id}/[controller]")]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(StatusCodes.Status201Created)]
     public async Task<ActionResult<Player>> PostPlayer(int game_id, PlayerCreateDTO playerDTO)
@@ -77,8 +81,7 @@ public class PlayerController : ControllerBase
     /// <summary>
     /// Validates for keycloakid and returns the appropriate one
     /// </summary>
-    /// <param name="player"></param>
-    /// <param name="KeyCloakId"></param>
+    /// <param name="KeyCloakId">KeyCloak Id</param>
     /// <exception cref="ArgumentException"></exception>
     private string CheckForKeycloakId(string KeyCloakId)
     {
@@ -107,10 +110,14 @@ public class PlayerController : ControllerBase
     /// Get a list of players in a given game
     /// Each player object is only visible in it's entirety to administrators 
     /// </summary>
-    /// <param name="game_id"></param>
-    /// <returns></returns>
+    /// <param name="game_id">Game Id</param>
+    /// <returns>List of the players in that game</returns>
+    /// <response code="400">Game not found.</response>
+    /// <response code="401">User Authentication was not perfomed.</response>
+    /// <response code="404">The specified player does not exist, or the current user does not have access to it.</response>
     [Authorize]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [HttpGet("{game_id}/[controller]")]
     public async Task<ActionResult<IEnumerable<PlayerReadAdminDTO>>> GetPlayers(int game_id)
@@ -145,11 +152,16 @@ public class PlayerController : ControllerBase
     /// Gets a specific player in a given game
     /// The entire object is only visible to administrators 
     /// </summary>
-    /// <param name="game_id"></param>
-    /// <param name="player_id"></param>
-    /// <returns></returns>
+    /// <param name="game_id">Game Id</param>
+    /// <param name="player_id">Player Id</param>
+    /// <returns>Player</returns>
+    /// <response code="400">Game not found. Player was not found. Player exists, but not found in this game.</response>
+    /// <response code="401">User Authentication was not perfomed.</response>
+    /// <response code="404">The specified player does not exist, or the current user does not have access to it.</response>
     [Authorize]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [HttpGet("{game_id}/[controller]/{player_id}")]
@@ -186,12 +198,17 @@ public class PlayerController : ControllerBase
     /// <summary>
     /// (Admin Only) Updates the player object itself, not the associated user object.
     /// </summary>
-    /// <param name="game_id"></param>
-    /// <param name="player_id"></param>
-    /// <param name="player"></param>
-    /// <returns></returns>
+    /// <param name="game_id">Game Id</param>
+    /// <param name="player_id">Player Id</param>
+    /// <param name="player">Player to modify.</param>
+    /// <returns>Modified player</returns>
+    /// <response code="400">Game not found. Player exists, but not found in this game.</response>
+    /// <response code="401">The user does not have administrator rights.</response>
+    /// <response code="404">The specified player does not exist, or the current user does not have access to it.</response>
+    /// <response code="204">That player has been changed successfully.</response>
     [Authorize(Roles = "admin-client-role")]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -223,12 +240,18 @@ public class PlayerController : ControllerBase
     /// <summary>
     /// (Admin Only) Deletes a player
     /// </summary>
-    /// <param name="game_id"></param>
-    /// <param name="player_id"></param>
-    /// <returns></returns>
+    /// <param name="game_id">Game Id</param>
+    /// <param name="player_id">Player Id</param>
+    /// <returns>That player no longer exists, which means the action was perfomed successfully.</returns>
+    /// <response code="400">Game not found. Player was not found. Player exists, but not found in this game.</response>
+    /// <response code="401">The user does not have administrator rights.</response>
+    /// <response code="404">The specified player does not exist, or the current user does not have access to it.</response>
+    /// <response code="204">That player has been deleted successfully.</response>
     [Authorize(Roles = "admin-client-role")]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [HttpDelete("{game_id}/[controller]/{player_id}")]
     public async Task<IActionResult> DeletePlayer(int game_id, int player_id)
