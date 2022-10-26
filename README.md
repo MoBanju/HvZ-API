@@ -24,7 +24,7 @@ This is a .Net web-API made that exposes endpoints for the Human vs Zombies game
 
 
 ## ERD Diagram
-![entityrelationshipdiagram.png](./entityrelationshipdiagram.png)
+![entityrelationshipdiagram.png](./ERD-complete.png)
 
 
 ## Packages used
