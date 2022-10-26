@@ -1,5 +1,5 @@
-#Description
-This is a .Net web-API made that exposes endpoints for the Human vs Zombies game.
+# Description
+This is a .Net web-API made that exposes endpoints for the Human vs Zombies game. The API is deployed as a docker image in Azure with the database, and you can explore the api-documented endpoint here https://hvz-experis-acadamy.azurewebsites.net/swagger/index.html or see the document apidoc in the top folder of this project.
 
 ## Contributors
 - [Eivind Bertelsen](https://gitlab.com/eivindTB)
